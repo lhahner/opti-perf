@@ -29,7 +29,7 @@ endif
 
 CXXFLAGS   ?= -std=c++17 $(WARN) $(OPT) $(DEPFLAGS) $(INCLUDES)
 LDFLAGS    ?=
-LDLIBS     ?=
+LDLIBS 	   ?= -pthread
 
 # -----------------------------
 # Sources / Objects / Deps
