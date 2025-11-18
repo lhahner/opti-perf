@@ -4,13 +4,16 @@
 
 class LinearOperations : public Operations {
  public:
- /**
-  * TODO
-  * Addition of n matrices computed on a CUDA-Device.
-  *
-  * @param The matrices you want to add together.
-  * @return the sum of the matrices.
-  */
+    enum Operation {
+        ADD,
+        SUB,
+        MULT,
+        DIV,
+        TRANS,
+        INVERSE
+    };
   std::vector<float> add(std::vector<float> a, std::vector<float> b);
-};
 
+  std::vector<float> sub(std::vector<float> a, std:: vector<float> b);
+  void execute(long unsigned int thread_count, Operation operations, std::vector<float> a, std::vector<float> b);
+};
