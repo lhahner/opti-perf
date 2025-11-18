@@ -1,0 +1,309 @@
+\documentclass[
+ %c,%--- activate to have the slide content vertically centered by default
+ %beamer-class options that do not change the layout can be added here
+ %UKenglish%,french% ... %--- activate one (or more) language options as needed
+ ]{beamer}%for detailed information see: "texdoc beamer"
+\usetheme[%
+ %guidingprinciple %--- activate to have "In Publica Commoda" as part of the logo
+ ]{GA}
+
+\graphicspath{{examplefiles/}}% this command from the graphics package allows to add folders (here subfolder "examplefiles") to be searched for graphic/image files
+
+%\setbeamertemplate{navigation symbols}{}%--- activate to suppress the navigation symbols
+
+%meta data fields: their content will be used for the title page
+ %(title and author will also be added automatically as PDF meta information)
+\author{Lennart Hahner}
+\title{An overview of performance improvements of commonly used optimization algorithms}
+\institute[Institute]{Institute for Computer Science}
+\logo{\includegraphics[height=5.7mm]{info}}%e.g. insitute logo or project logo
+                                          %(the 'info' graphic comes from the standard package "notes"
+                                          % and must in case of need b replaced by your individual logo)
+%\titlegraphic{\includegraphics[]{info}}%--- activate to have an image / a graphic on your title page
+
+%\date[\today]{} %--- activate to suppress date on title page
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}{Content}
+  \tableofcontents
+\end{frame}
+\section[Motivation]{Motivation}
+\frame[motivation]{\sectionpage}
+
+\begin{frame}
+  \frametitle{On why optimization matter}
+  % What happens to your hardware if you run optimization algortihms? -> Show memory consumption, CPU consumption etc.
+  % Is the nature of optimization hardware extensive? Yes it should be but why
+  Optimization plays an important role in machine learning, logitstics, tracking, portfolio management and more... [A Survey Of Optimization Techniques Being Used In The Field]
+  
+  \begin{itemize}
+  	\item Therefoer we want to do it as most as efficient as possible to exploit the best outcome...
+  	\item But how efficient or inefficient is optimization by its nature?
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}
+	\frametitle{How in-efficient is optimization by its nature?}
+	% What happens to your hardware if you run optimization algortihms? -> Show memory consumption, CPU consumption etc.
+	% Is the nature of optimization hardware extensive? Yes it should be but why
+	Consider we want to solve the Vehicle Routing Problem with time windows, suppose... [VEHICLE ROUTING PROBLEM W I T H
+	TIME WINDOWS]
+	\begin{itemize}
+		\item $N = 10,000$ in one day across metropolitian area
+		\item $K = 200$ trucks
+		\item The number of binary routing variables of the form is $N^2 * K = 10,000^2*200 = 2 \times 10^{10}$
+	\end{itemize}
+	Just storing the full matrix for branch-and-bound can push you against memory limits.
+	% Taking basic integer programming to solve a traveling sales man problem at different sizes,
+	% how well does the implementation scale on basic hardware and at which point to recieve good
+	% results in a way that I can say the situation is optimized as most. Good Example Problem VRPTW
+	% The result might be -> Optimization itself isn't really the problem, the worlds problems are just too large
+\end{frame}
+
+\begin{frame}
+	\frametitle{How in-efficient is optimization by its nature?}
+	To solve large problems, we need our algorithms be able to exploit hardware...
+	% Evtl. hier mal erwähnen das das Aufrüsten von Hardware am Ende kriegsentscheidend ist, da -> desto schneller ein Problem gelöst wird, desto schneller kann ich mich auch verbesser...
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Performance tweaks of various optimization algorithms}
+	A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}
+	\frametitle{GPGPU exploitation for performance}
+	A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Multithreading for performance enhancement}
+	A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Experimental results}
+	A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}
+	\frametitle{Conculsion and Outlook}
+	A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}
+  \frametitle{A slide with title and \dots}
+  \framesubtitle{\dots\ subtitle}
+  A short paragraph with continous text.
+\end{frame}
+
+\begin{frame}{Standard lists}%<- short syntax to enter a frame title
+  \begin{itemize}
+  \item A short paragraph with continous text.
+    \begin{itemize}
+    \item A short paragraph with continous text.
+      \begin{itemize}
+      \item A short paragraph with continous text.
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+  \begin{enumerate}
+  \item A short paragraph with continous text.
+    \begin{enumerate}
+    \item A short paragraph with continous text.
+      \begin{enumerate}
+      \item A short paragraph with continous text.
+      \end{enumerate}
+    \end{enumerate}
+  \end{enumerate}y
+  \begin{description}
+  \item[definiendum] definiens
+  \end{description}
+\end{frame}
+
+\begin{frame}{Formula example}
+  Die Methode der \textit{Fourier}-Transformation erlaubt eine Definition der MTF als Betrag der
+  normierten Fouriertransformierten des Abbildes einer $\delta$-Funktion
+  \begin{equation}
+    \mathrm{MTF}=\left|\frac{\mathcal{F}\left\{ s(x)\right\} }%|
+                   {\mathcal{F}\left\{ s(x)\right\} |_{\omega_{x}=0}}\right|
+            =\operatorname{abs}\left(\frac{\int_{-\infty}^{\infty}s(x)
+                               \mathrm{e}^{\mathrm{i}\omega_{x}x}\mathrm{d}\mkern0.5mu x}
+                               {\int_{-\infty}^{\infty}s(x)\mathrm{d}\mkern0.5mu x}
+                         \right).
+  \end{equation}
+\end{frame}
+
+\begin{frame}[fragile,c]{A vertically splitted slide}%'fragile' because of '\verb' (see beamer doc)
+  \begin{columns}[onlytextwidth,T]
+    \column{0.36\textwidth}%
+      This is \texttt{beamer}'s \verb|columns|~environment in~action.%
+    \column{0.44\textwidth}%
+      \includegraphics[width=0.7\hsize]{info}%
+    \column{\dimexpr0.2\textwidth}\raggedleft\footnotesize~\vskip7.7\baselineskip
+      See \texttt{beamer}'s doc for further information.%
+  \end{columns}\par
+\end{frame}
+
+\begin{frame}{``Tabulars'' without and with layout}
+  \begin{columns}[]
+    \column{76mm}%
+    \begin{tabular}{lr}
+      Lorem ipsum & Lorem ipsum \\\midrule
+      Lorem ipsu  & Lorem ipsu  \\
+      Lorem ips   & Lorem ips   \\
+      Lorem ip    & Lorem ip    \\
+    \end{tabular}\quad
+    \column{76mm}%
+    \begin{tabularx}{\hsize}{p{22mm}X}
+      Lorem ipsum dolor & Et a que perum imus unt ad quibusti \\\midrule
+      Lorem ipsu        & Lorem ipsu                          \\
+      Lorem ips         & Lorem ips                           \\
+      Lorem ip          & Lorem ip                            \\
+    \end{tabularx}\quad
+  \end{columns}\medskip
+  \begin{columns}[]
+    \column{76mm}%
+    \begin{GAtabular}{lr}
+      Lorem ipsum & Lorem ipsum \\\midrule
+      Lorem ipsu  & Lorem ipsu  \\\rowcolor{tablebluelight}
+      Lorem ips   & Lorem ips   \\
+      Lorem ip    & Lorem ip    \\
+    \end{GAtabular}\quad
+    \column{76mm}%
+    \begin{GAtabularx}{\hsize}{p{22mm}X}%<- move '\mirdule' to here if the tabular shouldn't have a head
+      Lorem ipsum dolor & Et a que perum imus unt ad quibusti \\\midrule\rowcolor{tablebluelight}
+      Lorem ipsu        & Lorem ipsu                          \\
+      Lorem ips         & Lorem ips                           \\
+      Lorem ip          & Lorem ip                            \\
+    \end{GAtabularx}\quad
+  \end{columns}
+\end{frame}
+
+{\setbeamertemplate{background}{\includegraphics[width=\paperwidth,height=\dimexpr\textheight+4pt]{info}}
+ \frame[norules]{}}% an example for a full-width image
+
+{\setbeamertemplate{background}{\includegraphics[width=\paperwidth,height=\paperheight]{info}}
+ \frame[plain]{}}%an example for a full-page image
+
+\begin{frame}[noheadline]{A slide without headline}
+  Lorem ipsum\hfill dolor\par
+  \vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par
+  Et a que perum imus unt\hfill ad quibusti
+\end{frame}
+
+\begin{frame}[plain]{A slide without headline and without footline}
+  Lorem ipsum\hfill dolor\par
+  \vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par\vdots\par
+  Et a que perum imus unt\hfill ad quibusti
+\end{frame}
+
+\begin{frame}[chamois]{Coloured slides}%<-- breakpoint page with signalling effect
+  A slide with chamois background.
+\end{frame}
+
+\begin{frame}[semidunkelblau,c]
+  \centering
+  \includegraphics[width=0.33\textwidth]{info}
+\end{frame}
+
+
+
+\section[semi-dunkelblau section]{Dunkelblau section}
+
+\frame[semidunkelblau]{\sectionpage}
+
+\begin{frame}{\texttt{beamer}'s standard blocks}
+  \begin{block}{Block}
+    \texttt{beamer}'s standard block with Uni-Göttingen colour.
+  \end{block}
+
+  \begin{alertblock}{Alert block}
+    \texttt{beamer}'s standard alert block with Uni-Göttingen colour.
+  \end{alertblock}
+
+  \begin{exampleblock}{Example block}
+    \texttt{beamer}'s standard example block with Uni-Göttingen colour.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{More blocks in Uni-Göttingen colours}
+  \vspace{-1\baselineskip}
+  \begin{columns}
+    \column{.33\textwidth}
+    \begin{uniblaublock}{Uniblau block}
+      Lorem ipsum dolor sit
+    \end{uniblaublock}
+    \begin{schwarzblock}{Schwarz block}
+      Lorem ipsum dolor sit
+    \end{schwarzblock}
+    \column{.33\textwidth}
+    \begin{dunkelblaublock}{Dunkelblau block}
+      Lorem ipsum dolor sit
+    \end{dunkelblaublock}
+    \begin{mittelblaublock}{Mittelblau block}
+      Lorem ipsum dolor sit
+    \end{mittelblaublock}
+    \begin{himmelblaublock}{Himmelblau block}
+      Lorem ipsum dolor sit
+    \end{himmelblaublock}
+    \begin{chamoisblock}{Chamois block}
+      Lorem ipsum dolor sit
+    \end{chamoisblock}
+    \column{.33\textwidth}
+    \begin{grau90block}{Grau90 block}
+      Lorem ipsum dolor sit
+    \end{grau90block}
+    \begin{grau80block}{Grau80 block}
+      Lorem ipsum dolor sit
+    \end{grau80block}
+    \begin{grau60block}{Grau60 block}
+      Lorem ipsum dolor sit
+    \end{grau60block}
+    \begin{grau20block}{Grau20 block}
+      Lorem ipsum dolor sit
+    \end{grau20block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{\texttt{beamer}'s theorem-like environments}
+  \begin{definition}%[title add]
+    \texttt{beamer}'s definition environment with Uni-Göttingen colour.
+  \end{definition}
+
+  \begin{theorem}%[title add]
+    \texttt{beamer}'s theorem environment with Uni-Göttingen colour.
+  \end{theorem}
+
+  \begin{example}[title add]
+    \texttt{beamer}'s example environment with Uni-Göttingen colour.
+  \end{example}
+
+  \begin{proof}%[special title]
+    \texttt{beamer}'s proof environment with Uni-Göttingen colour.
+  \end{proof}
+\end{frame}
+
+\begin{frame}%please customise the final slide for your needs
+  \bfseries\Huge
+  \iflanguage{ngerman}
+   {Vielen Dank für Ihre\\ Aufmerksamkeit}
+   {Thank you for your attention}
+
+  \sffamily\mdseries\normalsize
+  \vskip1.5\baselineskip
+  Georg-August-Universität Göttingen\\
+   Straße x\\
+   nnnnn Göttingen\\
+  \iflanguage{ngerman}{Tel. 0}{Phone +49\,}551\,39-n% \textbullet{} Fax \iflanguage{ngerman}{}{+49\,}551\,39-n
+  \\
+  E-Mail \url{xxx@yyy.uni-goettingen.de} \textbullet{} \url{uni-goettingen.de}
+\end{frame}
+
+\end{document}

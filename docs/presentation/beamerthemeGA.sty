@@ -1,0 +1,770 @@
+%%
+%% This is file `beamerthemeGA.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% GAslides.dtx  (with options: `package')
+%% -----------------------------------------------------------------
+%% Author:     le-tex publishing services
+%% Maintainer: le-tex publishing services
+%% 
+%% This file is part of the GAslides package for preparing
+%% slides for Georg-August-Universität Göttingen.
+%% 
+%%       Copyright (C) 2022 Georg-August-Universität Göttingen
+%% -----------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}[2021/11/15]
+\ProvidesPackage{beamerthemeGA}
+\ifx\directlua\undefined\else\ifnum\luatexversion>84\relax
+  \IfFileExists{luatex85.sty}{\usepackage{luatex85}}{}
+\fi\fi
+\emergencystretch1em
+\@ifl@t@r\fmtversion{2018-11-30}{}{%
+  \def\@removefromreset#1#2{%
+    \@ifundefined{c@#2}\relax
+    {\begingroup
+       \expandafter\let\csname c@#1\endcsname\@removefromreset
+       \def\@elt##1{%
+         \expandafter\ifx\csname c@##1\endcsname\@removefromreset
+         \else
+           \noexpand\@elt{##1}%
+         \fi}%
+       \expandafter\xdef\csname cl@#2\endcsname
+        {\csname cl@#2\endcsname}%
+      \endgroup}}}
+\@ifl@t@r\fmtversion{2020-10-01}{}{%
+  \protected\def\@centercr{\ifhmode \unskip\else \@nolnerr\fi
+       \par\@ifstar{\nobreak\@xcentercr}\@xcentercr}}
+\clubpenalty\@M
+\widowpenalty\@M
+\DeclareMathSizes{5bp}{5bp}{5bp}{5bp}
+\DeclareMathSizes{6.6bp}{6.6bp}{5bp}{5bp}
+\DeclareMathSizes{8bp}{8bp}{6bp}{5bp}
+\DeclareMathSizes{9bp}{9bp}{6bp}{5bp}
+\DeclareMathSizes{10bp}{10bp}{7bp}{5bp}
+\DeclareMathSizes{11bp}{11bp}{8bp}{6bp}
+\DeclareMathSizes{12bp}{12bp}{8bp}{6bp}
+\DeclareMathSizes{14bp}{14bp}{10bp}{1bp}
+\DeclareMathSizes{17bp}{17bp}{12bp}{10bp}
+\DeclareMathSizes{20bp}{20bp}{14bp}{12bp}
+\DeclareMathSizes{22bp}{22bp}{15bp}{12bp}
+\def\fussy{%
+  \emergencystretch1em
+  \tolerance 200%
+  \hfuzz .1\p@
+  \vfuzz\hfuzz}
+\@ifclassloaded{beamer}
+  {\relax}
+  {\PackageWarningNoLine{beamerthemeGA}
+     {You are not using the document class 'beamer'.\MessageBreak
+      See package documentation}}
+\DeclareOption{guidingprinciple}{\let\@guidingprinciple\relax}
+\ProcessOptions
+\@tempswatrue
+\@ifclasswith{beamer}{aspectratio=2013}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=1610}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=149}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=141}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=54}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=43}{\@tempswafalse}{}
+\@ifclasswith{beamer}{aspectratio=32}{\@tempswafalse}{}
+\if@tempswa
+  \setlength\beamer@paperwidth{160mm}%
+  \setlength\beamer@paperheight{90mm}%
+\fi
+\setbeamersize{%
+  text margin left=12.6mm,
+  text margin right=12.6mm}
+\@ifclasswith{beamer}{c}{}{\beamer@centeredfalse}
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize{11bp}{13.6bp}%
+   \abovedisplayskip 11bp \@plus3bp \@minus6bp
+   \abovedisplayshortskip \z@ \@plus3bp
+   \belowdisplayshortskip 6.5bp \@plus3.5bp \@minus3bp
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+\ifx\MakeRobust\@undefined \else
+    \MakeRobust\normalsize
+\fi
+\DeclareRobustCommand\small{%
+   \@setfontsize\small{10bp}{12bp}%
+   \abovedisplayskip 10bp \@plus2bp \@minus5bp
+   \abovedisplayshortskip \z@ \@plus3bp
+   \belowdisplayshortskip 6bp \@plus3bp \@minus3bp
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 6bp \@plus2bp \@minus2bp
+               \parsep 3bp \@plus2bp \@minus1bp
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip}
+\DeclareRobustCommand\footnotesize{%
+   \@setfontsize\footnotesize{9bp}{11bp}%
+   \abovedisplayskip 8bp \@plus2bp \@minus4bp
+   \abovedisplayshortskip \z@ \@plus1bp
+   \belowdisplayshortskip 4bp \@plus2bp \@minus2bp
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 4bp \@plus2bp \@minus2bp
+               \parsep 2bp \@plus1bp \@minus1bp
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip}
+\DeclareRobustCommand\scriptsize{\@setfontsize\scriptsize{6.6bp}{8bp}}
+\DeclareRobustCommand\tiny{\@setfontsize\tiny{5bp}{6bp}}
+\DeclareRobustCommand\large{\@setfontsize\large{12bp}{14bp}}
+\DeclareRobustCommand\Large{\@setfontsize\Large{14bp}{18bp}}
+\DeclareRobustCommand\LARGE{\@setfontsize\LARGE{17bp}{22bp}}
+\DeclareRobustCommand\huge{\@setfontsize\huge{20bp}{25bp}}
+\DeclareRobustCommand\Huge{\@setfontsize\Huge{22bp}{28bp}}
+\def\showinmm#1{%
+  \@tempdima=0.35146 #1\relax
+  \edef\@tempa{\strip@pt\@tempdima\space mm}
+  \show\@tempa}
+\parskip\medskipamount
+\ifx\@guidingprinciple\@undefined
+ \def\@GAlogo{logo-2}%
+\else
+ \def\@GAlogo{logo-1}%
+\fi
+\newbox\GAl@g@
+\AtBeginDocument{\sbox\GAl@g@{\includegraphics[width=35mm]{\@GAlogo}}}
+\define@key{beamerframe}{noheadline}[true]{%
+  \def\beamer@frametemplate{\beamer@frametemplate@noheadline}}
+\define@key{beamerframe}{norules}[true]{%
+  \def\beamer@frametemplate{\beamer@frametemplate@norules}}
+\let\colorpageshook\relax
+\define@key{beamerframe}{dunkelblau}[true]{%
+  %\beamer@plainframetrue
+  \let\bgC@nvas=d%
+  \def\colorpageshook{\setbeamercolor{background canvas}{bg=dunkelblau}}%
+  \def\beamer@frametemplate{\beamer@frametemplate@plain}}
+\define@key{beamerframe}{chamois}[true]{%
+  %\beamer@plainframetrue
+  \let\bgC@nvas=c%
+  \def\colorpageshook{\setbeamercolor{background canvas}{bg=chamois}}%
+  \def\beamer@frametemplate{\beamer@frametemplate@plain}}
+\define@key{beamerframe}{semidunkelblau}[true]{%
+  \let\bgC@nvas=d%
+  \def\colorpageshook{\setbeamercolor{background canvas}{bg=dunkelblau}}%
+  \def\beamer@frametemplate{\beamer@frametemplate@norules}}%norules <-> plain
+\define@key{beamerframe}{semichamois}[true]{%
+  \let\bgC@nvas=c%
+  \def\colorpageshook{\setbeamercolor{background canvas}{bg=chamois}}%
+  \def\beamer@frametemplate{\beamer@frametemplate@norules}}%norules <-> plain
+\define@key{beamerframe}{t}[true]{% top
+  \beamer@frametopskip=3mm plus .5\paperheight\relax%
+  \beamer@framebottomskip=0pt plus 1fill\relax%
+  \beamer@frametopskipautobreak=\beamer@frametopskip\relax%
+  \beamer@framebottomskipautobreak=\beamer@framebottomskip\relax}
+\def\beamer@frametemplate@noheadline{%
+  \def\beamer@entrycode{\vspace*{-\headheight}}%
+  \def\beamer@exitcode{\thispagestyle{noheadline}}}
+\def\beamer@frametemplate@norules{%
+  \def\beamer@exitcode{\thispagestyle{norules}}}
+\def\ps@empty{%
+  \let\@mkboth\@gobbletwo%
+  \def\@oddhead{%
+    \begingroup%
+    \colorpageshook\global\let\colorpageshook\relax
+    \setbox\beamer@tempbox=\hbox{\usebeamertemplate***{background canvas}%
+                                 \hyper@pagetransition\hyper@pageduration}%
+    \beamer@tempdim=\ht\beamer@tempbox%
+    \setbox\beamer@tempbox=\hbox{\lower\beamer@tempdim\hbox{\box\beamer@tempbox}}%
+    \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+    \setbox\@tempboxa=\hbox{\usebeamertemplate***{background}}%
+    \beamer@tempdim=\ht\@tempboxa%
+    \setbox\@tempboxa=\hbox{\lower\beamer@tempdim\hbox{\box\@tempboxa}}%
+    \wd\@tempboxa=0pt\ht\@tempboxa=0pt\dp\@tempboxa=0pt%
+    \vbox{\hbox{\hskip-\Gm@lmargin\raise\headheight\box\beamer@tempbox
+                                  \raise\headheight\box\@tempboxa}\hfil}%
+    \endgroup%
+  }
+  \def\@oddfoot{\normalcolor{\hfil%
+    \setbox\beamer@tempbox=\hbox{\usebeamertemplate***{navigation symbols}%
+                                 \hskip-\Gm@rmargin\hskip2pt}%
+    \ht\beamer@tempbox=0pt%
+    \dp\beamer@tempbox=0pt%
+    \box\beamer@tempbox}}
+  \let\@evenhead\@oddhead\let\@evenfoot\@oddfoot}
+\def\ps@noheadline{%
+  \let\@mkboth\@gobbletwo%
+  \def\@oddhead{%
+    \begingroup%
+    \colorpageshook\global\let\colorpageshook\relax
+    \setbox\beamer@tempbox=\hbox{\usebeamertemplate***{background canvas}%
+                                 \hyper@pagetransition\hyper@pageduration}%
+    \beamer@tempdim=\ht\beamer@tempbox%
+    \setbox\beamer@tempbox=\hbox{\lower\beamer@tempdim\hbox{\box\beamer@tempbox}}%
+    \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+    \setbox\@tempboxa=\hbox{\usebeamertemplate***{background}}%
+    \beamer@tempdim=\ht\@tempboxa%
+    \setbox\@tempboxa=\hbox{\lower\beamer@tempdim\hbox{\box\@tempboxa}}%
+    \wd\@tempboxa=0pt\ht\@tempboxa=0pt\dp\@tempboxa=0pt%
+    \endgroup%
+  }
+  \let\@evenhead\@oddhead}
+\def\ps@norules{%
+  \def\@oddhead{%
+    \begingroup%
+    \colorpageshook\global\let\colorpageshook\relax
+    \setbox\beamer@tempbox=\hbox{\usebeamertemplate***{background canvas}%
+                                 \hyper@pagetransition\hyper@pageduration}%
+    \beamer@tempdim=\ht\beamer@tempbox%
+    \setbox\beamer@tempbox=\hbox{\lower\beamer@tempdim\hbox{\box\beamer@tempbox}}%
+    \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+    \setbox\@tempboxa=\hbox{\usebeamertemplate***{background}}%
+    \beamer@tempdim=\ht\@tempboxa%
+    \setbox\@tempboxa=\hbox{\lower\beamer@tempdim\hbox{\box\@tempboxa}}%
+    \wd\@tempboxa=0pt\ht\@tempboxa=0pt\dp\@tempboxa=0pt%
+    \vbox{\hbox{\hskip-\Gm@lmargin\box\beamer@tempbox\box\@tempboxa}%
+      \hbox{%
+        {%
+          \setbox\beamer@tempbox=\hbox{\hskip-\Gm@lmargin%
+            {\setbox\beamer@tempbox=\hbox{\vbox to \sidebarheight{%
+                  \usebeamercolor*{sidebar left}%
+                  \usebeamertemplate{sidebar canvas left}%
+                  \vss%
+                }}%
+              \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+              \box\beamer@tempbox}%
+            {%
+              \vbox to \sidebarheight{%
+                \usebeamertemplate***{sidebar left}%
+                \vfil%
+            }}}%
+          \beamer@tempdim=\ht\beamer@tempbox%
+          \setbox\beamer@tempbox=\hbox{{\lower\beamer@tempdim\hbox{\box\beamer@tempbox}}}%
+          \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+          \box\beamer@tempbox%
+        }%
+        {% print right sidebar first, since it should be overwritten by headline
+          \setbox\beamer@tempbox=\hbox{\hskip\textwidth\hskip\beamer@rightmargin%
+            {\setbox\beamer@tempbox=\hbox{\vbox to \sidebarheight{%
+                  \usebeamercolor*{sidebar right}%
+                  \usebeamertemplate{sidebar canvas right}%
+                  \vss%
+                }}%
+              \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+              \box\beamer@tempbox}%
+            {%
+              \vbox to \sidebarheight{%
+                \usebeamertemplate***{sidebar right}%
+                \vfil%
+            }}}%
+          \beamer@tempdim=\ht\beamer@tempbox%
+          \setbox\beamer@tempbox=\hbox{{\lower\beamer@tempdim\hbox{\box\beamer@tempbox}}}%
+          \wd\beamer@tempbox=0pt\ht\beamer@tempbox=0pt\dp\beamer@tempbox=0pt%
+          \box\beamer@tempbox%
+        }%
+        \let\headrules\relax
+        \beamer@typesetheadorfoot{headline}%
+      }%
+      \hfil}%
+    \endgroup}
+  \let\@evenhead\@oddhead}
+\setbeamercolor{block body}{fg=grau80,bg=uniblau!15}%
+\setbeamercolor{block title}{fg=white,bg=uniblau}%
+\defbeamertemplate*{block begin}{GA}
+ {%
+  \par\vskip\medskipamount%
+  \begin{beamerboxesrounded}[upper=block title,lower=block body]%
+    {\raggedright\usebeamerfont*{block title}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body}%
+ }
+\defbeamertemplate*{block end}{GA}[1][]
+ {\end{beamerboxesrounded}\vskip\smallskipamount}
+\setbeamercolor{block body alerted}{fg=grau80,bg=hellblau!15}%
+\setbeamercolor{block title alerted}{fg=grau80,bg=hellblau}%
+\defbeamertemplate*{block alerted begin}{GA}
+ {%
+  \par\vskip\medskipamount%
+  \begin{beamerboxesrounded}[upper=block title alerted,lower=block body alerted]%
+    {\raggedright\usebeamerfont*{block title alerted}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body alerted}%
+ }%
+\defbeamertemplate*{block alerted end}{GA}[1][]
+ {\end{beamerboxesrounded}\vskip\smallskipamount}
+\setbeamercolor{block body example}{fg=grau80,bg=chamois!30}%
+\setbeamercolor{block title example}{fg=grau80,bg=chamois}%
+\defbeamertemplate*{block example begin}{GA}
+ {%
+  \par\vskip\medskipamount%
+  \begin{beamerboxesrounded}[upper=block title example,lower=block body example]
+    {\raggedright\usebeamerfont*{block title example}\insertblocktitle}%
+    \raggedright%
+    \usebeamerfont{block body example}%
+ }%
+\defbeamertemplate*{block example end}{GA}[1][]
+ {\end{beamerboxesrounded}\vskip\smallskipamount}
+\def\provideblock#1#2{%
+  \newenvironment<>{#1block}[1]
+   {\begingroup
+      \setbeamercolor{block body}{fg=grau80,bg=#1!30}%
+      \setbeamercolor{block title}{fg=#2,bg=#1}%
+      \begin{block}##2{##1}}
+   {\end{block}%
+    \endgroup}}
+\provideblock{uniblau}{white}
+\provideblock{schwarz}{white}
+\provideblock{weiss}{grau80}
+\provideblock{dunkelblau}{white}
+\provideblock{mittelblau}{white}
+\provideblock{himmelblau}{white}
+\provideblock{chamois}{grau80}
+\provideblock{grau90}{white}
+\provideblock{grau80}{white}
+\provideblock{grau60}{white}
+\provideblock{grau20}{grau80}
+\provideblock{grau10}{grau90}
+\def\inserttheoremblockenv{mittelblaublock}
+\def\th@definition{%
+  \normalfont % body font
+  \def\inserttheoremblockenv{dunkelblaublock}}
+\def\th@example{%
+  \normalfont % body font
+  \def\inserttheoremblockenv{himmelblaublock}}
+\defbeamertemplate*{proof begin}{GA}{\begin{grau20block}{\insertproofname}}
+\defbeamertemplate*{proof end}{GA}{\end{grau20block}}
+\setbeamerfont{frametitle}{parent=structure,series=\bfseries,size=\LARGE}
+\setbeamerfont{framesubtitle}{parent=frametitle,series=\bfseries,size=\Large}
+\setbeamerfont{title}{series=\bfseries,size=\huge,parent=structure}
+\setbeamerfont{subtitle}{series=\bfseries,size=\large,parent=structure}
+\setbeamerfont{section name}{size=\LARGE}
+\setbeamerfont{section title}{size=\huge,parent=title}
+\setbeamercolor{normal text}{fg=grau80,bg=white}
+\setbeamercolor{alerted text}{fg=mittelblau}
+\setbeamercolor{example text}{fg=himmelblau}
+\setbeamercolor{structure}{fg=grau80,bg=white}
+\setbeamercolor{palette primary}{use=structure,fg=structure.fg}
+\setbeamercolor{palette secondary}{fg=grau60}
+\setbeamercolor{palette tertiary}{fg=grau20}
+\setbeamercolor{palette quaternary}{fg=grau10}
+\setbeamercolor{local structure}{fg=uniblau}%from dunkelblau (2022-07-27)
+\setbeamercolor{titlelike}{bg=,fg=uniblau}%from dunkelblau (2022-07-27)
+\setbeamercolor{institute in head/foot}{parent=palette secondary}
+\setbeamercolor{page number in head/foot}{parent=palette secondary}
+\setbeamercolor{section name}{bg=,fg=grau80}
+\setbeamercolor{section title}{bg=,fg=grau80}
+\def\GAlogo{\scalebox{1.5}{\usebox\GAl@g@}}
+\defbeamertemplate*{title page}{GA}[1][]
+{
+  \vbox{}
+  \vfill
+  \begingroup
+    \begin{beamercolorbox}[sep=0pt,#1]{title}
+      \usebeamerfont{title}\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.25em%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%
+    \end{beamercolorbox}%
+    \vskip1em\par
+    \begin{beamercolorbox}[sep=0pt,#1]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=0pt,#1]{institute}
+      \usebeamerfont{institute}\insertinstitute
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[sep=0pt,#1]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}\vskip0.5em
+    {\usebeamercolor[fg]{titlegraphic}\inserttitlegraphic\par}
+  \endgroup
+  \vfill
+}
+\defbeamertemplate*{section page}{GA}[1][]
+{
+  \vfill
+  \begingroup
+    {\usebeamerfont{section name}%
+     \ifx\bgC@nvas d%
+       \color{white}%
+     \else
+       \usebeamercolor[fg]{section name}%
+     \fi
+     \iflanguage{ngerman}{Abschnitt}{\sectionname}~\insertsectionnumber}
+    \vskip1em\par
+    \begin{beamercolorbox}[#1]{section title}
+      \ifx\bgC@nvas d%
+        \hypersetup{linkcolor=white,citecolor=white,urlcolor=white}\color{white}%
+      \else
+        \hypersetup{linkcolor=grau80,citecolor=grau80,urlcolor=grau80}%
+      \fi
+      \usebeamerfont{section title}\insertsectionhead\par
+    \end{beamercolorbox}
+  \endgroup
+  \vfill
+}
+\defbeamertemplate*{itemize item}{GA}%
+  {\usebeamerfont*{itemize item}\raise0.05ex\hbox{\donotcoloroutermaths$\bullet$}}
+\defbeamertemplate*{itemize subitem}{GA}%
+  {\usebeamerfont*{itemize subitem}\raise0.05ex\hbox{\donotcoloroutermaths$\bullet$}}
+\defbeamertemplate*{itemize subsubitem}{GA}%
+  {\usebeamerfont*{itemize subsubitem}\raise0.05ex\hbox{\donotcoloroutermaths$\bullet$}}
+\def\headrules{%
+  \raise0.8mm\rlap{\pgfuseshading{upperheadrule}}%
+  \rlap{\hb@xt@\paperwidth{\null\vrule\@width\z@\@height13.55mm\hfil
+                           \textcolor{hellblau}{\vrule\@width0.36\paperwidth\@height0.32mm}}}}
+\defbeamertemplate*{headline}{GA}
+ {\leavevmode
+  \headrules
+  \smash{\raise2.8mm\hb@xt@\hsize{%
+      \kern5.3mm
+    \usebox\GAl@g@\hfill
+    \setbox\z@\hbox{%
+      \expandafter\ifx\csname beamer@@tmpl@logo\endcsname\relax
+        \usebeamercolor[fg]{institute in head/foot}\insertshortinstitute
+      \else
+        \usebeamertemplate*{logo}%
+      \fi}%
+    \raise4mm\hbox{\parbox[c][10mm][c]{\wd\z@}{\unhbox\z@}}%
+    \kern8mm}}}
+\defbeamertemplate*{footline}{GA}
+ {\leavevmode
+  \tiny
+  \rlap{\textcolor{grau10}{\vrule\@width\hsize\@height6.2mm}}%
+  \raise1.8mm\rlap{\hb@xt@\hsize{\null\hfill\usebeamertemplate***{navigation symbols}%
+                                 \kern0.08\hsize}}%
+  \raise2.5mm\hb@xt@\hsize{%
+    \kern3.65mm
+    \hb@xt@0.33\hsize{\textcolor{grau60}{\insertshortdate}\hss}%
+    \hfill
+    \textcolor{uniblau}{Georg-August-Universität Göttingen}%
+    \hfill
+    \hb@xt@0.33\hsize{\hss\textcolor{grau60}{\insertpagenumber}}%
+    \kern3.65mm}}
+\defbeamertemplate*{sidebar right}{GA}{}
+\defbeamertemplate*{frametitle}{GA}[1][left]
+{%
+  \ifbeamercolorempty[bg]{frametitle}{}{\nointerlineskip}%
+  \begin{beamercolorbox}[sep=0cm,#1,wd=\textwidth]{frametitle}
+    \usebeamerfont{frametitle}%
+    \if@tempswa\else\csname beamer@fte#1\endcsname\fi%
+    \strut\insertframetitle\strut\par%
+    {%
+      \ifx\insertframesubtitle\@empty%
+      \else%
+      {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}%
+       \strut\insertframesubtitle\strut\par}%
+      \fi
+    }%
+    \if@tempswa\else\vskip-.3cm\fi% set inside beamercolorbox... evil here...
+  \end{beamercolorbox}%
+}
+\ifx\XeTeXcharclass\@undefined
+  \ifx\directlua\undefined\ifnum\pdfoutput>\z@
+    \IfFileExists{dummy-space.pfb}{\pdfinterwordspaceon}{}
+    \usepackage{cmap}
+  \fi\fi
+  \InputIfFileExists{glyphtounicode.tex}{}{}
+  \pdfgentounicode=1
+\fi
+\@ifpackageloaded{amsmath}
+ {\def\@arrayparboxrestore{%
+   \let\if@nobreak\iffalse
+   \let\if@noskipsec\iffalse
+   \let\par\@@par
+   \let\-\@dischyph
+   \let\'\@acci\let\`\@accii\let\=\@acciii
+   \parindent\z@ \parskip\z@skip
+   \everypar{}%
+   \linewidth\hsize
+   \@totalleftmargin\z@
+   \leftskip\z@skip \rightskip\z@skip \@rightskip\z@skip
+   \parfillskip\@flushglue
+   \lineskip\normallineskip
+   \lineskiplimit\normallineskiplimit
+   \baselineskip\normalbaselineskip
+   \sloppy}}
+ {}
+\usepackage[document]{ragged2e}
+\@ifpackageloaded{amsmath}
+ {\@xp\def\@xp\@arrayparboxrestore\@xp{\@arrayparboxrestore
+  \ingather@false\inalign@false \default@tag
+  \let\spread@equation\@spread@equation
+  \let\reset@equation\@empty
+  \def\print@eqnum{\tagform@\theequation}%
+  \def\incr@eqnum{\refstepcounter{equation}\let\incr@eqnum\@empty}}}
+ {}
+\usepackage[T1]{fontenc}
+\@ifl@t@r\fmtversion{2020-09-30}{}{\usepackage{textcomp}}
+\usepackage{lmodern}
+\usepackage{esint}
+\let\old@f@encoding\f@encoding\def\f@encoding{OT1}%avoid questionable package warning
+\usepackage[onlymath]{sansmathfonts}
+\let\f@encoding\old@f@encoding
+\input{t1lmss.fd}
+\DeclareFontShape{T1}{lmss}{m}{sc}{<->sub*xcmss/m/sc}{}
+\DeclareFontShape{T1}{lmss}{m}{scit}{<->sub*xcmss/m/scsl}{}
+\DeclareFontShape{T1}{lmss}{m}{scsl}{<->sub*xcmss/m/scit}{}
+\DeclareFontShape{T1}{lmss}{bx}{sc}{<->sub*xcmss/bx/sc}{}
+\DeclareFontShape{T1}{lmss}{bx}{scit}{<->sub*xcmss/bx/scsl}{}
+\DeclareFontShape{T1}{lmss}{bx}{scsl}{<->sub*xcmss/bx/scit}{}
+\DeclareFontSubstitution{U}{xcmss}{m}{n}
+\SetMathAlphabet\mathrm   {bold}  {OT1}{cmsmf}{bx}{n}
+\SetMathAlphabet\mathbf   {bold}  {OT1}{cmsmf}{bx}{n}
+\SetMathAlphabet\mathsf   {bold}  {OT1}{cmsmf}{bx}{n}
+\SetMathAlphabet\mathtt   {normal}{OT1}{lmtt}{m}{n}
+\SetMathAlphabet\mathtt   {bold}  {OT1}{lmtt}{b}{n}
+\SetMathAlphabet\mathserif{normal}{OT1}{lmr}{m}{n}
+\SetMathAlphabet\mathserif{bold}  {OT1}{lmr}{bx}{n}
+\usepackage[Symbolsmallscale]{upgreek}
+\let\upGamma\Gamma
+\let\upDelta\Delta
+\let\upTheta\Theta
+\let\upLambda\Lambda
+\let\upXi\Xi
+\let\upPi\Pi
+\let\upSigma\Sigma
+\let\upUpsilon\Upsilon
+\let\upPhi\Phi
+\let\upPsi\Psi
+\let\upOmega\varOmega
+\let\itGamma\varGamma
+\let\itDelta\varDelta
+\let\itTheta\varTheta
+\let\itLambda\varLambda
+\let\itXi\varXi
+\let\itPi\varPi
+\let\itSigma\varSigma
+\let\itUpsilon\varUpsilon
+\let\itPhi\varPhi
+\let\itPsi\varPsi
+\let\itOmega\varOmega
+\usepackage[mathscr]{eucal}
+\ifx\directlua\undefined\ifx\XeTeXcharclass\undefined
+  \@ifpackagewith{inputenc}{utf8}
+    {\DeclareUnicodeCharacter{2007}{\leavevmode\hphantom{0}}}
+    {\ifx\inputencoding\@undefined
+       \@ifl@t@r\fmtversion{2018-11-30}%
+         {\DeclareUnicodeCharacter{2007}{\leavevmode\hphantom{0}}}{}%
+     \fi}
+\fi\fi
+\let\old@classoptionslist\@classoptionslist
+\edef\@classoptionslist{ngerman,\old@classoptionslist}
+\usepackage{babel}
+\let\@classoptionslist\old@classoptionslist
+\def\datengerman{%
+  \def\today{\two@digits\day.\two@digits\month.%
+             {\ifnum\year>1999\ifnum\year<2100\advance\year by-2000\relax\fi\fi\number\year}}}
+\AtEndOfPackage{%
+  \iflanguage{ngerman}
+   {\usepackage{hyphsubst}
+    \HyphSubstIfExists{ngerman-x-latest}{\HyphSubstLet{ngerman}{ngerman-x-latest}}{}}
+   {}}
+\definecolor{uniblau}   {RGB}{21,50,104}
+\definecolor{hellblau}  {RGB}{188,206,226}
+\definecolor{weiss}     {RGB}{255,255,255}
+\definecolor{schwarz}   {RGB}{0,0,0}
+\definecolor{dunkelblau}{RGB}{0,101,141}
+\definecolor{mittelblau}{RGB}{0,147,199}
+\definecolor{himmelblau}{RGB}{132,191,234}
+\definecolor{chamois}   {RGB}{234,226,216}
+\definecolor{altweiss}  {RGB}{246,244,240}
+\definecolor{grau90}    {RGB}{59,59,58}
+\definecolor{grau80}    {RGB}{87,87,86}
+\definecolor{grau60}    {RGB}{135,135,134}
+\definecolor{grau20}    {RGB}{217,218,218}
+\definecolor{grau10}    {RGB}{236,236,237}
+\definecolor{tablebluedark}{RGB}{42,54,89}
+\definecolor{tableblue}{RGB}{167,195,221}
+\definecolor{tablebluelight}{RGB}{200,219,234}
+\pgfdeclarehorizontalshading{upperheadrule}{0.30mm}%
+  {color(0cm)=(uniblau); color(\the\paperwidth)=(mittelblau)}
+\RequirePackage{array}
+\RequirePackage{multirow}
+\RequirePackage{bigstrut}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{colortbl}
+\def\tabularrulewidth{0.5bp}
+\def\extratabularrowheight{1bp}
+\def\tabularstretch{1.2}
+\def\tabularrulecolor{weiss}
+\def\tablefont{\color{schwarz}\small}
+\def\tableheadfont{\color{weiss}\bfseries}
+\def\@GAarray[#1]#2{%
+  \@tempdima \ht \strutbox
+  \advance \@tempdima by\extrarowheight
+  \setbox \@arstrutbox \hbox{\vrule
+             \@height \arraystretch \@tempdima
+             \@depth \arraystretch \dp \strutbox
+             \@width \z@}%
+  \begingroup
+  \@mkpream{#2}%
+  \xdef\@preamble{\noexpand \ialign \@halignto
+                  \bgroup \@arstrut \@preamble
+                          \tabskip \z@ \cr}%
+  \expandafter\ifx\d@llarbegin\begingroup
+    \gdef\@tablefont{\leavevmode\tableheadfont}%
+  \fi
+  \endgroup
+  \@arrayleft
+  \if #1t\vtop \else \if#1b\vbox \else \vcenter \fi \fi
+  \bgroup
+  \let \@sharp ##\let \protect \relax
+  \lineskip \z@
+  \baselineskip \z@
+  \m@th
+  \let\\\@GAarraycr \let\tabularnewline\\\let\par\@empty \@preamble}
+\protected\def\@GAarraycr{\relax\iffalse{\fi\ifnum 0=`}\fi
+  \@ifstar \@xGAarraycr \@xGAarraycr}
+\def\@xGAarraycr{%
+  \@ifnextchar [\@argGAarraycr {\ifnum 0=`{}\fi
+  \cr
+  \expandafter\ifx\d@llarbegin\begingroup\hline\fi}}
+\def\@argGAarraycr[#1]{%
+  \ifnum0=`{}\fi
+  \ifdim #1>\z@
+    \expandafter\@xargarraycr
+  \else
+    \expandafter\@yargarraycr
+  \fi{#1}%
+  \expandafter\ifx\d@llarbegin\begingroup\hline\fi}
+\def\@GAclassz{%orig from colortbl.sty
+  \expandafter\ifx\d@llarbegin\begingroup%GA
+    \toks \count@ =%GA
+    \expandafter{\expandafter\@tablefont\the\toks\count@}%%GA
+  \fi%GA
+  \@classx
+   \@tempcnta \count@
+   \prepnext@tok
+\expandafter\CT@extract\the\toks\@tempcnta\columncolor!\@nil
+   \@addtopreamble{%
+     \expandafter\ifx\d@llarbegin\begingroup%GA
+       \ifx\first@passed\@undefined\else%GA
+         \hskip-\col@sep{\color{\tabularrulecolor}\vline}\hskip\col@sep%GA
+       \fi%GA
+     \fi%GA
+    \setbox\z@\hbox\bgroup\bgroup
+      \CT@everycr{}%
+      \ifcase \@chnum
+      \hskip\stretch{.5}\kern\z@
+      \d@llarbegin
+      \insert@column
+      \d@llarend\do@row@strut\hskip\stretch{.5}\or
+      \d@llarbegin \insert@column \d@llarend\do@row@strut \hfill \or
+      \hfill\kern\z@ \d@llarbegin \insert@column \d@llarend\do@row@strut \or
+      \ifx\ar@align@mcell\@undefined
+        $\vcenter
+         \@startpbox{\@nextchar}\insert@column \@endpbox $
+      \else
+        \setbox\ar@mcellbox\vbox
+          \@startpbox{\@nextchar}\insert@column \@endpbox
+        \ar@align@mcell
+        \do@row@strut
+      \fi
+   \or
+   \vtop \@startpbox{\@nextchar}\insert@column \@endpbox\do@row@strut \or
+   \vbox \@startpbox{\@nextchar}\insert@column \@endpbox\do@row@strut
+  \fi
+ \egroup\egroup
+\begingroup
+  \CT@setup
+  \CT@column@color
+  \CT@row@color
+  \CT@cell@color
+  \CT@do@color
+\endgroup
+        \@tempdima\ht\z@
+        \advance\@tempdima\minrowclearance
+        \vrule\@height\@tempdima\@width\z@
+        \unhbox\z@}%
+  \let\first@passed\relax%GA
+  \prepnext@tok}
+\def\GAmidrule{\noalign{\ifnum0=`}\fi
+  \@aboverulesep=\z@
+  \global\@belowrulesep=\z@
+  \global\@thisruleclass=\@ne
+  \@ifnextchar[{\@BTrule}{\@BTrule[0\lightrulewidth]}}
+\newbox\tgroupbox
+\newbox\theadbox
+\def\tableheadbgcolor#1#{\tableheadbgc@lor{#1}}
+\def\tableheadbgc@lor#1#2{\def\tableheadbgc@l@r{\color#1{#2}}}
+\tableheadbgcolor{tablebluedark}
+\def\tablebodybgcolor#1#{\tablebodybgc@lor{#1}}
+\def\tablebodybgc@lor#1#2{\def\tablebodybgc@l@r{\color#1{#2}}}
+\tablebodybgcolor{tableblue}
+\long\def\tablecolor@b@x{%
+  \leavevmode
+  \setbox\z@\hbox{{\set@color\box\tgroupbox}}%
+  \ifdim\ht\theadbox>4bp
+    \dp\theadbox\dimexpr\dp\theadbox+\ht\theadbox-\ht\z@\relax
+    \ht\theadbox\dimexpr\ht\z@\relax
+    \ht\theadbox\dimexpr\ht\theadbox-0.03bp\relax%avoid hairline flash
+    \dp\theadbox\dimexpr\dp\theadbox-0.18bp\relax%avoid Acrobat hairline flash
+  \else
+    \dp\theadbox\z@
+    \ht\theadbox\z@
+  \fi
+  \ht\z@\dimexpr\ht\z@-0.03bp\relax%avoid hairline flash
+  \dp\z@\dimexpr\dp\z@-0.18bp\relax%avoid Acrobat hairline flash
+  {\fboxrule\z@\fboxsep\z@
+   \fcolorbox{hellblau}{hellblau}{%
+     \tablebodybgc@l@r\color@block{\wd\z@}{\ht\z@}{\dp\z@}%
+     \tableheadbgc@l@r\color@block{\wd\z@}{\ht\theadbox}{\dp\theadbox}%
+     \box\z@}}}
+\def\GAtabular{\@ifnextchar[{\@@GAtabular}{\@@GAtabular[]}}
+\def\@@GAtabular[#1]#2#3\midrule{%
+  \expandafter\arrayrulewidth\tabularrulewidth
+  \expandafter\extrarowheight\extratabularrowheight
+  \let\arraystretch\tabularstretch
+  \arrayrulecolor{\tabularrulecolor}%
+  \gdef\@tablefont{\leavevmode\tableheadfont}%
+  \let\@@array\@GAarray
+  \let\@classz\@GAclassz
+  \tablefont
+  \measuring@true
+  \setbox\theadbox\hbox{\begin{tabular}[#1]{#2}#3\end{tabular}}%
+  \measuring@false
+  \setbox\tgroupbox
+    \hbox\bgroup\tabular[#1]{#2}#3\noalign{\global\let\@tablefont\relax}\GAmidrule}
+\gdef\endGAtabular{\endtabular\egroup\tablecolor@b@x}
+\def\GAtabularx#1{\@ifnextchar[{\@@GAtabularx{#1}}{\@@GAtabularx{#1}[]}}
+\def\@@GAtabularx#1[#2]#3#4\midrule{%
+  \advance\linewidth-2\arrayrulewidth
+  \expandafter\arrayrulewidth\tabularrulewidth
+  \expandafter\extrarowheight\extratabularrowheight
+  \let\arraystretch\tabularstretch
+  \arrayrulecolor{\tabularrulecolor}%
+  \let\@@array\@GAarray
+  \let\@classz\@GAclassz
+  \tablefont
+  \measuring@true
+  \setbox\theadbox
+    \hbox{\begin{tabularx}{#1}[#2]{#3}#4\if!#4!\space\fi\end{tabularx}}%
+  \measuring@false
+  \setbox\tgroupbox
+    \hbox\bgroup\tabularx{#1}[#2]{#3}#4\noalign{\global\let\@tablefont\relax}\GAmidrule}
+\def\endGAtabularx{\endtabularx\egroup\tablecolor@b@x}
+\usepackage{graphicx}
+\urlstyle{same}
+\hypersetup{%
+  breaklinks,unicode
+  ,pdfborder={0 0 0},colorlinks
+  ,linkcolor=uniblau%from dunkelblau (2022-07-27)
+  ,citecolor=uniblau%from dunkelblau (2022-07-27)
+  ,urlcolor=grau60
+}
+\ifHy@draft
+  \AtBeginDocument{\let\hyper@anchorstart\@gobble}%confronting a hyperref problem
+\else
+  \iflanguage{ngerman}{\hypersetup{pdflang={de-DE-1996}}}{}%
+\fi
+\ifx\XeTeXcharclass\@undefined\ifnum\pdfoutput=\z@
+  \usepackage[hyphenbreaks]{breakurl}
+  \bgroup
+    \catcode`\&=12\relax
+    \hyper@normalise\burl@addtocharlistafter{=}
+  \egroup
+  \burl@defifstructure
+\fi\fi
+\IfFileExists{doi.sty}
+  {\usepackage{doi}%
+   \renewcommand*{\doitext}{}}
+  {\def\doi##1{\href{http://dx.doi.org/##1}{##1}}}
+\endinput
+%%
+%% End of file `beamerthemeGA.sty'.

@@ -1,0 +1,9 @@
+\frametitle{A vertically splitted slide}
+\begin{columns}[onlytextwidth,T]
+    \column{0.36\textwidth}%
+      This is \texttt{beamer}'s \verb|columns|~environment in~action.%
+    \column{0.44\textwidth}%
+      \includegraphics[width=0.7\hsize]{info}%
+    \column{\dimexpr0.2\textwidth}\raggedleft\footnotesize~\vskip7.7\baselineskip
+      See \texttt{beamer}'s doc for further information.%
+  \end{columns}\par
