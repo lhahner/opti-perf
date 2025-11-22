@@ -1,10 +1,11 @@
 #include <stdexcept>
 #include <vector>
-#include "speedup/operations.h"
+#include "operations.h"
+
+using namespace std;
 
 class LinearOperations : public Operations {
  public:
-  std::vector<float> add(std::vector<float> a, std::vector<float> b);
-
-  std::vector<float> sub(std::vector<float> a, std:: vector<float> b);
+  	vector<float> add(vector<float> a, vector<float> b);
+  	vector<float> sub(vector<float> a, vector<float> b);
 };
