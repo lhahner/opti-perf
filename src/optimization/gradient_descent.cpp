@@ -1,6 +1,4 @@
 #include "optimization/stochastic_gradient_descent.h"
-#include <random>
-#include <stdexcept>
 
 float StochasticGradientDescent::objective(vector<float> position) 
 {
@@ -36,10 +34,7 @@ vector<vector<float>> StochasticGradientDescent::adam(vector<vector <float>> bou
 	
 	vector<float> input(num_dimensions);
 	for (int i = 0; i<bounds.size(); i++) {
-		// Random float generation TODO exclude in helpers function
-		mt19937 gen;
-		uniform_real_distribution<float> distribution(0, 1); // Is this thread safe?
-		float random_decimal = distribution(gen) / 10;
+		float random_decimal = randomSeed.generateRandomScalarSeed(2.0, 4.9)  / 10;
 		float lower_bound = bounds[i][0];
 		float upper_bound = bounds[i][1];
 
@@ -53,8 +48,14 @@ vector<vector<float>> StochasticGradientDescent::adam(vector<vector <float>> bou
 	for (int i = 0; i<num_iterations; i++) {
 		gradient = this->derivative(bounds[i]);	
 		for (int j = 0; i<num_dimensions;i++) {
-			// TODO Computations
+			first_moment[j] = beta_1 * first_moment[j] + (1.0 - beta_1) * gradient[j];
+			second_moment[i] = beta_2 * second_moment[j] + (1.0 - beta_2) * pow(gradient[j],2);
+			float first_moment_hat = first_moment[j] / (1.0 - pow(beta_1, i+1));
+			float second_moment_hat = second_moment[j] / (1.0 - pow(beta_2, i+1));
+			input[j] = input[j] - alpha * first_moment_hat / (sqrt(second_moment_hat) + epsilon);
 		}
+	score = objective(input);
+	cout << fmt::format("> {}: {}\n", i, score) << endl;
 	}
 	return {input, {score}};
 }

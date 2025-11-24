@@ -25,14 +25,14 @@ endif
 
 # Base compiler flags
 CXXFLAGS   ?=
-CXXFLAGS   += -std=c++17 $(WARN) $(OPT) $(DEPFLAGS) $(INCLUDES) -fopenmp
+CXXFLAGS   += -std=c++20 $(WARN) $(OPT) $(DEPFLAGS) $(INCLUDES) -fopenmp
 
 # Linker flags (for the main app)
-LDFLAGS    ?=
-LDLIBS     ?= -fopenmp
+LDFLAGS    ?= 
+LDLIBS     ?= -fopenmp -lfmt
 
 # Extra libs for tests: GoogleTest + pthread
-TEST_LDFLAGS :=
+TEST_LDFLAGS := -lfmt
 TEST_LDLIBS  := $(LDLIBS) -lgtest -lpthread
 
 # -----------------------------
