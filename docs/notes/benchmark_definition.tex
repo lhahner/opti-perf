@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+\begin{document}
+	\title{Notes on benchmark defintion for optimization algorithms}
+	
+	\maketitle
+	\begin{abstract}
+		To evaluate performance increasements of variouse optimization algorithms a benchmark should be definied, which first measures all the given algorithms running on a previously definied workload without an enhancement of performance and afterwards with an enhancement. This makes the improvement comparable. Further the target of the benchmark should be mostly independent on the computation enviroment.
+		
+	\end{abstract}
+	
+	\section{Domain independent-definition}
+ In general performance measures fall into 4 categories; efficiency, reliability, and quality of algorithmic output and parameter tuning and stopping conditions.
+	
+\begin{enumerate}
+	\item \textbf{Efficiency} - \textit{Number of fundamental evaluation}: Times the algorithms is calling a subroutine which gives information about the optimization problem, e.g.: the evaluation of the objective function. \textit{Running Time},  Either measure wall clock or CPU time but keep the background operations to a minimum.
+	\item \textbf{Reliability} - \textit{Success rate}: counting the number of test problems that are
+	successfully solved within a pre-selected tolerance. \textit{Constraint violations}: The average objective function values and the average constraint violation values have also been reported to measure reliability. \textit{Multiple Startingpoints} reliability can be based on fixed starting points, but its is often better to use multiple starting points.
+	\item \textbf{Quality of Solution} - \textit{Known solution available}: If a solution is available we can use different metrics to measure against the soltuion. \textit{No known solution available}: Use the best performed output so far	or another approach is to estimate optimal solution using statistical techniques.
+	\item \textbf{Parameter tuning and stopping conditions} If different choices of input parameters are allowed in an algorithm, researchers should mention the parameter settings used and how they were selected.
+\end{enumerate}
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{||c  c  c||}
+		\hline
+		Category & Description & Equation \\ [0.5ex]
+		\hline\hline
+		Efficiency & Number of evaluations until solution & $\mathrm{EvalCount}$ \\ [1ex]
+		Efficiency & CPU time until solution obtained & $T_{\mathrm{CPU}}$ \\ [1ex]
+		Reliability & Success rate & $\frac{\#\text{successful runs}}{\#\text{total runs}}$ \\ [1ex]
+		Quality of Solution & Final error & $f(\bar x) - f(x^*)$ \\ [1ex]
+		Quality of Solution & Normalized final error & $\frac{\,f(\bar x) - f(x^*)\,}{\,f(x_0) - f(x^*)\,}$ \\ [1ex]
+		Quality of Solution & Variability & $\mathrm{std}\bigl(f(\bar x)\bigr)$ \\ [1ex]
+		\hline
+	\end{tabular}
+	\caption{Benchmarking metrics for optimization algorithms}
+	\label{table:opt_benchmarks}
+\end{table}
+
+\section{Domain dependent-definition}
+\end{document}
