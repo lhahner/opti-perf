@@ -55,7 +55,6 @@ vector<vector<float>> StochasticGradientDescent::adam(vector<vector <float>> bou
 			input[j] = input[j] - alpha * first_moment_hat / (sqrt(second_moment_hat) + epsilon);
 		}
 	score = objective(input);
-	cout << fmt::format("> {}: {}\n", i, score) << endl;
 	}
 	return {input, {score}};
 }

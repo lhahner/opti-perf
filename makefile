@@ -8,6 +8,33 @@ BUILD_DIR  := build
 TARGET     := $(BUILD_DIR)/$(PROJECT)
 
 # -----------------------------
+# Torch / libtorch configuration
+# -----------------------------
+# Root of libtorch inside the project.
+# Assumed structure:
+#   lib/libtorch/include
+#   lib/libtorch/lib
+LIBTORCH_ROOT := $(CURDIR)/lib/libtorch
+
+# If instead you have:
+#   lib/include
+#   lib/lib
+# then change the line above to:
+#   LIBTORCH_ROOT := $(CURDIR)/lib
+
+TORCH_INCLUDE   := -I$(LIBTORCH_ROOT)/include -I$(LIBTORCH_ROOT)/include/torch/csrc/api/include
+TORCH_LIB_DIR   := -L$(LIBTORCH_ROOT)/lib
+
+# Libraries to link against (adjust if your setup differs)
+TORCH_LIBS      := -ltorch -lc10
+
+# ABI flag must match the one libtorch was built with
+TORCH_CXX_FLAGS ?= -D_GLIBCXX_USE_CXX11_ABI=1
+
+# Optional: embed runtime search path to avoid setting LD_LIBRARY_PATH
+TORCH_RPATH     := -Wl,-rpath,$(LIBTORCH_ROOT)/lib
+
+# -----------------------------
 # Toolchain & flags
 # -----------------------------
 CXX        ?= g++
@@ -15,7 +42,8 @@ MODE       ?= release
 
 WARN       := -Wall -Wextra -Wpedantic
 DEPFLAGS   := -MMD -MP
-INCLUDES   := -I$(INC_DIR)
+
+INCLUDES   := -I$(INC_DIR) $(TORCH_INCLUDE)
 
 ifeq ($(MODE),debug)
   OPT := -O0 -g
@@ -25,14 +53,17 @@ endif
 
 # Base compiler flags
 CXXFLAGS   ?=
-CXXFLAGS   += -std=c++20 $(WARN) $(OPT) $(DEPFLAGS) $(INCLUDES) -fopenmp
+CXXFLAGS   += -std=c++20 $(WARN) $(OPT) $(DEPFLAGS) $(INCLUDES) -fopenmp $(TORCH_CXX_FLAGS)
 
 # Linker flags (for the main app)
-LDFLAGS    ?= 
-LDLIBS     ?= -fopenmp -lfmt
+LDFLAGS    ?=
+LDFLAGS    += $(TORCH_LIB_DIR) $(TORCH_RPATH)
+
+# NOTE: fmt removed for now to avoid -lfmt error
+LDLIBS     ?= -fopenmp $(TORCH_LIBS)
 
 # Extra libs for tests: GoogleTest + pthread
-TEST_LDFLAGS := -lfmt
+TEST_LDFLAGS := 
 TEST_LDLIBS  := $(LDLIBS) -lgtest -lpthread
 
 # -----------------------------
@@ -92,14 +123,19 @@ clean:
 
 # Debug helper
 tree:
-	@echo "MODE        = $(MODE)"
-	@echo "CXX         = $(CXX)"
-	@echo "SRCS        = $(SRCS)"
-	@echo "OBJS        = $(OBJS)"
-	@echo "TARGET      = $(TARGET)"
-	@echo "TEST_SRCS   = $(TEST_SRCS)"
-	@echo "TEST_OBJS   = $(TEST_OBJS)"
-	@echo "TEST_TARGET = $(TEST_TARGET)"
+	@echo "MODE          = $(MODE)"
+	@echo "CXX           = $(CXX)"
+	@echo "SRCS          = $(SRCS)"
+	@echo "OBJS          = $(OBJS)"
+	@echo "TARGET        = $(TARGET)"
+	@echo "TEST_SRCS     = $(TEST_SRCS)"
+	@echo "TEST_OBJS     = $(TEST_OBJS)"
+	@echo "TEST_TARGET   = $(TEST_TARGET)"
+	@echo "LIBTORCH_ROOT = $(LIBTORCH_ROOT)"
+	@echo "INCLUDES      = $(INCLUDES)"
+	@echo "CXXFLAGS      = $(CXXFLAGS)"
+	@echo "LDFLAGS       = $(LDFLAGS)"
+	@echo "LDLIBS        = $(LDLIBS)"
 
 # Auto-include header dependencies
 -include $(DEPS) $(TEST_DEPS)

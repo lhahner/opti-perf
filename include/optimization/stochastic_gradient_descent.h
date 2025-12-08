@@ -1,4 +1,3 @@
-#include <fmt/core.h>
 #include <vector>
 #include <cmath>
 #include <numeric>
