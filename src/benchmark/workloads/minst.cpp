@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <string>
 #include <torch/torch.h>
-#include "dcgan.cpp"
+#include "benchmark/dcgan.h"
 
 class Mnist {
 	public:

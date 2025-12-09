@@ -26,7 +26,7 @@ TORCH_INCLUDE   := -I$(LIBTORCH_ROOT)/include -I$(LIBTORCH_ROOT)/include/torch/c
 TORCH_LIB_DIR   := -L$(LIBTORCH_ROOT)/lib
 
 # Libraries to link against (adjust if your setup differs)
-TORCH_LIBS      := -ltorch -lc10
+TORCH_LIBS      := -ltorch -lc10 -ltorch_cpu -lpthread -lm
 
 # ABI flag must match the one libtorch was built with
 TORCH_CXX_FLAGS ?= -D_GLIBCXX_USE_CXX11_ABI=1
