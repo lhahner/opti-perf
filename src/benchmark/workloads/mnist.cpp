@@ -8,13 +8,13 @@ void Mnist::load_batches()
 	auto dataset = torch::data::datasets::MNIST(DATASET_PATH)
 			.map(torch::data::transforms::Normalize<>(0.5, 0.5))
 			.map(torch::data::transforms::Stack<>());
-	
+
 	auto data_loader = torch::data::make_data_loader(std::move(dataset),
 		        	torch::data::DataLoaderOptions()
 				.batch_size(kBatchSize).workers(2));
-	
+
 	torch::optim::Adam generator_optimizer(
-				generator->parameters(), 
+				generator->parameters(),
 				torch::optim::AdamOptions(2e-4)
 				.betas(std::make_tuple(0.5, 0.5))
 			);
@@ -46,7 +46,7 @@ void Mnist::load_batches()
 
  	   		torch::Tensor d_loss = d_loss_real + d_loss_fake;
     			discriminator_optimizer.step();
-	
+
     			// Train generator.
     			generator->zero_grad();
     			fake_labels.fill_(1);
@@ -64,5 +64,5 @@ void Mnist::load_batches()
         			d_loss.item<float>(),
         			g_loss.item<float>());
   		}
-	}		
+	}
 }
