@@ -60,7 +60,7 @@ LDFLAGS    ?=
 LDFLAGS    += $(TORCH_LIB_DIR) $(TORCH_RPATH)
 
 # NOTE: fmt removed for now to avoid -lfmt error
-LDLIBS     ?= -fopenmp $(TORCH_LIBS)
+LDLIBS     ?= $(TORCH_LIBS)
 
 # Extra libs for tests: GoogleTest + pthread
 TEST_LDFLAGS := 
