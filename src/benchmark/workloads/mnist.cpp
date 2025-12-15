@@ -2,8 +2,18 @@
 
 void Mnist::load_batches()
 	{
+	torch::Device device(torch::kCPU);
+	if(torch::cuda::is_available()){
+		std::cout << "CUDA is available! Training on GPU." << std::endl;
+		device = torch::Device(torch::kCUDA);
+	} else {
+		std::cout << "CUDA is not available! Training on GPU not possible." << std::endl;
+	}
 	DCGANGenerator generator(kNoiseSize);
+	generator->to(device);
+
 	nn::Sequential discriminator = create_discriminator();
+	discriminator->to(device);
 
 	auto dataset = torch::data::datasets::MNIST(DATASET_PATH)
 			.map(torch::data::transforms::Normalize<>(0.5, 0.5))
