@@ -5,9 +5,11 @@
 
 class Mnist {
 	public:
-		const std::string DATASET_PATH = "./data/mnist/";
-		const int64_t kBatchSize = 64;
-		const int64_t kNumberOfEpochs = 10;
-		const int64_t batches_per_epoch = 16;
+		const char* DATASET_PATH = "./data/mnist/";
+		const int kBatchSize = 64;
+		const int kNumberOfEpochs = 10;
+		const int64_t kLogInterval = 10;
+		const int64_t kCheckpointEvery = 900;
+		const int64_t kNumberOfSamplesPerCheckpoint = 10;		
 		void load_batches();
 };
