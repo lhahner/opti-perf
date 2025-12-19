@@ -1,4 +1,4 @@
-\documentclass[20pt,onecolumn]{IEEEtran}
+\documentclass[12pt,onecolumn]{IEEEtran}
 
 \include{./packages/packs.tex}
 
@@ -10,34 +10,23 @@
 \pagebreak 
 
 \section{Introduction}
-% What is the problem to be solved ?
-% What is the current state of the art ?
-% Why is this important for the usage of optimization ?
 \input{./sections/intro.tex}
 
 \section{Related Work}
-% What can we improve the selected optimization algorithms?
-% How can we categorize such improvements? -> Changing the mathematical model vs. Hardware explotation
+\input{./sections/related-work.tex}
 
-\section{Implementation of optimization with OpenCL}
-% How to use the GGPU for performance enhancements?
-% How did i implement the utilization?
-...
+\section{The Implementation}
+% How is the project structured ?
+% How is Adam implemented with OpenCL?
+% How is Adam implemented with CUDA? etc.
 
-\section{Implementation of optimization with CUDA}
-% How to use multithreading for performance enhancements?
-% How did i implement the utilization ?
+\section{Performance Benchmarks}
+% What is the definition of the benchmark?
+% How is it implemented in the project?
+% What are the results?
 
-\section{Benchmarks on Workload}
-% Which Benchmarks did I choose ?
-% How did the performance increase ?
-
-\section{Experimental Results}
-% Which Benchmarks did I choose ?
-% How did the performance increase ?
-
-\section{Conculion \& Outlook}
-% Whats next?
+\section{Conculion}
+% Summary of results
 
 \section{References}
 % \begin{thebibliography}{00}

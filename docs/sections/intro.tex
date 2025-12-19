@@ -1,22 +1,50 @@
-% Listing format
-
 % What is the problem/question I try to solve/answer?
-This paper compares the implementation of various optimization algortihms with
-high-performance GPGPU processing frameworks like OpenCL \cite{} and CUDA \cite{}.
+Training a neural network typically requires large-scale data sets, such as
+ImageNet \cite{bibid} or MNIST \cite{}, to achieve robust generalization
+performance. As training involves multiple passes over these data sets and
+computationally expensive gradient-based optimization, the overall process is
+highly data-intensive.
 
-% Why is that important?
-The utilization of GPGPU has become more important over the past years due the interest in training deep neural networks \cite{}. Thus the interest in software frameworks that utilize GPGPU efficiently also has become more important in the past years \cite{}. One large provider of GPGPU Nvidia propsed their software framework CUDA in 2007 and is now widely utilized by many common deep learning libaries as of Pytorch, Keras and Tensorflow \cite{}. CUDA provides a software framework for C/C++ and Python to utilize and execute workloads on the GPU. Here the user is only limited to Nvidia GPU which leaves outer other large vendors of GPU chips as of AMD \cite{}. Thus it is in interest to compare the performance of OpenCL and CUDA 
-to don't miss the GAP.
+To handle data-intensive workloads, data parallelism is required. Data
+parallelism refers to applying the same arithmetic operations to multiple data
+elements simultaneously. While modern CPUs support limited forms of data
+parallelism, their architecture is primarily optimized for low-latency and
+control-intensive tasks rather than high-throughput parallel computation
+\cite{}. GPUs, in contrast, are designed according to a
+Single-Instruction-Multiple-Data (SIMD) execution model, which enables a much
+higher degree of data parallelism. Therefore, utilizing GPUs for training neural
+networks is crucial for the efficient implementation of AI products and
+solutions. Various hardware vendors provide different software solutions to
+exploit GPU capabilities.
 
-% What is the target of this paper and the implementation?
+% What is the target of the paper?
+This work compares the performance of Graphics Processing Unit (GPU) frameworks
+such as OpenCL \cite{} and CUDA \cite{}, which enable users to exploit the
+computational capabilities of GPUs. More precise it compares the solutions based on the benchmark defined in section \ref{}. To facilitate this comparison, various
+optimization algorithms are implemented using each framework. This approach is
+intended to provide insights into the performance characteristics of the
+different frameworks. In the presented application \cite{}, several optimizers
+commonly used for training machine learning models are implemented, including
+Adam \cite{}, AdamW \cite{}, and Stochastic Gradient Descent \cite{}.
 
-% What is special about GPGPUs and why are they so powerful for machine learning?
-As mentioned GPGPU are widely used for training and running neural networks or other machine learning models.
-An impression on the importance of GPUs in that field gives for example the planned data center from german company schwarz group which plans to install 100'000 GPUs to train large model with AI inference. [https://schwarz-digits.de/en/presse/archive/2025/ground-breaking-ceremony-in-luebbenau-schwarz-digits-invests-11-billion-euros-in-europe-s-digital-sovereignty] Compared to CPUs, GPUs enable the user to parallize massive workload espacilly 
-operations applied on large sets of data.
+% Why is this problem relevant?
+CUDA is a software framework for utilizing GPUs, but it is restricted to hardware
+from the vendor NVIDIA. Furthermore, CUDA is neither standardized nor
+cross-platform. Nevertheless, it is the most commonly used solution for
+accessing GPUs in neural network training, as it is implemented in frameworks
+such as PyTorch, Keras, and TensorFlow \cite{}. This results in a strong
+dependence on NVIDIA graphics cards, as other vendors, such as AMD or ARM, are
+not compatible with the CUDA API \cite{}. In contrast, OpenCL provides a
+standardized, cross-platform parallel computing API based on C and C++. OpenCL
+is open source and maintained by the Khronos Group \cite{}. Therefore, this
+report aims to present the performance of non-NVIDIA-dependent solutions in
+comparison to NVIDIA-specific solutions. However, the application is executed
+on an NVIDIA GPU.
 
-% How does OpenCL utilize GPGPU usage?
-
-% How does CUDA utilze GPGPU usage?
-
-
+The different optimizer implementations are integrated into a Deep Convolutional
+Generative Adversarial Network (DCGAN), whose architecture is based on the
+PyTorch API Guide \cite{}. The model architecture, training procedure, and
+hyperparameters are kept identical across all experiments, with only the
+optimizer implementation differing between the CUDA- and OpenCL-based
+approaches.
+\pagebreak
