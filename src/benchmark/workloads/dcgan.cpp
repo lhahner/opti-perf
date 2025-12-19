@@ -4,7 +4,7 @@
 const int64_t kNoiseSize = 100;
 
 // Number of epochs
-const int64_t kNumberOfEpochs = 1000;
+const int64_t kNumberOfEpochs = 30;
 
 // The batch size for training.
 const int64_t kBatchSize = 64;
