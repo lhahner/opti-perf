@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {I}Introduction}{2}{}%
+\contentsline {section}{\numberline {II}Related Work}{2}{}%
+\contentsline {section}{\numberline {III}Implementation of optimization with OpenCL}{2}{}%
+\contentsline {section}{\numberline {IV}Implementation of optimization with CUDA}{2}{}%
+\contentsline {section}{\numberline {V}Benchmarks on Workload}{2}{}%
+\contentsline {section}{\numberline {VI}Experimental Results}{2}{}%
+\contentsline {section}{\numberline {VII}Conculion \& Outlook}{2}{}%
+\contentsline {section}{\numberline {VIII}References}{2}{}%

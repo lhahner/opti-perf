@@ -1,18 +1,22 @@
 % Listing format
-\begin{figure}[H]
-	\begin{lstlisting}[language=Java, caption=<description>, 
-        captionpos=b, 
-        label=xl-code,numbers=left ,
-        firstline=1, firstnumber=1, lastline=30]
-	\end{lstlisting}
-\end{figure}
 
-% Picture format
-\begin{figure}[H]
-	\begin{center}
-		\includegraphics[width=9cm, height=8cm]{<source>}
-	\end{center}
-	\caption{<description>}
-	\label{<label-for-ref>}
-	\centering
-\end{figure}
+% What is the problem/question I try to solve/answer?
+This paper compares the implementation of various optimization algortihms with
+high-performance GPGPU processing frameworks like OpenCL \cite{} and CUDA \cite{}.
+
+% Why is that important?
+The utilization of GPGPU has become more important over the past years due the interest in training deep neural networks \cite{}. Thus the interest in software frameworks that utilize GPGPU efficiently also has become more important in the past years \cite{}. One large provider of GPGPU Nvidia propsed their software framework CUDA in 2007 and is now widely utilized by many common deep learning libaries as of Pytorch, Keras and Tensorflow \cite{}. CUDA provides a software framework for C/C++ and Python to utilize and execute workloads on the GPU. Here the user is only limited to Nvidia GPU which leaves outer other large vendors of GPU chips as of AMD \cite{}. Thus it is in interest to compare the performance of OpenCL and CUDA 
+to don't miss the GAP.
+
+% What is the target of this paper and the implementation?
+
+% What is special about GPGPUs and why are they so powerful for machine learning?
+As mentioned GPGPU are widely used for training and running neural networks or other machine learning models.
+An impression on the importance of GPUs in that field gives for example the planned data center from german company schwarz group which plans to install 100'000 GPUs to train large model with AI inference. [https://schwarz-digits.de/en/presse/archive/2025/ground-breaking-ceremony-in-luebbenau-schwarz-digits-invests-11-billion-euros-in-europe-s-digital-sovereignty] Compared to CPUs, GPUs enable the user to parallize massive workload espacilly 
+operations applied on large sets of data.
+
+% How does OpenCL utilize GPGPU usage?
+
+% How does CUDA utilze GPGPU usage?
+
+
