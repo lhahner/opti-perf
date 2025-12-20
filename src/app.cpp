@@ -1,5 +1,6 @@
 #include <iostream>
-#include "benchmark/mnist.h"
+
+#include "benchmark/workloads/machinelearning/mnist.h"
 
 int main() {
     Mnist mnist;

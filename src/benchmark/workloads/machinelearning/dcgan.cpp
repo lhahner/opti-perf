@@ -1,4 +1,4 @@
-#include "benchmark/dcgan.h"
+#include "../../../../include/benchmark/workloads/machinelearning/dcgan.h"
 
 // The size of the noise vector fed to the generator.
 const int64_t kNoiseSize = 100;

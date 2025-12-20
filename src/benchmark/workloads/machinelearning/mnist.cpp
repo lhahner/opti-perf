@@ -1,4 +1,4 @@
-#include "benchmark/mnist.h"
+#include "benchmark/workloads/machinelearning/mnist.h"
 
 void Mnist::load_batches()
 	{

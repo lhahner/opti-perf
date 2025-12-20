@@ -20,7 +20,7 @@ class DCGANGeneratorImpl : public nn::Module
 
  private:
 	nn::ConvTranspose2d conv1, conv2, conv3, conv4;
-    	nn::BatchNorm2d batch_norm1, batch_norm2, batch_norm3;
+    nn::BatchNorm2d batch_norm1, batch_norm2, batch_norm3;
 };
 
 TORCH_MODULE(DCGANGenerator);

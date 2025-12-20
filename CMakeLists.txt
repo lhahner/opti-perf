@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 project(opti_perf LANGUAGES CXX)
 
-# -----------------------------
-# Build configuration
-# -----------------------------
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -12,121 +9,110 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
-# -----------------------------
-# LibTorch configuration
-# -----------------------------
-# Allow override from CLI:
-#   cmake -S . -B build -DLIBTORCH_ROOT=/path/to/libtorch-cuda
+# ---- LibTorch ----
 set(LIBTORCH_ROOT "${CMAKE_SOURCE_DIR}/lib/libtorch" CACHE PATH "Path to LibTorch root")
-
-# TorchConfig.cmake lives under <LIBTORCH_ROOT>/share/cmake/Torch typically,
-# but adding LIBTORCH_ROOT to CMAKE_PREFIX_PATH is enough.
 list(APPEND CMAKE_PREFIX_PATH "${LIBTORCH_ROOT}")
-
 find_package(Torch REQUIRED)
 
-message(STATUS "Using LibTorch from: ${LIBTORCH_ROOT}")
-message(STATUS "TORCH_LIBRARIES: ${TORCH_LIBRARIES}")
-message(STATUS "TORCH_CXX_FLAGS: ${TORCH_CXX_FLAGS}")
+# ---- OpenMP ----
+find_package(OpenMP)
 
-# Fail-fast / warn if this is a CPU-only LibTorch
-if(EXISTS "${LIBTORCH_ROOT}/lib/libtorch_cuda.so")
-  message(STATUS "CUDA-enabled LibTorch detected (libtorch_cuda.so found).")
-else()
-  message(WARNING "CPU-only LibTorch detected (libtorch_cuda.so NOT found). "
-                  "torch::cuda::is_available() will be false even on GPU nodes. "
-                  "Install/use a CUDA LibTorch and reconfigure with -DLIBTORCH_ROOT=...")
-endif()
+function(target_enable_openmp tgt)
+  if(OpenMP_CXX_FOUND)
+    target_link_libraries(${tgt} PRIVATE OpenMP::OpenMP_CXX)
+  else()
+    target_compile_options(${tgt} PRIVATE -fopenmp)
+    target_link_options(${tgt} PRIVATE -fopenmp)
+  endif()
+endfunction()
 
-# IMPORTANT:
-# Do NOT force _GLIBCXX_USE_CXX11_ABI unless you are sure it matches your LibTorch.
-# If you need it, set it via CMake configure:
-#   -DGLIBCXX_USE_CXX11_ABI=1  (or 0)
-option(GLIBCXX_USE_CXX11_ABI "Set _GLIBCXX_USE_CXX11_ABI (must match LibTorch)" OFF)
-if(GLIBCXX_USE_CXX11_ABI)
-  # Default to 1; override with -DGLIBCXX_USE_CXX11_ABI_VALUE=0 if needed
-  set(GLIBCXX_USE_CXX11_ABI_VALUE 1 CACHE STRING "Value for _GLIBCXX_USE_CXX11_ABI (0 or 1)")
-  add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=${GLIBCXX_USE_CXX11_ABI_VALUE})
-  message(STATUS "Forcing _GLIBCXX_USE_CXX11_ABI=${GLIBCXX_USE_CXX11_ABI_VALUE}")
-endif()
+function(target_apply_common tgt)
+  target_include_directories(${tgt} PRIVATE "${CMAKE_SOURCE_DIR}/include")
+  target_compile_options(${tgt} PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
+  target_link_libraries(${tgt} PRIVATE "${TORCH_LIBRARIES}")
+  target_enable_openmp(${tgt})
+  set_target_properties(${tgt} PROPERTIES
+    BUILD_RPATH "${LIBTORCH_ROOT}/lib"
+    INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
+    INSTALL_RPATH_USE_LINK_PATH TRUE
+  )
+endfunction()
 
 # -----------------------------
-# Sources
+# Workloads library (shared)
+# -----------------------------
+file(GLOB_RECURSE WORKLOAD_SOURCES CONFIGURE_DEPENDS
+  "${CMAKE_SOURCE_DIR}/src/benchmark/workloads/*.cpp"
+)
+add_library(workloads STATIC ${WORKLOAD_SOURCES})
+target_include_directories(workloads PUBLIC "${CMAKE_SOURCE_DIR}/include")
+target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
+target_link_libraries(workloads PUBLIC "${TORCH_LIBRARIES}")
+target_enable_openmp(workloads)
+
+# -----------------------------
+# App (no benchmark harness sources)
 # -----------------------------
 file(GLOB_RECURSE APP_SOURCES CONFIGURE_DEPENDS
   "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
+# Exclude EVERYTHING in src/benchmark from app
+list(FILTER APP_SOURCES EXCLUDE REGEX ".*/src/benchmark/.*\\.cpp$")
 
 add_executable(app ${APP_SOURCES})
+target_apply_common(app)
+target_link_libraries(app PRIVATE workloads)
 
-target_include_directories(app PRIVATE
-  "${CMAKE_SOURCE_DIR}/include"
-)
+# -----------------------------
+# Bench (Google Benchmark)
+# -----------------------------
+option(BUILD_BENCHMARKS "Build google-benchmark benchmarks" ON)
 
-# Warnings like Makefile
-target_compile_options(app PRIVATE -Wall -Wextra -Wpedantic)
+if(BUILD_BENCHMARKS)
+  # --- Google Benchmark (vendored) ---
+  # These are the options used by google/benchmark's CMake
+  set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 
-# Apply Torch compile flags to this target (important)
-target_compile_options(app PRIVATE ${TORCH_CXX_FLAGS})
+  # Older/newer versions vary; these are safe to set:
+  set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "" FORCE)
+  set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
 
-# OpenMP
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(app PRIVATE OpenMP::OpenMP_CXX)
-else()
-  target_compile_options(app PRIVATE -fopenmp)
-  target_link_options(app PRIVATE -fopenmp)
+  # Extract _GLIBCXX_USE_CXX11_ABI from TORCH_CXX_FLAGS, if present, and apply globally
+  string(REGEX MATCH "-D_GLIBCXX_USE_CXX11_ABI=([01])" _abi_match "${TORCH_CXX_FLAGS}")
+  if(_abi_match)
+  	set(_abi_value "${CMAKE_MATCH_1}")
+  	add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=${_abi_value})
+  	message(STATUS "Forcing _GLIBCXX_USE_CXX11_ABI=${_abi_value} for all targets (incl. vendored benchmark)")
+  endif()
+  # Build the vendored benchmark
+  add_subdirectory(${CMAKE_SOURCE_DIR}/lib/benchmark EXCLUDE_FROM_ALL)
+
+  file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/src/benchmark/*.cpp"
+  )
+  # Exclude workload implementations from bench sources (they come from workloads lib)
+  list(FILTER BENCH_SOURCES EXCLUDE REGEX ".*/src/benchmark/workloads/.*\\.cpp$")
+
+  add_executable(bench ${BENCH_SOURCES})
+  target_apply_common(bench)
+
+  # IMPORTANT:
+  # If you link benchmark_main, DO NOT have BENCHMARK_MAIN() in any source file.
+  target_link_libraries(bench PRIVATE workloads benchmark::benchmark benchmark::benchmark_main)
 endif()
-
-# Link LibTorch
-target_link_libraries(app PRIVATE "${TORCH_LIBRARIES}")
-
-# RPATH so runtime can find libtorch without setting LD_LIBRARY_PATH
-set_target_properties(app PROPERTIES
-  BUILD_RPATH "${LIBTORCH_ROOT}/lib"
-  INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
-  INSTALL_RPATH_USE_LINK_PATH TRUE
-)
 
 # -----------------------------
 # Tests (GoogleTest)
 # -----------------------------
 option(BUILD_TESTS "Build unit tests" ON)
-
 if(BUILD_TESTS)
   enable_testing()
-
-  file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/tests/*.cpp"
-  )
-
+  file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/tests/*.cpp")
   add_executable(tests ${TEST_SOURCES})
-
-  target_include_directories(tests PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-  )
-
-  target_compile_options(tests PRIVATE -Wall -Wextra -Wpedantic)
-  target_compile_options(tests PRIVATE ${TORCH_CXX_FLAGS})
-
-  if(OpenMP_CXX_FOUND)
-    target_link_libraries(tests PRIVATE OpenMP::OpenMP_CXX)
-  else()
-    target_compile_options(tests PRIVATE -fopenmp)
-    target_link_options(tests PRIVATE -fopenmp)
-  endif()
-
-  target_link_libraries(tests PRIVATE "${TORCH_LIBRARIES}")
-
-  set_target_properties(tests PROPERTIES
-    BUILD_RPATH "${LIBTORCH_ROOT}/lib"
-    INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-  )
+  target_apply_common(tests)
 
   find_package(GTest REQUIRED)
-  target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main pthread)
+  target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main pthread workloads)
 
   add_test(NAME unit_tests COMMAND tests)
 endif()
-

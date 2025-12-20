@@ -16,6 +16,7 @@ using namespace std;
  **/
 class StochasticGradientDescent {
 	public:
+		void optimize();
 		float objective(vector<float> postion);
 		vector<float> derivative(vector<float> position);
 		vector<vector<float>> adam(vector<vector <float>> bounds, int num_iteraions, 

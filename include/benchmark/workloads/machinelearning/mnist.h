@@ -1,9 +1,10 @@
 #include <cstdint>
 #include <string>
 #include <torch/torch.h>
-#include "benchmark/dcgan.h"
+#include "dcgan.h"
+#include "../workload.h"
 
-class Mnist {
+class Mnist : public Workload {
 	public:
 		const char* DATASET_PATH = "./data/mnist/";
 		const int kBatchSize = 64;
@@ -12,4 +13,5 @@ class Mnist {
 		const int64_t kCheckpointEvery = 900;
 		const int64_t kNumberOfSamplesPerCheckpoint = 10;		
 		void load_batches();
+		void run();
 };
