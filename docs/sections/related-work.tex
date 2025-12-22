@@ -1,18 +1,21 @@
-Several prior studies have compared OpenCL and CUDA. This section provides an overview of the considered comparison aspects, the evaluated workloads, and the main findings reported in related work.
+Several prior studies have compared OpenCL and CUDA. This section provides an overview of the considered comparison aspects, the evaluated workloads, and the main findings reported.
 
-Du P. et al. \cite{Du2011OpenCLCUDA}, compare CUDA and OpenCL are compared with respect to syntax, cross-platform compatibility, and overall computation and data transfer time. The evaluation is based on triangular solver (TRSM) and matrix multiplication (GEMM) workloads, with a particular focus on OpenCL performance across different platforms, including NVIDIA and ATI devices. The authors highlight OpenCL’s functional portability, but demonstrate that performance portability is often limited by low-level architectural details. They attribute these limitations to differences in memory hierarchies, compiler optimizations, and architectural execution models.
 
+Du P. et al. \cite{Du2011OpenCLCUDA}, compars CUDA and OpenCL with respect to syntax, cross-platform compatibility, and overall computation and data transfer time. The evaluation is based on triangular solver (TRSM) and matrix multiplication (GEMM) workloads, with a particular focus on OpenCL performance across different platforms, including NVIDIA and ATI devices. The authors highlight OpenCL’s functional portability, but demonstrate that performance portability is often limited by low-level architectural details. They attribute these limitations to differences in memory hierarchies, compiler optimizations, and architectural execution models.
+\\
 Furthermore, Fang J. et al. \cite{Fang2011CUDAOpenCL}, are evaluating performance is evaluated using a tailored performance ratio, defined as the ratio between the performance achieved by OpenCL and that achieved by CUDA. The study measures both device memory bandwidth and floating-point performance. In addition, similar to \cite{Du2011OpenCLCUDA}, the authors provide a conceptual comparison of the two frameworks, focusing on differences in terminology and programming abstractions used by CUDA and OpenCL. Performance is evaluated on 16 real-world workloads, including graph traversal, matrix transposition, and sparse matrix–vector multiplication. The experiments are conducted on multiple platforms from different vendors, such as NVIDIA and AMD. The results show that OpenCL’s portability can lead to performance degradation in certain scenarios. One identified reason is that, on CPUs, OpenCL memory objects are implicitly cached by the hardware, making explicit use of local memory unnecessary and potentially harmful due to the introduced overhead.
+\\
+In another comparison by Karimi K. et al.~\cite{https://arxiv.org/abs/1005.2581}, OpenCL and CUDA are compared with respect to data transfer times to and from the GPU, kernel execution times, and end-to-end application execution times for both CUDA and OpenCL. Similar to other studies, they also compare CUDA and OpenCL conceptually in terms of the code changes required to port an application from CUDA to OpenCL. They report that the porting effort required only minor changes.
+As a workload, they consider an adiabatic quantum algorithm, which is a Monte Carlo simulation of a quantum spin system written in C++. For their benchmark, they conclude that choosing CUDA may be the better option when performance is of primary importance. Furthermore, they state that the choice between CUDA and OpenCL depends on the available hardware on the client side and the supporting development tools.
+\\
+% TODO maybe search for another comparision that is done on AI https://ieeexplore.ieee.org/document/6047190
+Rather than presenting a comparison, Fang J. et al.~\cite{} describe an implementation of a neural network using OpenCL. They measure the total amount of local memory per work-group and the speed-up achieved compared to sequential training on a CPU, with respect to the number of neurons, the number of samples, and the number of layers. Of particular interest is their experimental setup, in which they train a multi-layer perceptron using a particle swarm optimizer (PSO). They emphasize the portability of OpenCL and conclude that training with parallel backpropagation on a GPU is only recommended for smaller networks.
+\\
+Most of the presented work was published within the time frame from 2010 to 2012. Furthermore, the workloads considered are mostly non–machine-learning-related. Therefore, another motivation for this paper is to revisit these frameworks and examine what may have changed in both frameworks over the past 13 years. Additionally, as stated in Section~\ref{}, a neural network workload provides a contemporary and widely used example of GPU applications.
 
-In another comparision from Karimi K. et al. \cite{} OpenCL and CUDA are compared based on data transfer times to and from the GPU, kernel
-execution times, and end-to-end application execution times for both CUDA and
-OpenCL. Similarly as the others they also
-compare CUDA and OpenCL conceptually, in terms of code changes which are needed to transfer from CUDA to OpenCL. Here they describe the transfer was done with small work.
-As a workload they consider Adiabatic QUantum Algorthm, which is a monte carlo simulation of a quantum spin system written in C++. For they benchmark they state that choosing CUDA might be the better choise whenever performance is really important. Further the choose of CUDA and OpenCL depends on which hardware is available at the client side and what tools are there, as they state.
 
 % Metrics -> Workloads -> Results / Findings
 
-% https://www.sciencedirect.com/science/article/abs/pii/S0167819111001335
-% https://ieeexplore.ieee.org/document/6047190
-\cite{https://www.sciencedirect.com/science/article/abs/pii/S0167819111001335}, 
-\cite{https://ieeexplore.ieee.org/document/6047190}, \cite{https://www.researchgate.net/publication/312915568_A_comprehensive_performance_comparison_of_cuda_and_opencl} or \cite{https://arxiv.org/abs/1005.2581}
+\cite{https://www.sciencedirect.com/science/article/abs/pii/S0167819111001335}, x
+\cite{https://ieeexplore.ieee.org/document/6047190}, x 
+ \cite{https://arxiv.org/abs/1005.2581}
