@@ -17,6 +17,20 @@ find_package(Torch REQUIRED)
 # ---- OpenMP ----
 find_package(OpenMP)
 
+# ---- OpenCL ----
+find_package(OpenCL REQUIRED)
+
+function(target_enable_opencl tgt)
+  # CMake 3.18+ FindOpenCL typically provides OpenCL::OpenCL
+  if(TARGET OpenCL::OpenCL)
+    target_link_libraries(${tgt} PRIVATE OpenCL::OpenCL)
+  else()
+    # Fallback for older/alternate FindOpenCL variants
+    target_include_directories(${tgt} PRIVATE ${OpenCL_INCLUDE_DIRS})
+    target_link_libraries(${tgt} PRIVATE ${OpenCL_LIBRARIES})
+  endif()
+endfunction()
+
 function(target_enable_openmp tgt)
   if(OpenMP_CXX_FOUND)
     target_link_libraries(${tgt} PRIVATE OpenMP::OpenMP_CXX)
@@ -31,6 +45,7 @@ function(target_apply_common tgt)
   target_compile_options(${tgt} PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
   target_link_libraries(${tgt} PRIVATE "${TORCH_LIBRARIES}")
   target_enable_openmp(${tgt})
+  target_enable_opencl(${tgt})
   set_target_properties(${tgt} PROPERTIES
     BUILD_RPATH "${LIBTORCH_ROOT}/lib"
     INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
@@ -49,6 +64,7 @@ target_include_directories(workloads PUBLIC "${CMAKE_SOURCE_DIR}/include")
 target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
 target_link_libraries(workloads PUBLIC "${TORCH_LIBRARIES}")
 target_enable_openmp(workloads)
+target_enable_opencl(workloads)
 
 # -----------------------------
 # App (no benchmark harness sources)
