@@ -5,6 +5,7 @@
 #include <random>
 #include <iostream>
 #include "util/random_seed.h"
+#include "optimizer.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
  * 
  * @Source https://machinelearningmastery.com/adam-optimization-from-scratch/
  **/
-class StochasticGradientDescent {
+class StochasticGradientDescent : public Optimizer{
 	public:
 		void optimize();
 		float objective(vector<float> postion);

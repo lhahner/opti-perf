@@ -6,6 +6,7 @@
 
 class Mnist : public Workload {
 	public:
+		~Mnist();
 		const char* DATASET_PATH = "./data/mnist/";
 		const int kBatchSize = 64;
 		const int kNumberOfEpochs = 10;
@@ -14,4 +15,6 @@ class Mnist : public Workload {
 		const int64_t kNumberOfSamplesPerCheckpoint = 10;		
 		void load_batches();
 		void run();
+		void computeForward();
+		float runLoss();
 };
