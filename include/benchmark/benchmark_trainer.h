@@ -1,12 +1,13 @@
-#ifndef INCLUDE_BENCHMARK_BENCHMARKTRAINER_H_
-#define INCLUDE_BENCHMARK_BENCHMARKTRAINER_H_
+#ifndef INCLUDE_BENCHMARK_BENCHMARK_TRAINER_H_
+#define INCLUDE_BENCHMARK_BENCHMARK_TRAINER_H_
 
 #include "optimization/optimizer.h"
 #include <benchmark/benchmark.h>
 #include <vector>
 #include <functional>   // std::reference_wrapper, std::ref
+
+#include "../optimization/adam_optimizer.h"
 #include "benchmark/workloads/machinelearning/mnist.h"
-#include "optimization/stochastic_gradient_descent.h"
 
 class BenchmarkTrainer {
 public:
@@ -16,7 +17,7 @@ public:
                      const std::vector<std::reference_wrapper<Optimizer>>& optimizers);
 
     void runWorkloads();
-    static void runOptimizerWithWorkload(Workload &workload, const std::vector<std::reference_wrapper<Optimizer>>& optimizers);
+    static void runOptimizerWithWorkload(Workload& workload, Optimizer& optimizer, int iters);
 
     const std::vector<std::reference_wrapper<Workload>>& getWorkloads() const { return workloads_; }
     const std::vector<std::reference_wrapper<Optimizer>>& getOptimizers() const { return optimizers_; }

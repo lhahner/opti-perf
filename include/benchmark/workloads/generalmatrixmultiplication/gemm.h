@@ -7,22 +7,16 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 
 #include "benchmark/workloads/workload.h"
-
-// Minimal view for an optimizer to consume (host version).
-// If you later do OpenCL, create a second view that uses cl_mem.
-struct HostParamView {
-    float* data;          // parameter buffer (W)
-    float* grad;          // gradient buffer (dW)
-    size_t count;         // number of float elements
-    const char* name;     // optional
-};
 
 class GEMM : public Workload {
 public:
     // dimensions = {M, K, N}
-    explicit GEMM(const std::vector<int>& dimensions);
+	explicit GEMM(const std::vector<int>& dimensions);
+	explicit GEMM(std::initializer_list<int> dims)
+	        : GEMM(std::vector<int>(dims)) {}
 
     void initializeInput();   // allocate + initialize W, X, Y*
     void runForward();        // compute Y, residual, dW, loss

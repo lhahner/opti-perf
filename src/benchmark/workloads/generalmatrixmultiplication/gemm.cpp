@@ -34,12 +34,18 @@ void GEMM::initializeInput() {
     std::mt19937 rng(12345);
     std::uniform_real_distribution<float> dist(-0.1f, 0.1f);
 
-    for (auto& v : W_) v = dist(rng);
-    for (auto& v : X_) v = dist(rng);
+    for (auto& v : W_) {
+    	v = dist(rng);
+    }
+    for (auto& v : X_) {
+    	v = dist(rng);
+    }
 
     // Create a fixed target using a "true" matrix W_true so the problem is solvable
     std::vector<float> Wtrue((size_t)M_ * (size_t)K_, 0.0f);
-    for (auto& v : Wtrue) v = dist(rng);
+    for (auto& v : Wtrue){
+    	v = dist(rng);
+    }
 
     // Yt = Wtrue * X
     gemm_rowmajor(M_, N_, K_, Wtrue.data(), X_.data(), Yt_.data());
@@ -96,8 +102,6 @@ std::vector<HostParamView> GEMM::parameters() {
     pv.name = "W";
     return {pv};
 }
-
-// ---------------- Helpers ----------------
 
 void GEMM::gemm_rowmajor(int M, int N, int K,
                          const float* A, const float* B, float* C)
