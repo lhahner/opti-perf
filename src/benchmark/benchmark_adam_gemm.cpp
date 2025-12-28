@@ -9,7 +9,7 @@ static void BM_GEMM_Adam(benchmark::State& state) {
     int iters = static_cast<int>(state.range(0));
 
     // Example dimensions: M,K,N
-    GEMM gemm({1024, 1024, 256});
+    GEMM gemm({10024, 10024, 256});
 
     std::cout << "Workload Profile: " << "\n"
     		  << "Workload-name: " << gemm.workloadName << ", "

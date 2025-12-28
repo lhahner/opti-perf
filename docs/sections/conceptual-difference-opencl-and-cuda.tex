@@ -1,0 +1,36 @@
+To introduce the interface frameworks OpenCL and CUDA this chapter should provide a conceptual
+comparison of the software implementation and especially highlight the differences in 
+terms of usability.
+
+
+% Structure of computing unit interaction (OpenCL)
+Both frameworks present different abstract images on how the interaction with the computing device is structured.
+In OpenCL we differ between the host and kernels. While a host is the application which calls the kernels and is
+considered to be the execution unit which also compiles and runs the main program. On the other hand 
+the kernel is considered as the part which is executed with the OpenCL runtime on a computing device.
+Each running instance of a kernel is identified as a work-item. While running the OpenCL runtime creates an index-space
+which associates each work-item with its corresponding coordinates inside the index-space. These work-items are grouped in work groups. The index space spans an N-dimensioned range of values and is
+called an NDRange.  Inside an OpenCL program, an NDRange is defined by an integer array of length N specifying the size of the index space in each dimension. The figure \ref{index-space} demonstrates the structes of the index space in OpenCL
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=13cm, height=8cm]{references/index-space-opencl.png}
+	\end{center}
+	\caption{The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ 
+	inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \cite{}}
+	\label{index-space}
+	\centering
+\end{figure}
+
+% Structure of computing unit interaction (CUDA)
+
+% How do the host (compilation computer) interact with the device? (OpenCL)
+Required for a host to interact with a device in OpenCL is its context. The programmer is required to 
+define a context about the environment within the host is running in, like available devices, kernels to run, program objects 
+and memory objects. The developer can issues commands to the command-queue, these are either kernel execution commands, memory commands or synchronization commands.
+
+% How do the host (compilation computer) interact with the device? (OpenCL)
+
+% How is the memory model build? (OpenCL)
+
+% How is the memory model build? (CUDA)
