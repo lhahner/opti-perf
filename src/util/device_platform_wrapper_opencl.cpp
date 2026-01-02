@@ -37,24 +37,18 @@ int DevicePlatformWrapperOpenCL::setup()
 			<< std::endl;
 		return SETUP_FAILURE;
 	}
-	this->kernel = clCreateKernel(this->program, this->kernel_name_, NULL);
-	if (this->kernel == NULL) 
-	{
-		std::cerr << "Failed to created Kernel in inital setup."
-			<< std::endl;
-	}
-	// TODO Create memory objects that will be used for kernel.
 	return SETUP_SUCCESS;
 }
 
-SetupWrapper* DevicePlatformWrapperOpenCL::getInstance(const char* kernel_name, const char* kernelFile)
+SetupWrapper* DevicePlatformWrapperOpenCL::getInstance()
 {
-	if (this->devicePlatformWrapperOpenCL_ == nullptr) 
+	if (devicePlatformWrapperOpenCL_ == nullptr) 
 	{
-		this->devicePlatformWrapperOpenCL_ = new DevicePlatformWrapperOpenCL(kernel_name, kernelFile);
-		return this->devicePlatformWrapperOpenCL_;
+		devicePlatformWrapperOpenCL_ = 
+			new DevicePlatformWrapperOpenCL();
+		return devicePlatformWrapperOpenCL_;
 	}
-	return this->devicePlatformWrapperOpenCL_;
+	return devicePlatformWrapperOpenCL_;
 }
 
 
@@ -224,4 +218,9 @@ cl_context DevicePlatformWrapperOpenCL::getClContext()
 void DevicePlatformWrapperOpenCL::setClContext(cl_context context)
 {
 	this->context = context;
+}
+
+cl_device_id DevicePlatformWrapperOpenCL::getDeviceId()
+{
+	return this->device;
 }

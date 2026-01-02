@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdint>
 #include <cmath>
+#include <CL/cl.h>
 
 class AdamOptimizer : public Optimizer {
 public:

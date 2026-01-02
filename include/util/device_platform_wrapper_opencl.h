@@ -12,7 +12,7 @@ class DevicePlatformWrapperOpenCL : public SetupWrapper {
 		void queueKernel();
 		void readBuffer();
 		int setup();
-		SetupWrapper* getInstance(const char* kernel_name, const char* kernelFile);
+		static SetupWrapper* getInstance();
 		
 		cl_context createContext();
 		cl_context getClContext();
@@ -30,20 +30,9 @@ class DevicePlatformWrapperOpenCL : public SetupWrapper {
 
 		cl_kernel getClKernel();
 		void setClKernel(cl_kernel kernel);	
-
-		cl_mem createMemoryObjects(cl_context context, cl_mem* memObjects);	
-		cl_mem getClMemory();
-		void setClMemory(cl_mem memObjects[N_MEMOBJ]);
-		int cleanup(cl_context context, 
-				cl_command_queue commandQueue,
-				cl_program program, 
-				cl_kernel kernel, 
-				cl_mem* memObjects);
-
-	protected:
-		DevicePlatformWrapperOpenCL(const char* kernel_name, const char* kernel_file)
-		: kernel_name_(kernel_name), kernelFile_(kernel_file) {}		
 	
+		cl_device_id getDeviceId();
+		void setDeviceId(cl_device_id deviceId);
 	private:
 		static DevicePlatformWrapperOpenCL* devicePlatformWrapperOpenCL_;
 		const char* kernel_name_;

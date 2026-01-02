@@ -4,7 +4,7 @@ terms of usability.
 
 
 % Structure of computing unit interaction (OpenCL)
-Both frameworks present different abstract images on how the interaction with the computing device is structured.
+Both frameworks present different abstractions on how the interaction with the computing device is structured.
 In OpenCL we differ between the host and kernels. While a host is the application which calls the kernels and is
 considered to be the execution unit which also compiles and runs the main program. On the other hand 
 the kernel is considered as the part which is executed with the OpenCL runtime on a computing device.
@@ -32,5 +32,12 @@ and memory objects. The developer can issues commands to the command-queue, thes
 % How do the host (compilation computer) interact with the device? (OpenCL)
 
 % How is the memory model build? (OpenCL)
+OpenCL memory is allocated within a specific context, which also defines the set of devices that can access this memory. There are two major types of memory objects that can be allocated in OpenCL: buffers and images. Memory objects created within a context are visible to all devices associated with that context, enabling shared data access across devices.
+
+To create a buffer, the function \verb|clCreateBuffer| is used. Once created, buffer objects are passed as arguments when creating kernel objects, allowing kernels to read from and write to the buffer during execution. In addition, OpenCL supports subdividing a buffer into smaller regions called sub-buffers. This makes it possible to partition the data so that each device can operate on a separate sub-buffer, which can improve parallelism and memory management.
+
+Reading from and writing to buffers is performed through a command queue. For this purpose, the functions \verb*|clEnqueueWriteBuffer| and \verb*|clEnqueueReadBuffer| are used to transfer data between host memory and device memory in a controlled and asynchronous manner.
+
+Image memory objects in OpenCL are primarily intended for storing structured data such as image dimensions, pixel layout, and image format information. They are optimized for spatial access patterns and are commonly used in image and signal processing applications. OpenCL supports both 2D and 3D image objects, making them suitable for a wide range of image-processing and volumetric data workloads. \cite{openCL-programming-guide}
 
 % How is the memory model build? (CUDA)

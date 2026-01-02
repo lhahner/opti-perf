@@ -19,5 +19,4 @@ class SetupWrapper {
 	public:
 		~SetupWrapper();
 		virtual int setup() = 0;
-		virtual SetupWrapper* getInstance(const char* kernel_name, const char* kernelFile) = 0;
 };
