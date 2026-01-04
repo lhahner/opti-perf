@@ -2,6 +2,7 @@
 #define INCLUDE_BENCHMARK_BENCHMARK_TRAINER_H_
 
 #include "optimization/optimizer.h"
+#include "optimization/adam_optimizer_cl.h"
 #include <benchmark/benchmark.h>
 #include <vector>
 #include <functional>   // std::reference_wrapper, std::ref
@@ -17,8 +18,11 @@ public:
                      const std::vector<std::reference_wrapper<Optimizer>>& optimizers);
 
     void runWorkloads();
-    static void runOptimizerWithWorkload(Workload& workload, Optimizer& optimizer, int iters);
-
+    void runClWorkloads();
+    static void runOptimizerWithWorkload(Workload& workload, 
+		    Optimizer& optimizer, 
+		    int iters);
+    
     const std::vector<std::reference_wrapper<Workload>>& getWorkloads() const { return workloads_; }
     const std::vector<std::reference_wrapper<Optimizer>>& getOptimizers() const { return optimizers_; }
 

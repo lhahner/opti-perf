@@ -40,7 +40,7 @@ int DevicePlatformWrapperOpenCL::setup()
 	return SETUP_SUCCESS;
 }
 
-SetupWrapper* DevicePlatformWrapperOpenCL::getInstance()
+DevicePlatformWrapperOpenCL* DevicePlatformWrapperOpenCL::getInstance()
 {
 	if (devicePlatformWrapperOpenCL_ == nullptr) 
 	{
@@ -200,12 +200,6 @@ cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_dev
 	return program;
 }
 
-cl_mem DevicePlatformWrapperOpenCL::createMemoryObjects(cl_context context, cl_mem* memObjects)
-{
-	//TODO
-	return NULL;
-}
-
 
 /**
  * Getter and Setter Section
@@ -224,3 +218,8 @@ cl_device_id DevicePlatformWrapperOpenCL::getDeviceId()
 {
 	return this->device;
 }
+
+cl_command_queue DevicePlatformWrapperOpenCL::getClCommandQueueForDevice()
+{
+	return this->commandQueue;
+}	

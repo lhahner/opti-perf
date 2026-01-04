@@ -1,6 +1,9 @@
+// adam_optimizer_cl.h
+#pragma once
+
 #include <CL/opencl.h>
 
-class DeviceTensorAdam {
+class DeviceParamView {
 	public:
 		cl_mem param;     
 		cl_mem grad;

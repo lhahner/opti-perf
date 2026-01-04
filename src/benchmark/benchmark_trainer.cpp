@@ -1,4 +1,7 @@
 #include "../../include/benchmark/benchmark_trainer.h"
+#include "optimization/adam_optimizer.h"
+#include "optimization/adam_optimizer_cl.h"
+#include "optimization/optimizer.h"
 
 BenchmarkTrainer::BenchmarkTrainer(Workload& workload, Optimizer& optimizer) {
     workloads_.push_back(std::ref(workload));
@@ -21,15 +24,9 @@ void BenchmarkTrainer::runOptimizerWithWorkload(
     Optimizer& optimizer,
     int iters)
 {
-    // Important: ensure identical starting state each benchmark iteration
-    //workload.initializeInput(); // or workload.reset()
-
     for (int t = 1; t <= iters; ++t) {
         workload.runForward();
         optimizer.step(workload.parameters(), t);
         benchmark::DoNotOptimize(workload.computeLoss());
     }
 }
-
-
-

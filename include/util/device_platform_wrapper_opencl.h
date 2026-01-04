@@ -7,12 +7,10 @@
 #include <sstream>
 #include "util/setup_wrapper.h"
 
-class DevicePlatformWrapperOpenCL : public SetupWrapper {
+class DevicePlatformWrapperOpenCL {
 	public:
-		void queueKernel();
-		void readBuffer();
 		int setup();
-		static SetupWrapper* getInstance();
+		static DevicePlatformWrapperOpenCL* getInstance();
 		
 		cl_context createContext();
 		cl_context getClContext();
@@ -21,18 +19,11 @@ class DevicePlatformWrapperOpenCL : public SetupWrapper {
 		cl_command_queue createCommandQueue(cl_context context, 
 				cl_device_id *device);
 		cl_command_queue getClCommandQueueForDevice();
-		void setClCommandQueueForDevice(cl_command_queue commandQueue);
 
 		cl_program createProgram(cl_context context, cl_device_id device,
 				const char* kernel);
-		cl_program getClProgram();
-		void setClProgram(cl_program program);
 
-		cl_kernel getClKernel();
-		void setClKernel(cl_kernel kernel);	
-	
 		cl_device_id getDeviceId();
-		void setDeviceId(cl_device_id deviceId);
 	private:
 		static DevicePlatformWrapperOpenCL* devicePlatformWrapperOpenCL_;
 		const char* kernel_name_;
