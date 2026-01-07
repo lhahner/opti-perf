@@ -1,38 +1,82 @@
-To introduce the interface frameworks OpenCL and CUDA this chapter should provide a conceptual
+To introduce the GPU interface frameworks OpenCL and CUDA this chapter should provide a conceptual
 comparison of the software implementation and especially highlight the differences in 
 terms of usability.
 
 
-% Structure of computing unit interaction (OpenCL)
-Both frameworks present different abstractions on how the interaction with the computing device is structured.
+% Coarse Grained Architecture (OpenCL)
+Both frameworks present different abstractions on how the interaction with the computing device (GPU) is structured.
 In OpenCL we differ between the host and kernels. While a host is the application which calls the kernels and is
 considered to be the execution unit which also compiles and runs the main program. On the other hand 
-the kernel is considered as the part which is executed with the OpenCL runtime on a computing device.
-Each running instance of a kernel is identified as a work-item. While running the OpenCL runtime creates an index-space
+the kernel is considered as the part which is executed with the OpenCL runtime on a computing device or computing unit.
+Each running instance of a kernel is identified as a work-item. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=15cm, height=8cm]{references/opencl-platform-model.png}
+	\end{center}
+	\caption{The interaction with the host and OpenCL devices which are possible GPUs is displayed here. In a GPU and CPU setup the Host is considered to be the CPU. \cite{opencl-programming-guide}}
+	\label{index-space}
+	\centering
+\end{figure}
+
+While running the OpenCL runtime creates an index-space
 which associates each work-item with its corresponding coordinates inside the index-space. These work-items are grouped in work groups. The index space spans an N-dimensioned range of values and is
 called an NDRange.  Inside an OpenCL program, an NDRange is defined by an integer array of length N specifying the size of the index space in each dimension. The figure \ref{index-space} demonstrates the structes of the index space in OpenCL
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=13cm, height=8cm]{references/index-space-opencl.png}
+		\includegraphics[width=13cm, height=7cm]{references/index-space-opencl.png}
 	\end{center}
 	\caption{The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ 
-	inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \cite{}}
+	inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \cite{opencl-programming-guide}}
 	\label{index-space}
 	\centering
 \end{figure}
 
-% Structure of computing unit interaction (CUDA)
+% Coarse Grained Architecture (CUDA)
+CUDA has a similar model as OpenCL. Consisting of a kernel and a host. The host is considered as the computing unit
+which compiles the code and runs it without or little data parallelism. The kernel code runs code mostly in data
+parallelism using the ANSI C programming language with CUDA extention. During execution the kernel code is moved 
+to a device which is for example a GPU. The kernel spawns threads needed for execution those are chunked into
+grids.
+
+These grids are similar as the OpenCL NDRange. All threads in a grid execute the same kernel function. 
+The threads rely on unique coordinates, similar as the index in the NDRange. The coordinates consiting
+of a block index and a thread index. Figure \ref{cuda-archtiectur} shows a simple example of the 
+CUDA thread organization. The first grid consists of four blocks while one block consists of sixteen threads.
+Each grid has a total of $N*M$ threads. In general a grid is organized as a 2D array of blocks which are organized
+into a 3D array of threads. \cite{programming-massively-parallel-processors}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=13cm, height=10cm]{references/cuda-grid-management.png}
+	\end{center}
+	\caption{A multidimensional illustration of CUDA grid organization \cite{opencl-programming-guide}}
+	\label{index-space}
+	\centering
+\end{figure}
 
 % How do the host (compilation computer) interact with the device? (OpenCL)
 Required for a host to interact with a device in OpenCL is its context. The programmer is required to 
 define a context about the environment within the host is running in, like available devices, kernels to run, program objects 
 and memory objects. The developer can issues commands to the command-queue, these are either kernel execution commands, memory commands or synchronization commands.
 
-% How do the host (compilation computer) interact with the device? (OpenCL)
+% How do the host (compilation computer) interact with the device? (CUDA)
+Different to the OpenCL context CUDA handles most of the context for a specific device by the initalized runtime. 
+Mainly using the function \verb*|cudaInitDevice()| the runtime is created and also the context for the device
+on which the user executes the kernel. \cite{cuda-programming-guide}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=15.5cm, height=10cm]{references/opencl-memory-manamgement-model.png}
+	\end{center}
+	\caption{The given image presents all of the architecture parts of the OpenCL framework with considration of the memory model presented. \cite{opencl-programming-guide}}
+	\label{index-space}
+	\centering
+\end{figure}
 
 % How is the memory model build? (OpenCL)
-OpenCL memory is allocated within a specific context, which also defines the set of devices that can access this memory. There are two major types of memory objects that can be allocated in OpenCL: buffers and images. Memory objects created within a context are visible to all devices associated with that context, enabling shared data access across devices.
+OpenCL memory is allocated within a specific context, which also defines the set of devices that can access this memory. There are two major types of memory objects that can be allocated in OpenCL: buffers and images. Memory objects created within a context are visible to all devices associated with that context, enabling shared data access across devices. 
 
 To create a buffer, the function \verb|clCreateBuffer| is used. Once created, buffer objects are passed as arguments when creating kernel objects, allowing kernels to read from and write to the buffer during execution. In addition, OpenCL supports subdividing a buffer into smaller regions called sub-buffers. This makes it possible to partition the data so that each device can operate on a separate sub-buffer, which can improve parallelism and memory management.
 
@@ -41,3 +85,27 @@ Reading from and writing to buffers is performed through a command queue. For th
 Image memory objects in OpenCL are primarily intended for storing structured data such as image dimensions, pixel layout, and image format information. They are optimized for spatial access patterns and are commonly used in image and signal processing applications. OpenCL supports both 2D and 3D image objects, making them suitable for a wide range of image-processing and volumetric data workloads. \cite{openCL-programming-guide}
 
 % How is the memory model build? (CUDA)
+Same as in OpenCL CUDA seperates the devices memory from the one of the host and the one of the device. Further 
+the devices and the host transfer the data via global memory of the device. The programmer needs to allocate memory
+on the device in the same as done on the host using the C CUDA extention \verb*|cudaMalloc|. But instead of issuing
+a command queue for copying the data to the host the programmer copies the data with \verb*|cudaMemcpy|. 
+
+The most important difference between CUDA and OpenCL are portability possibilities. While CUDA relies on Nvidia graphic
+cards and chips, OpenCL has cross-platform protability. \cite{programming-massively-parallel-processors}
+
+% Mono-platform optimization in CUDA
+Due to CUDAs dependency on NVIDIA GPUs the framework is also well optimized on NVIDIA GPUs. Mainly due to PTX 
+which is NVIDIA device specific parallel thread execution virtual machine instruction set architecture 
+to expose a NVIDIA GPU as a data-parallel executing device. \cite{https://docs.nvidia.com/cuda/parallel-thread-execution/}
+Further it has the benefit of cuDNN
+which enables hardware tailored operations for common machine learning arithmetics, like convolutions and 
+scheduling certain core architectures like tensors for specific tasks during training. \cite{} %https\:\/\/developer.nvidia.com\/cudnn\#section-how-cudnn-works
+
+
+% Cross-platform optimization in OpenCL
+The key difference here is that OpenCL doesn't have that device dependency and thus does not bring this specific 
+optimization for a hardware architecture from any vendor. This is broad by abstraction due to key elements like
+OpenCL platforms, devices and memory models. Since the programmer needs to query and allocate platforms by 
+themself it enables a cross-platform protability of kernels. Which also includes NVIDIA devices.
+\cite{https://www.khronos.org/opencl/?utm_source=chatgpt.com}  But OpenCL’s hardware abstraction forces vendors to implement flexible compilers/runtimes that can map a single kernel representation onto diverse execution and memory hardware structures resulting in less tailored hardware optimization like in CUDA. \cite{https://registry.khronos.org/OpenCL/specs/3.0-unified/html/OpenCL_API.html?utm_source=chatgpt.com}
+
