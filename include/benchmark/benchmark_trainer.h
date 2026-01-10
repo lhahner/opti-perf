@@ -6,9 +6,8 @@
 #include <benchmark/benchmark.h>
 #include <vector>
 #include <functional>   // std::reference_wrapper, std::ref
-
+#include "benchmark/workloads/workload.h"
 #include "../optimization/adam_optimizer.h"
-#include "benchmark/workloads/machinelearning/mnist.h"
 
 class BenchmarkTrainer {
 public:

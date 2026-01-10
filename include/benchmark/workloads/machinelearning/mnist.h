@@ -1,3 +1,5 @@
+/**
+#if HAVE_TORCH
 #include <cstdint>
 #include <string>
 #include <torch/torch.h>
@@ -18,3 +20,6 @@ class Mnist : public Workload {
 		void computeForward();
 		float runLoss();
 };
+
+#endif
+**/

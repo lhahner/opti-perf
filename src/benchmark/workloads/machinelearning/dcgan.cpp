@@ -1,3 +1,4 @@
+/**
 #include "../../../../include/benchmark/workloads/machinelearning/dcgan.h"
 
 // The size of the noise vector fed to the generator.
@@ -62,8 +63,6 @@ torch::Tensor DCGANGeneratorImpl::forward(torch::Tensor x)
   x = torch::tanh(conv4(x));
   return x;
 }
-
-/**
  * The discriminator receives real images from the MNIST dataset, or fake images from the generator. 
  * It is asked to emit a probability judging how real (closer to 1) or fake (closer to 0) a particular image is. 
  * Feedback from the discriminator on how real the images produced by the generator are is used to train the generator. 
@@ -71,7 +70,6 @@ torch::Tensor DCGANGeneratorImpl::forward(torch::Tensor x)
  * In theory, a delicate balance between the generator and discriminator makes them improve in tandem, 
  * leading to the generator producing images indistinguishable from the target distribution, 
  * fooling the discriminator’s (by then) excellent eye into emitting a probability of 0.5 for both real and fake images.
- **/
 nn::Sequential create_discriminator()
 {
     return nn::Sequential(
@@ -91,3 +89,6 @@ nn::Sequential create_discriminator()
         nn::Conv2d(nn::Conv2dOptions(256, 1, 3).stride(1).padding(0).bias(false)),
         nn::Sigmoid());
 }
+
+#endif
+**/

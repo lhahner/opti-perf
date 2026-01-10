@@ -1,3 +1,4 @@
+/**
 #include "benchmark/workloads/machinelearning/mnist.h"
 
 void Mnist::load_batches()
@@ -109,3 +110,6 @@ void Mnist::load_batches()
     }
     std::cout << "Training complete!" << std::endl;	
 }
+
+#endif
+**/

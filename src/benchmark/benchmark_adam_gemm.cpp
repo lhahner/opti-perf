@@ -16,7 +16,7 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 	std::cout << "Workload Profile: " << "\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
 		<< "Workload-type: " << gemm.workloadType << " , "
-		<< "Workload-size: " << gemm.dimensions_ << std::endl;
+		<< std::endl;
 
 	AdamOptimizer adam(1e-3f, 0.9f, 0.999f, 1e-8f);
 
@@ -25,11 +25,15 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 		gemm.runForward();
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
-		std::cout << "[INFO] Computed loss: " << gemm.computeLoss() << std::endl;
+		auto loss = gemm.computeLoss();
+		std::cout << "[INFO] Computed loss: " << loss.first << ", " << loss.second << std::endl;
 	}
 
 	for (auto _ : state) {
-		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters);
+		auto loss = gemm.computeLoss();
+		benchmark::DoNotOptimize(loss);
+		std::cout << "[INFO] Computed loss: (" << loss.first << ", " << loss.second << ")\n";
+
 	}
 }
 BENCHMARK(BM_GEMM_Adam)->Arg(100);
@@ -42,8 +46,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 
 	std::cout << "Workload Profile:\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
-		<< "Workload-type: " << gemm.workloadType << ", "
-		<< "Workload-size: " << gemm.dimensions_ << "\n";
+		<< "Workload-type: " << gemm.workloadType << ", " << std::endl;
 
 	AdamOptimizerCl adam;
 	gemm.initializeInput();
@@ -74,7 +77,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 		gemm.runForward();
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
-		std::cout << "[INFO] Computed loss: " << gemm.computeLoss() << std::endl;
+		std::cout << "[INFO] Computed loss: " << gemm.computeLoss().first << std::endl;
 	}
 	for (auto _ : state) {
 		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters);

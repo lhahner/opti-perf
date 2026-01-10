@@ -1,21 +1,41 @@
 cmake_minimum_required(VERSION 3.18)
-project(opti_perf LANGUAGES CXX)
+project(opti_perf LANGUAGES CXX CUDA)
+
+add_compile_options(-w)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+set(CMAKE_CUDA_ARCHITECTURES 52)
+
+option(ENABLE_TORCH "Enable LibTorch integration" ON)
+
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
 # ---- LibTorch ----
+
 set(LIBTORCH_ROOT "${CMAKE_SOURCE_DIR}/lib/libtorch" CACHE PATH "Path to LibTorch root")
-list(APPEND CMAKE_PREFIX_PATH "${LIBTORCH_ROOT}")
-find_package(Torch REQUIRED)
+
+if(ENABLE_TORCH)
+	list(APPEND CMAKE_PREFIX_PATH "${LIBTORCH_ROOT}")
+	# More robust than CMAKE_PREFIX_PATH alone:
+	set(Torch_DIR "${LIBTORCH_ROOT}/share/cmake/Torch" CACHE PATH "Torch CMake config dir")
+	find_package(Torch REQUIRED)
+else()
+	message(STATUS "LibTorch disabled (ENABLE_TORCH=OFF)")
+endif()
 
 # ---- OpenMP ----
 find_package(OpenMP)
+
+# ---- CUDA ----
+find_package(CUDAToolkit REQUIRED)
 
 # ---- OpenCL ----
 find_package(OpenCL REQUIRED)
@@ -31,6 +51,16 @@ function(target_enable_opencl tgt)
 	endif()
 endfunction()
 
+function(target_enable_cuda tgt)
+	target_link_libraries(${tgt} PRIVATE CUDA::cudart)
+	target_compile_definitions(${tgt} PRIVATE HAVE_CUDA=1)
+	set_target_properties(${tgt} PROPERTIES
+		CUDA_SEPARABLE_COMPILATION ON
+		CUDA_RESOLVE_DEVICE_SYMBOLS ON
+	)
+	target_compile_definitions(${tgt} PRIVATE HAVE_CUDA=1)
+endfunction()
+
 function(target_enable_openmp tgt)
 	if(OpenMP_CXX_FOUND)
 		target_link_libraries(${tgt} PRIVATE OpenMP::OpenMP_CXX)
@@ -42,15 +72,19 @@ endfunction()
 
 function(target_apply_common tgt)
 	target_include_directories(${tgt} PRIVATE "${CMAKE_SOURCE_DIR}/include")
-	target_compile_options(${tgt} PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
-	target_link_libraries(${tgt} PRIVATE "${TORCH_LIBRARIES}")
+	target_compile_options(${tgt} PRIVATE -Wall -Wextra -Wpedantic)
+	target_link_libraries(${tgt})
 	target_enable_openmp(${tgt})
 	target_enable_opencl(${tgt})
-	set_target_properties(${tgt} PROPERTIES
-		BUILD_RPATH "${LIBTORCH_ROOT}/lib"
-		INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
-		INSTALL_RPATH_USE_LINK_PATH TRUE
-	)
+
+	if(ENABLE_TORCH)
+		set_target_properties(${tgt} PROPERTIES
+			BUILD_RPATH "${LIBTORCH_ROOT}/lib"
+			INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
+			INSTALL_RPATH_USE_LINK_PATH TRUE
+		)
+	endif()
+
 endfunction()
 
 # -----------------------------
@@ -59,12 +93,16 @@ endfunction()
 file(GLOB_RECURSE WORKLOAD_SOURCES CONFIGURE_DEPENDS
 	"${CMAKE_SOURCE_DIR}/src/benchmark/workloads/*.cpp"
 )
-add_library(workloads STATIC ${WORKLOAD_SOURCES})
+file(GLOB_RECURSE CUDA_SOURCES CONFIGURE_DEPENDS
+  "${CMAKE_SOURCE_DIR}/src/**/*.cu"
+)
+add_library(workloads STATIC ${WORKLOAD_SOURCES} ${CUDA_SOURCES})
 target_include_directories(workloads PUBLIC "${CMAKE_SOURCE_DIR}/include")
-target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic ${TORCH_CXX_FLAGS})
-target_link_libraries(workloads PUBLIC "${TORCH_LIBRARIES}")
+target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic)
+target_link_libraries(workloads)
 target_enable_openmp(workloads)
 target_enable_opencl(workloads)
+target_enable_cuda(workloads PUBLIC)
 
 # -----------------------------
 # App (no benchmark harness sources)
@@ -77,6 +115,7 @@ list(FILTER APP_SOURCES EXCLUDE REGEX ".*/src/benchmark/.*\\.cpp$")
 
 add_executable(app ${APP_SOURCES})
 target_apply_common(app)
+target_enable_cuda(app)
 target_link_libraries(app PRIVATE workloads)
 
 # -----------------------------
@@ -93,7 +132,10 @@ if(BUILD_BENCHMARKS)
 	set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "" FORCE)
 	set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
 	# Extract _GLIBCXX_USE_CXX11_ABI from TORCH_CXX_FLAGS, if present, and apply globally
-	string(REGEX MATCH "-D_GLIBCXX_USE_CXX11_ABI=([01])" _abi_match "${TORCH_CXX_FLAGS}")
+	if(ENABLE_TORCH)
+		string(REGEX MATCH "-D_GLIBCXX_USE_CXX11_ABI=([01])" _abi_match "${TORCH_CXX_FLAGS}")
+	endif()
+
 	if(_abi_match)
 		set(_abi_value "${CMAKE_MATCH_1}")
 		add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=${_abi_value})

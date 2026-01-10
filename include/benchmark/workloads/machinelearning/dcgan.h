@@ -1,16 +1,17 @@
+/**
 #include <cstdint>
+
+#if HAVE_TORCH
 #include <torch/torch.h>
 
 namespace nn = torch::nn;
 
 extern const int64_t kNoiseSize;
 
-/**
  * The generator receives samples from a noise distribution,
  * and its aim is to transform each noise sample into an image
  * that resembles those of a target distribution, in our case
  * the MNIST dataset.
- **/
 class DCGANGeneratorImpl : public nn::Module
 {
  public:
@@ -26,3 +27,5 @@ class DCGANGeneratorImpl : public nn::Module
 TORCH_MODULE(DCGANGenerator);
 nn::Sequential create_discriminator();
 
+#endif
+**/
