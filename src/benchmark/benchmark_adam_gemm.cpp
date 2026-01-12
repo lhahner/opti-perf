@@ -1,14 +1,17 @@
+#pragma once
 #include <CL/cl.h>
 #include <benchmark/benchmark.h>
-
 #include "benchmark/benchmark_trainer.h"
 #include "benchmark/workloads/generalmatrixmultiplication/gemm.h"
 #include "optimization/adam_optimizer.h"
 #include "optimization/adam_optimizer_cl.h"
+#include "optimization/adam_optimizer_cu.h"
 #include "util/device_param_view.h"
 #include "util/device_platform_wrapper_opencl.h"
 
+/**
 static void BM_GEMM_Adam(benchmark::State& state) {
+	std::cout << "Running workload for CPU" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
 	GEMM gemm({10024, 10024, 256});
@@ -37,9 +40,11 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam)->Arg(100);
+**/
 
 static void BM_GEMM_Adam_cl(benchmark::State& state)
 {
+	std::cout << "Running workload for OpenCL" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
 	GEMM gemm({10024, 10024, 256});
@@ -89,3 +94,33 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 }
 BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
 
+static void BM_GEMM_Adam_cuda(benchmark::State& state) {
+	std::cout << "Running workload for CUDA" << std::endl;
+	int iters = static_cast<int>(state.range(0));
+
+	GEMM gemm({10024, 10024, 256});
+
+	std::cout << "Workload Profile: " << "\n"
+		<< "Workload-name: " << gemm.workloadName << ", "
+		<< "Workload-type: " << gemm.workloadType << " , "
+		<< std::endl;
+
+	AdamOptimizerCu adam(1e-3f, 0.9f, 0.999f, 1e-8f);
+
+	gemm.initializeInput();
+	for (int t = 1; t <= 10; ++t) {
+		gemm.runForward();
+		adam.step(gemm.parameters(), t);
+		benchmark::DoNotOptimize(gemm.computeLoss());
+		auto loss = gemm.computeLoss();
+		std::cout << "[INFO] Computed loss: " << loss.first << ", " << loss.second << std::endl;
+	}
+
+	for (auto _ : state) {
+		auto loss = gemm.computeLoss();
+		benchmark::DoNotOptimize(loss);
+		std::cout << "[INFO] Computed loss: (" << loss.first << ", " << loss.second << ")\n";
+
+	}
+}
+BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);

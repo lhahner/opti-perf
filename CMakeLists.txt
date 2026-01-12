@@ -36,6 +36,7 @@ find_package(OpenMP)
 
 # ---- CUDA ----
 find_package(CUDAToolkit REQUIRED)
+find_package(CUDA REQUIRED)
 
 # ---- OpenCL ----
 find_package(OpenCL REQUIRED)

@@ -4,32 +4,20 @@
 #include "util/host_param_view.h"
 #include "util/cuda_device_param_view.h"
 #include <unordered_map>
-#include <cuda_runtime.h>
 #include <vector>
 #include <cstdint>
 #include <cmath>
 #include <CL/cl.h>
 
-class AdamOptimizer : public Optimizer
+typedef struct CUstream_st* cudaStream_t;
+
+class AdamOptimizerCu : public Optimizer
 {
 public:
-    AdamOptimizer(float lr, float beta1, float beta2, float eps)
+    AdamOptimizerCu(float lr, float beta1, float beta2, float eps)
         : lr_(lr), beta1_(beta1), beta2_(beta2), eps_(eps) {}
 
     void step(const std::vector<HostParamView> &params, int step_index);
-
-    void adam_update_kernel(
-        float *__restrict__ param,      // p.data (device)
-        const float *__restrict__ grad, // p.grad (device)
-        float *__restrict__ m,          // st.m (device)
-        float *__restrict__ v,          // st.v (device)
-        size_t n,
-        float lr,
-        float beta1,
-        float beta2,
-        float bc1, // (1 - beta1^t)
-        float bc2, // (1 - beta2^t)
-        float eps);
 
     CudaDeviceParamView *convertHostToDevice(const HostParamView &p);
 
