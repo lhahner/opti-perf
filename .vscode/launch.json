@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug bench (CUDA Adam only)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-debug/bench",
+      "args": [
+        "--benchmark_filter=BM_GEMM_Adam_cuda",
+        "--benchmark_repetitions=1",
+        "--benchmark_min_time=0"
+      ],
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        { "name": "CUDA_LAUNCH_BLOCKING", "value": "1" }
+      ],
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "stopAtEntry": false,
+      "externalConsole": false
+    },
+    {
+      "name": "Debug bench (OpenCL Adam only)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-debug/bench",
+      "args": [
+        "--benchmark_filter=BM_GEMM_Adam_cl",
+        "--benchmark_repetitions=1",
+        "--benchmark_min_time=0"
+      ],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "stopAtEntry": false,
+      "externalConsole": false
+    }
+  ]
+}

@@ -37,6 +37,7 @@ find_package(OpenMP)
 # ---- CUDA ----
 find_package(CUDAToolkit REQUIRED)
 find_package(CUDA REQUIRED)
+set(CMAKE_CUDA_FLAGS_DEBUG "${CMAKE_CUDA_FLAGS_DEBUG} -G -lineinfo")
 
 # ---- OpenCL ----
 find_package(OpenCL REQUIRED)

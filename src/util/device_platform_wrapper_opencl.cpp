@@ -29,14 +29,7 @@ int DevicePlatformWrapperOpenCL::setup()
 			<< std::endl;
 		return SETUP_FAILURE;
 	}
-	this->program = this->createProgram(this->context, this->device, this->kernelFile_);
-	if (this->program == NULL) 
-	{	
-		std::cerr
-			<< "Program creation in inital setup for OpenCL failed."
-			<< std::endl;
-		return SETUP_FAILURE;
-	}
+	
 	return SETUP_SUCCESS;
 }
 
@@ -50,7 +43,6 @@ DevicePlatformWrapperOpenCL* DevicePlatformWrapperOpenCL::getInstance()
 	}
 	return devicePlatformWrapperOpenCL_;
 }
-
 
 /**
  * Create an OpenCL context on the first available platform.

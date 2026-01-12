@@ -47,7 +47,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	std::cout << "Running workload for OpenCL" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({10024, 10024, 256});
+	GEMM gemm({1024, 1024, 256});
 
 	std::cout << "Workload Profile:\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
@@ -57,19 +57,28 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	gemm.initializeInput();
 
 	auto* wrapper = DevicePlatformWrapperOpenCL::getInstance();
-	wrapper->setup();
+	int setupSucess = wrapper->setup();
+	if(setupSucess != SETUP_SUCCESS) {
+		std::cerr << "Setup initalization failed." << std::endl;
+		return;
+	}
 
 	cl_context ctx = wrapper->getClContext();
 	cl_command_queue queue = wrapper->getClCommandQueueForDevice();
+	
+	static const char kernel_path[] =
+    "/media/lennart-hahner/LaCie/gau/lecture-notes-on-scalable-computing-systems-and-applications-in-AI-big-data-and-hpc/opti-perf/kernels/adam_optimizer.cl";
 
 	cl_program program = wrapper->createProgram(
 			ctx,
 			wrapper->getDeviceId(),
-			"../../kernels/adam_optimizer.cl"
-			);
+			kernel_path	
+		);
 
 	cl_int err = CL_SUCCESS;
-	cl_kernel kernel = clCreateKernel(program, "adam", &err);
+	
+	static const char kernelName[] = "adamOptimizer";
+	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
 	if (err != CL_SUCCESS) {
 		std::cerr << "clCreateKernel(adam) failed: " << err << "\n";
 		return;
@@ -94,6 +103,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 }
 BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
 
+/**
 static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	std::cout << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
@@ -124,3 +134,4 @@ static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);
+**/
