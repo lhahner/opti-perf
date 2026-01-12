@@ -9,7 +9,6 @@
 #include "util/device_param_view.h"
 #include "util/device_platform_wrapper_opencl.h"
 
-/**
 static void BM_GEMM_Adam(benchmark::State& state) {
 	std::cout << "Running workload for CPU" << std::endl;
 	int iters = static_cast<int>(state.range(0));
@@ -40,7 +39,6 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam)->Arg(100);
-**/
 
 static void BM_GEMM_Adam_cl(benchmark::State& state)
 {
@@ -73,11 +71,11 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 			ctx,
 			wrapper->getDeviceId(),
 			kernel_path	
-		);
+	);
 
 	cl_int err = CL_SUCCESS;
 	
-	static const char kernelName[] = "adamOptimizer";
+	static const char kernelName[] = "adam_update";
 	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
 	if (err != CL_SUCCESS) {
 		std::cerr << "clCreateKernel(adam) failed: " << err << "\n";
@@ -103,7 +101,6 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 }
 BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
 
-/**
 static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	std::cout << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
@@ -134,4 +131,3 @@ static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);
-**/
