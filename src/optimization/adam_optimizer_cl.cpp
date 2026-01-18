@@ -108,7 +108,8 @@ void AdamOptimizerCl::step_one_tensor(
 	const size_t global_size = ((size_t)dv.n + local_size - 1) / local_size * local_size;
 	const size_t gws[1] = {global_size};
 	const size_t lws[1] = {local_size};
-
+	
+	cl_event event;
 	err = clEnqueueNDRangeKernel(queue,
 								 adam_kernel,
 								 1,
@@ -117,8 +118,17 @@ void AdamOptimizerCl::step_one_tensor(
 								 lws,
 								 0,
 								 nullptr,
-								 nullptr);
+								 &event);
+	clWaitForEvents(1, &event);
 	clFinish(queue);
+	cl_ulong time_start;
+	cl_ulong time_end;
+
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
+
+	double nanoSeconds = time_end-time_start;
+	std::cout << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
 DeviceParamView &AdamOptimizerCl::toDevice(

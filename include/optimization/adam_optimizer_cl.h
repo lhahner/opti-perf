@@ -9,6 +9,7 @@
 #include "CL/opencl.h" 
 #include "util/device_param_view.h" 
 #include "util/host_param_view.h" 
+#include <iostream>
 
 class AdamOptimizerCl : public Optimizer { 
 	public: 

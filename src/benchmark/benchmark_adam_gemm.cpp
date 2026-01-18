@@ -9,6 +9,7 @@
 #include "util/device_param_view.h"
 #include "util/device_platform_wrapper_opencl.h"
 
+/** 
 static void BM_GEMM_Adam(benchmark::State& state) {
 	std::cout << "Running workload for CPU" << std::endl;
 	int iters = static_cast<int>(state.range(0));
@@ -39,7 +40,7 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam)->Arg(100);
-
+**/
 static void BM_GEMM_Adam_cl(benchmark::State& state)
 {
 	std::cout << "Running workload for OpenCL" << std::endl;
@@ -89,18 +90,20 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 		gemm.runForward();
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
-		std::cout << "[INFO] Computed loss: " << gemm.computeLoss().first << std::endl;
+		auto loss = gemm.computeLoss();
+		std::cout << "[INFO] Computed loss h: " << loss.first << ", " << loss.second << std::endl;
 	}
 	for (auto _ : state) {
 		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters);
 	}
-
+	
 	// Clean up (ideally use RAII instead of raw new)
 	clReleaseKernel(kernel);
 	clReleaseProgram(program);
 }
 BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
 
+/**
 static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	std::cout << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
@@ -131,3 +134,4 @@ static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);
+**/
