@@ -103,12 +103,11 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 }
 BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
 
-/**
 static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	std::cout << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({10024, 10024, 256});
+	GEMM gemm({1024, 1024, 256});
 
 	std::cout << "Workload Profile: " << "\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
@@ -134,4 +133,3 @@ static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);
-**/
