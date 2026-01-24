@@ -33,16 +33,17 @@ public:
         float eps,
         cudaStream_t stream);
 
-    class State
-    {
-    public:
-        float *m = nullptr; // device
-        float *v = nullptr; // device
-        size_t n = 0;       // number of elements currently allocated
+    struct State {
+        size_t n = 0;
+        float* m = nullptr;
+        float* v = nullptr;
+
+        float* d_param = nullptr; // staging buffer
+        float* d_grad  = nullptr; // staging buffer
     };
 
 private:
     float lr_, beta1_, beta2_, eps_;
     std::unordered_map<const float *, State> states_;
-    State& state_for_(const CudaDeviceParamView* p);
+    State &state_for_(const HostParamView &hp);
 };
