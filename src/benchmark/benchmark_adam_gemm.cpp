@@ -1,6 +1,7 @@
 #pragma once
 #include <CL/cl.h>
 #include <benchmark/benchmark.h>
+#include <chrono>
 #include "benchmark/benchmark_trainer.h"
 #include "benchmark/workloads/generalmatrixmultiplication/gemm.h"
 #include "optimization/adam_optimizer.h"
@@ -9,14 +10,17 @@
 #include "util/device_param_view.h"
 #include "util/device_platform_wrapper_opencl.h"
 
-/** 
+#ifndef OPTI_PERF_SOURCE_DIR
+#define OPTI_PERF_SOURCE_DIR "."
+#endif
+
 static void BM_GEMM_Adam(benchmark::State& state) {
 	std::cout << "Running workload for CPU" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({10024, 10024, 256});
+	GEMM gemm({2024, 2024, 256});
 
-	std::cout << "Workload Profile: " << "\n"
+	std::cout << toString(Marker::INFO) << "Workload Profile: " << "\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
 		<< "Workload-type: " << gemm.workloadType << " , "
 		<< std::endl;
@@ -29,26 +33,26 @@ static void BM_GEMM_Adam(benchmark::State& state) {
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		std::cout << "[INFO] Computed loss: " << loss.first << ", " << loss.second << std::endl;
+		std::cout << toString(Marker::INFO) << "Computed loss: " << loss.first << ", " << loss.second << std::endl;
 	}
 
 	for (auto _ : state) {
 		auto loss = gemm.computeLoss();
 		benchmark::DoNotOptimize(loss);
-		std::cout << "[INFO] Computed loss: (" << loss.first << ", " << loss.second << ")\n";
+		std::cout << toString(Marker::INFO) << "Computed loss: (" << loss.first << ", " << loss.second << ")\n";
 
 	}
 }
-BENCHMARK(BM_GEMM_Adam)->Arg(100);
-**/
+BENCHMARK(BM_GEMM_Adam)->Arg(100)->Iterations(1);
+
 static void BM_GEMM_Adam_cl(benchmark::State& state)
 {
 	std::cout << "Running workload for OpenCL" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({1024, 1024, 256});
+	GEMM gemm({2024, 2024, 256});
 
-	std::cout << "Workload Profile:\n"
+	std::cout << toString(Marker::INFO) << "Workload Profile:\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
 		<< "Workload-type: " << gemm.workloadType << ", " << std::endl;
 
@@ -58,7 +62,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	auto* wrapper = DevicePlatformWrapperOpenCL::getInstance();
 	int setupSucess = wrapper->setup();
 	if(setupSucess != SETUP_SUCCESS) {
-		std::cerr << "Setup initalization failed." << std::endl;
+		std::cerr << toString(Marker::ERROR) << "Setup initalization failed." << std::endl;
 		return;
 	}
 
@@ -66,7 +70,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	cl_command_queue queue = wrapper->getClCommandQueueForDevice();
 	
 	static const char kernel_path[] =
-    "/media/lennart-hahner/LaCie/gau/lecture-notes-on-scalable-computing-systems-and-applications-in-AI-big-data-and-hpc/opti-perf/kernels/adam_optimizer.cl";
+    OPTI_PERF_SOURCE_DIR "/kernels/adam_optimizer.cl";
 
 	cl_program program = wrapper->createProgram(
 			ctx,
@@ -79,7 +83,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	static const char kernelName[] = "adam_update";
 	cl_kernel kernel = clCreateKernel(program, kernelName, &err);
 	if (err != CL_SUCCESS) {
-		std::cerr << "clCreateKernel(adam) failed: " << err << "\n";
+		std::cerr << toString(Marker::ERROR) << "clCreateKernel(adam) failed: " << err << "\n";
 		return;
 	}
 
@@ -91,7 +95,7 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		std::cout << "[INFO] Computed loss h: " << loss.first << ", " << loss.second << std::endl;
+		std::cout << toString(Marker::INFO) << "Computed loss h: " << loss.first << ", " << loss.second << std::endl;
 	}
 	for (auto _ : state) {
 		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters);
@@ -101,15 +105,15 @@ static void BM_GEMM_Adam_cl(benchmark::State& state)
 	clReleaseKernel(kernel);
 	clReleaseProgram(program);
 }
-BENCHMARK(BM_GEMM_Adam_cl)->Arg(100);
+BENCHMARK(BM_GEMM_Adam_cl)->Arg(100)->Iterations(1);
 
 static void BM_GEMM_Adam_cuda(benchmark::State& state) {
-	std::cout << "Running workload for CUDA" << std::endl;
+	std::cout << toString(Marker::INFO) << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({1024, 1024, 256});
+	GEMM gemm({2024, 2024, 256});
 
-	std::cout << "Workload Profile: " << "\n"
+	std::cout << toString(Marker::INFO) << "Workload Profile: " << "\n"
 		<< "Workload-name: " << gemm.workloadName << ", "
 		<< "Workload-type: " << gemm.workloadType << " , "
 		<< std::endl;
@@ -122,14 +126,13 @@ static void BM_GEMM_Adam_cuda(benchmark::State& state) {
 		adam.step(gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		std::cout << "[INFO] Computed loss: " << loss.first << ", " << loss.second << std::endl;
+		std::cout << toString(Marker::INFO) << "Computed loss: " << loss.first << ", " << loss.second << std::endl;
 	}
 
 	for (auto _ : state) {
 		auto loss = gemm.computeLoss();
 		benchmark::DoNotOptimize(loss);
-		std::cout << "[INFO] Computed loss: (" << loss.first << ", " << loss.second << ")\n";
-
+		std::cout << toString(Marker::INFO) << "Computed loss: (" << loss.first << ", " << loss.second << ")\n";
 	}
 }
-BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100);
+BENCHMARK(BM_GEMM_Adam_cuda)->Arg(100)->Iterations(1);

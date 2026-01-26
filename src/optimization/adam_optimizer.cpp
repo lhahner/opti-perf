@@ -7,6 +7,12 @@ void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_inde
 	const float bc1 = 1.0f - b1t;
 	const float bc2 = 1.0f - b2t;
 
+	using std::chrono::high_resolution_clock;
+    using std::chrono::duration_cast;
+    using std::chrono::duration;
+    using std::chrono::milliseconds;
+	
+	auto t1 = high_resolution_clock::now();
 	for (const auto& p : params) {
 		if (!p.data || !p.grad || p.count == 0) continue;
 
@@ -24,6 +30,9 @@ void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_inde
 			p.data[i] -= lr_ * mhat / (std::sqrt(vhat) + eps_);
 		}
 	}
+	auto t2 = high_resolution_clock::now();
+	auto ms_int = duration_cast<milliseconds>(t2 - t1);
+	std::cout << toString(Marker::INFO) << " AdamOptimizer step time: " << ms_int.count() << " ms\n";
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)

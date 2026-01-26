@@ -128,7 +128,7 @@ void AdamOptimizerCl::step_one_tensor(
 	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
 
 	double nanoSeconds = time_end - time_start;
-	std::cout << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
+	std::cout << toString(Marker::INFO) << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
 DeviceParamView &AdamOptimizerCl::toDevice(
@@ -232,7 +232,7 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	clGetEventProfilingInfo(transferEventParameter, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &startParam, NULL);
 	clGetEventProfilingInfo(transferEventParameter, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endParam, NULL);
 	cl_ulong transferTimeParam = endParam - startParam;
-	std::cout << "OpenCl Transfer to Device time Parameter is: " << (transferTimeParam / 1000000.0) << " milliseconds \n";
+	std::cout << toString(Marker::INFO) << "OpenCl Transfer to Device time Parameter is: " << (transferTimeParam / 1000000.0) << " milliseconds \n";
 	cl_int errGrad = clEnqueueWriteBuffer(q,
 										  dv.grad,
 										  CL_FALSE,
@@ -253,7 +253,7 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endGrad, NULL);
 	unsigned long transferTimeGrad = endGrad - startGrad + transferTimeParam;
 
-	std::cout << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
+	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	return dv;
 }
 

@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <cmath>
 #include <CL/cl.h>
+#include <chrono>
+#include <iostream>
 
 class AdamOptimizer : public Optimizer {
 public:

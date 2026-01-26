@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "util/host_param_view.h"
+#include "util/markers.h"
 
 class Optimizer {
 public:

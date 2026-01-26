@@ -160,6 +160,7 @@ if(BUILD_BENCHMARKS)
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer_cl.cpp
 	)
 	target_apply_common(bench)
+	target_compile_definitions(bench PRIVATE OPTI_PERF_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 	target_link_libraries(bench PRIVATE workloads benchmark::benchmark benchmark::benchmark_main)
 
 endif()
