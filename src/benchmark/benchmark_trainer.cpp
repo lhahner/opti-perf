@@ -26,7 +26,7 @@ void BenchmarkTrainer::runOptimizerWithWorkload(
 {
     for (int t = 1; t <= iters; ++t) {
         workload.runForward();
-        optimizer.step(workload.parameters(), t);
+        optimizer.step(nullptr, workload.parameters(), t);
         benchmark::DoNotOptimize(workload.computeLoss());
     }
 }

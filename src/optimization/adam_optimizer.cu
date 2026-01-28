@@ -27,8 +27,10 @@ struct CudaEventTimer {
     }
 };
 
-void AdamOptimizerCu::step(const std::vector<HostParamView> &params, int step_index)
+void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index)
 {
+    std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
     const int t = (step_index < 1) ? 1 : step_index;
 
     const float b1t = std::pow(beta1_, (float)t);
@@ -87,13 +89,21 @@ void AdamOptimizerCu::step(const std::vector<HostParamView> &params, int step_in
             d2h_ms_total += timer.end(stream);
         }
     }
-
-    // Ensure everything finished before returning
     cudaStreamSynchronize(stream);
 
-    std::cout << "[ADAM] Data Transfer: " << d2h_ms_total
-              << " ms | Execution Time: " << kernel_ms_total
-              << " ms | Total: " << (h2d_ms_total + kernel_ms_total + d2h_ms_total)
+    benchmarkData->setTimestamp(std::asctime(localTime)); 
+    benchmarkData->setWorkloadType("data_transfer");
+    benchmarkData->setTimeMs(h2d_ms_total);
+    logger.logToCsv(*benchmarkData, "adam_optimizer_cuda_data_transfer.csv");
+   
+    benchmarkData->setTimestamp(std::asctime(localTime));
+    benchmarkData->setWorkloadType("compute");
+    benchmarkData->setTimeMs(kernel_ms_total);
+    logger.logToCsv(*benchmarkData, "adam_optimizer_cuda_kernel_execution.csv");
+
+    std::cout << toString(Marker::INFO) << "Data Transfer: " << d2h_ms_total
+              << " ms ,Execution Time: " << kernel_ms_total
+              << " ms ,Total: " << (h2d_ms_total + kernel_ms_total + d2h_ms_total)
               << " ms\n";
 }
 
@@ -125,7 +135,7 @@ namespace adam_kernels
 
         param[i] -= lr * mhat / (sqrtf(vhat) + eps);
     }
-} // namespace adam_kernels
+} 
 
 void AdamOptimizerCu::launch_adam_update(
     CudaDeviceParamView *deviceParamView,
@@ -152,7 +162,7 @@ void AdamOptimizerCu::launch_adam_update(
 
     cudaError_t e = cudaGetLastError();
     if (e != cudaSuccess) {
-        std::cerr << "adam_update kernel launch failed: " << cudaGetErrorString(e) << "\n";
+        std::cerr << toString(Marker::ERROR) << "adam_update kernel launch failed: " << cudaGetErrorString(e) << "\n";
         std::abort();
     }
 }
@@ -168,7 +178,7 @@ CudaDeviceParamView *AdamOptimizerCu::convertHostToDevice(const HostParamView &p
 
 AdamOptimizerCu::State &AdamOptimizerCu::state_for_(const HostParamView &hp)
 {
-    auto it = states_.find(hp.data); // key by host param address
+    auto it = states_.find(hp.data); 
     if (it == states_.end()) {
         State st{};
         st.n = hp.count;

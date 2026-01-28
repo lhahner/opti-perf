@@ -2,7 +2,7 @@
 #include "optimization/optimizer.h"
 #include <cstdint>
 
-void AdamOptimizerCl::step(const std::vector<HostParamView> &params, int step_index)
+void AdamOptimizerCl::step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index)
 {
 	if (!context_ || !queue_ || !kernel_)
 	{
@@ -11,8 +11,8 @@ void AdamOptimizerCl::step(const std::vector<HostParamView> &params, int step_in
 
 	for (const auto &hp : params)
 	{
-		DeviceParamView &dv = toDevice(context_, queue_, hp);
-		step_one_tensor(queue_, kernel_, dv, step_index,
+		DeviceParamView &dv = toDevice(benchmarkData, context_, queue_, hp);
+		step_one_tensor(benchmarkData, queue_, kernel_, dv, step_index,
 						lr_, beta1_, beta2_, eps_, local_size_);
 		fromDevice(queue_, dv, hp);
 	}
@@ -32,10 +32,13 @@ void AdamOptimizerCl::configure(cl_context ctx, cl_command_queue q, cl_kernel k,
 }
 
 void AdamOptimizerCl::step_one_tensor(
+	BenchmarkData *benchmarkData,
 	cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
 	int step_index, float lr, float beta1, float beta2, float eps,
 	size_t local_size)
 {
+	std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
 	const float b1t = std::pow(beta1, (float)step_index);
 	const float b2t = std::pow(beta2, (float)step_index);
 	const float bc1 = 1.0f - b1t;
@@ -128,14 +131,23 @@ void AdamOptimizerCl::step_one_tensor(
 	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
 
 	double nanoSeconds = time_end - time_start;
+
+	benchmarkData->setTimestamp(std::asctime(localTime));
+	benchmarkData->setWorkloadType("data_transfer");
+	benchmarkData->setTimeMs(static_cast<float>(nanoSeconds / 1000000.0));
+
 	std::cout << toString(Marker::INFO) << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
 DeviceParamView &AdamOptimizerCl::toDevice(
+	BenchmarkData *benchmarkData,
 	cl_context ctx,
 	cl_command_queue q,
 	const HostParamView &hp)
 {
+	std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
+
 	auto it = device_state_.find(hp.data);
 
 	if (it == device_state_.end())
@@ -253,6 +265,11 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endGrad, NULL);
 	unsigned long transferTimeGrad = endGrad - startGrad + transferTimeParam;
 
+	benchmarkData->setTimestamp(std::asctime(localTime));
+	benchmarkData->setWorkloadType("data_transfer");
+	benchmarkData->setTimeMs(static_cast<float>(transferTimeGrad / 1000000.0));
+
+	logger.logToCsv(*benchmarkData, "data/logs/adam_optimizer_cl_transfer_times.csv");
 	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	return dv;
 }

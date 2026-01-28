@@ -1,7 +1,6 @@
 #include "optimization/adam_optimizer.h"
 
-void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_index)  {
-	// Precompute bias corrections once per global step
+void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostParamView>& params, int step_index)  {
 	const float b1t = std::pow(beta1_, (float)step_index);
 	const float b2t = std::pow(beta2_, (float)step_index);
 	const float bc1 = 1.0f - b1t;
@@ -18,7 +17,6 @@ void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_inde
 
 		State& st = state_for_(p);
 
-		// Adam update
 		for (size_t i = 0; i < p.count; ++i) {
 			const float g = p.grad[i];
 			st.m[i] = beta1_ * st.m[i] + (1.0f - beta1_) * g;
@@ -32,7 +30,10 @@ void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_inde
 	}
 	auto t2 = high_resolution_clock::now();
 	auto ms_int = duration_cast<milliseconds>(t2 - t1);
-	std::cout << toString(Marker::INFO) << " AdamOptimizer step time: " << ms_int.count() << " ms\n";
+
+	// store measurement
+	benchmarkData->setWorkloadType("compute");
+	benchmarkData->setTimeMs(static_cast<float>(ms_int.count()));
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)

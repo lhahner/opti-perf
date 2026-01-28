@@ -155,6 +155,7 @@ if(BUILD_BENCHMARKS)
 		${BENCH_SOURCES}
 
 		# Explicitly add the implementation files that bench needs
+		${CMAKE_SOURCE_DIR}/src/util/logger.cpp
 		${CMAKE_SOURCE_DIR}/src/util/device_platform_wrapper_opencl.cpp
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer.cpp
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer_cl.cpp

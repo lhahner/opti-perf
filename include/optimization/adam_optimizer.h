@@ -9,12 +9,13 @@
 #include <CL/cl.h>
 #include <chrono>
 #include <iostream>
+#include "util/benchmark_data.h"
 
 class AdamOptimizer : public Optimizer {
 public:
     AdamOptimizer(float lr, float beta1, float beta2, float eps)
         : lr_(lr), beta1_(beta1), beta2_(beta2), eps_(eps) {}
-    void step(const std::vector<HostParamView>& params, int step_index);
+    void step(BenchmarkData *benchmarkData, const std::vector<HostParamView>& params, int step_index);
 
 private:
    struct State {
