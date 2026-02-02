@@ -1,5 +1,10 @@
 #include "optimization/adam_optimizer.h"
 
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostParamView>& params, int step_index)  {
 	const float b1t = std::pow(beta1_, (float)step_index);
 	const float b2t = std::pow(beta2_, (float)step_index);
@@ -34,6 +39,18 @@ void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostPar
 	// store measurement
 	benchmarkData->setWorkloadType("compute");
 	benchmarkData->setTimeMs(static_cast<float>(ms_int.count()));
+	
+	auto now = std::chrono::system_clock::now();
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm tm{};
+	localtime_r(&tt, &tm);
+	std::ostringstream ts;
+	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+	static thread_local std::string ts_str;
+	ts_str = ts.str();
+	
+	benchmarkData->setTimestamp(ts_str.c_str());
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");	
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)
@@ -52,4 +69,3 @@ AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)
         }
         return it->second;
 }
-

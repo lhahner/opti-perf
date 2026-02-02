@@ -1,5 +1,7 @@
 #include "util/logger.h"
 
+#include <filesystem>
+
 void Logger::log(Marker marker, const char *message)
 {
     std::cout << toString(marker) << message << std::endl;
@@ -7,11 +9,24 @@ void Logger::log(Marker marker, const char *message)
 
 int Logger::logToCsv(BenchmarkData benchmarkData, const char *filename)
 {
+    namespace fs = std::filesystem;
+    fs::path out_path(filename);
+
+    if (!out_path.is_absolute())
+    {
+#ifdef OPTI_PERF_SOURCE_DIR
+        fs::path base(OPTI_PERF_SOURCE_DIR);
+#else
+        fs::path base = fs::current_path();
+#endif
+        out_path = base / "data" / "logs" / out_path;
+    }
+
     std::ofstream file;
-    file.open(std::string(filePath) + filename, std::ios::app);
+    file.open(out_path, std::ios::app);
     if (!file.is_open())
     {
-        std::cerr << toString(Marker::ERROR) << "Failed to open CSV file: " << filename << std::endl;
+        std::cerr << toString(Marker::ERROR) << "Failed to open CSV file: " << out_path.string() << std::endl;
         return LOG_TO_FILE_FAILURE;
     }
 

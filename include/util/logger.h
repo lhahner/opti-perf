@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -31,6 +33,5 @@ public:
     int logToCsv(BenchmarkData benchmarkData, const char *filename);
 
 private:
-    const char *filePath = "data/logs/";
     BenchmarkData benchmarkData;
 };

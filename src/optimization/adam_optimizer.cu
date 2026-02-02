@@ -1,6 +1,26 @@
 #include <cuda_runtime.h>
 #include <iostream>
 #include "optimization/adam_optimizer_cu.h"
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+namespace {
+const char *format_timestamp()
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t tt = std::chrono::system_clock::to_time_t(now);
+    std::tm tm{};
+    localtime_r(&tt, &tm);
+    std::ostringstream ts;
+    ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+    static thread_local std::string ts_str;
+    ts_str = ts.str();
+    return ts_str.c_str();
+}
+} // namespace
 
 struct CudaEventTimer {
     cudaEvent_t start, stop;
@@ -29,8 +49,6 @@ struct CudaEventTimer {
 
 void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index)
 {
-    std::time_t now = std::time(nullptr);
-    std::tm* localTime = std::localtime(&now);
     const int t = (step_index < 1) ? 1 : step_index;
 
     const float b1t = std::pow(beta1_, (float)t);
@@ -91,15 +109,15 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     }
     cudaStreamSynchronize(stream);
 
-    benchmarkData->setTimestamp(std::asctime(localTime)); 
+    benchmarkData->setTimestamp(format_timestamp());
     benchmarkData->setWorkloadType("data_transfer");
     benchmarkData->setTimeMs(h2d_ms_total);
-    logger.logToCsv(*benchmarkData, "adam_optimizer_cuda_data_transfer.csv");
+    logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
    
-    benchmarkData->setTimestamp(std::asctime(localTime));
+    benchmarkData->setTimestamp(format_timestamp());
     benchmarkData->setWorkloadType("compute");
     benchmarkData->setTimeMs(kernel_ms_total);
-    logger.logToCsv(*benchmarkData, "adam_optimizer_cuda_kernel_execution.csv");
+    logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
 
     std::cout << toString(Marker::INFO) << "Data Transfer: " << d2h_ms_total
               << " ms ,Execution Time: " << kernel_ms_total

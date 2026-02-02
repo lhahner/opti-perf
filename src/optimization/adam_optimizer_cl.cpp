@@ -1,6 +1,26 @@
 #include "optimization/adam_optimizer_cl.h"
 #include "optimization/optimizer.h"
 #include <cstdint>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+namespace {
+const char *format_timestamp()
+{
+	auto now = std::chrono::system_clock::now();
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm tm{};
+	localtime_r(&tt, &tm);
+	std::ostringstream ts;
+	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+	static thread_local std::string ts_str;
+	ts_str = ts.str();
+	return ts_str.c_str();
+}
+} // namespace
 
 void AdamOptimizerCl::step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index)
 {
@@ -37,8 +57,6 @@ void AdamOptimizerCl::step_one_tensor(
 	int step_index, float lr, float beta1, float beta2, float eps,
 	size_t local_size)
 {
-	std::time_t now = std::time(nullptr);
-    std::tm* localTime = std::localtime(&now);
 	const float b1t = std::pow(beta1, (float)step_index);
 	const float b2t = std::pow(beta2, (float)step_index);
 	const float bc1 = 1.0f - b1t;
@@ -132,10 +150,10 @@ void AdamOptimizerCl::step_one_tensor(
 
 	double nanoSeconds = time_end - time_start;
 
-	benchmarkData->setTimestamp(std::asctime(localTime));
-	benchmarkData->setWorkloadType("data_transfer");
+	benchmarkData->setTimestamp(format_timestamp());
+	benchmarkData->setWorkloadType("compute");
 	benchmarkData->setTimeMs(static_cast<float>(nanoSeconds / 1000000.0));
-
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
 	std::cout << toString(Marker::INFO) << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
@@ -145,9 +163,6 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	cl_command_queue q,
 	const HostParamView &hp)
 {
-	std::time_t now = std::time(nullptr);
-    std::tm* localTime = std::localtime(&now);
-
 	auto it = device_state_.find(hp.data);
 
 	if (it == device_state_.end())
@@ -265,11 +280,10 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endGrad, NULL);
 	unsigned long transferTimeGrad = endGrad - startGrad + transferTimeParam;
 
-	benchmarkData->setTimestamp(std::asctime(localTime));
+	benchmarkData->setTimestamp(format_timestamp());
 	benchmarkData->setWorkloadType("data_transfer");
 	benchmarkData->setTimeMs(static_cast<float>(transferTimeGrad / 1000000.0));
-
-	logger.logToCsv(*benchmarkData, "data/logs/adam_optimizer_cl_transfer_times.csv");
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
 	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	return dv;
 }

@@ -10,6 +10,8 @@
 #include <chrono>
 #include <iostream>
 #include "util/benchmark_data.h"
+#include "util/logger.h"
+#include <ctime>
 
 class AdamOptimizer : public Optimizer {
 public:
@@ -25,4 +27,5 @@ private:
     float lr_, beta1_, beta2_, eps_;
     std::unordered_map<const float*, State> states_;
     State& state_for_(const HostParamView& p);
+    Logger logger;
 };

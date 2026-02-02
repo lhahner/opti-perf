@@ -1,17 +1,18 @@
 #pragma once
 #include <sstream>
+#include <string>
 
 class BenchmarkData
 {
 private:
-    char *timestamp;
-    char *framework;
-    char *workload_name;
-    char *workload_type;
-    char *device;
+    const char *timestamp = "";
+    const char *framework = "";
+    const char *workload_name = "";
+    const char *workload_type = "";
+    const char *device = "";
     int batch_size;
     int input_size;
-    char *optimizer;
+    const char *optimizer = "";
     float learning_rate;
     float beta1;
     float beta2;
@@ -24,9 +25,9 @@ public:
     BenchmarkData()
     {
     }
-    BenchmarkData(char *ts, char *fw, char *w_name, char *w_type, char *dev,
+    BenchmarkData(const char *ts, const char *fw, const char *w_name, const char *w_type, const char *dev,
                   int b_size, int in_size,
-                  char *opt, float lr, float b1, float b2,
+                  const char *opt, float lr, float b1, float b2,
                   float eps, float t_ms, int b_index, float l)
     {
         timestamp = ts;
@@ -49,14 +50,14 @@ public:
     {
     }
 
-    void setTimestamp(char *ts) { timestamp = ts; }
-    void setFramework(char *fw) { framework = fw; }
-    void setWorkloadName(char *w_name) { workload_name = w_name; }
-    void setWorkloadType(char *w_type) { workload_type = w_type; }
-    void setDevice(char *dev) { device = dev; }
+    void setTimestamp(const char *ts) { timestamp = ts; }
+    void setFramework(const char *fw) { framework = fw; }
+    void setWorkloadName(const char *w_name) { workload_name = w_name; }
+    void setWorkloadType(const char *w_type) { workload_type = w_type; }
+    void setDevice(const char *dev) { device = dev; }
     void setBatchSize(int b_size) { batch_size = b_size; }
     void setInputSize(int in_size) { input_size = in_size; }
-    void setOptimizer(char *opt) { optimizer = opt; }
+    void setOptimizer(const char *opt) { optimizer = opt; }
     void setLearningRate(float lr) { learning_rate = lr; }
     void setBeta1(float b1) { beta1 = b1; }
     void setBeta2(float b2) { beta2 = b2; }
@@ -67,17 +68,18 @@ public:
 
     const char *getCSVHeader()
     {
-        return "timestamp,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms";
+        return "timestamp,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms,batch_index,loss";
     }
 
-    const char *toCSVString()
+    std::string toCSVString() const
     {
         std::stringstream ss;
-        ss << timestamp << "," << framework << "," << workload_name << ","
-           << workload_type << "," << device << "," << batch_size << ","
-           << input_size << "," << "," << optimizer << ","
+        auto safe = [](const char *s) { return s ? s : ""; };
+        ss << safe(timestamp) << "," << safe(framework) << "," << safe(workload_name) << ","
+           << safe(workload_type) << "," << safe(device) << "," << batch_size << ","
+           << input_size << "," << safe(optimizer) << ","
            << learning_rate << "," << beta1 << "," << beta2 << ","
            << epsilon << "," << time_ms << "," << batch_index << "," << loss;
-        return ss.str().c_str();
+        return ss.str();
     }
 };
