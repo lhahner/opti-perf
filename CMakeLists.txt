@@ -75,6 +75,7 @@ endfunction()
 function(target_apply_common tgt)
 	target_include_directories(${tgt} PRIVATE "${CMAKE_SOURCE_DIR}/include")
 	target_compile_options(${tgt} PRIVATE -Wall -Wextra -Wpedantic)
+	target_compile_definitions(${tgt} PRIVATE OPTI_PERF_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 	target_link_libraries(${tgt})
 	target_enable_openmp(${tgt})
 	target_enable_opencl(${tgt})
@@ -155,11 +156,13 @@ if(BUILD_BENCHMARKS)
 		${BENCH_SOURCES}
 
 		# Explicitly add the implementation files that bench needs
+		${CMAKE_SOURCE_DIR}/src/util/logger.cpp
 		${CMAKE_SOURCE_DIR}/src/util/device_platform_wrapper_opencl.cpp
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer.cpp
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer_cl.cpp
 	)
 	target_apply_common(bench)
+	target_compile_definitions(bench PRIVATE OPTI_PERF_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 	target_link_libraries(bench PRIVATE workloads benchmark::benchmark benchmark::benchmark_main)
 
 endif()

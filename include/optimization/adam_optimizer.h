@@ -7,12 +7,17 @@
 #include <cstdint>
 #include <cmath>
 #include <CL/cl.h>
+#include <chrono>
+#include <iostream>
+#include "util/benchmark_data.h"
+#include "util/logger.h"
+#include <ctime>
 
 class AdamOptimizer : public Optimizer {
 public:
     AdamOptimizer(float lr, float beta1, float beta2, float eps)
         : lr_(lr), beta1_(beta1), beta2_(beta2), eps_(eps) {}
-    void step(const std::vector<HostParamView>& params, int step_index);
+    void step(BenchmarkData *benchmarkData, const std::vector<HostParamView>& params, int step_index);
 
 private:
    struct State {
@@ -22,4 +27,5 @@ private:
     float lr_, beta1_, beta2_, eps_;
     std::unordered_map<const float*, State> states_;
     State& state_for_(const HostParamView& p);
+    Logger logger;
 };

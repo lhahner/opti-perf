@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include "util/setup_wrapper.h"
 
 class DevicePlatformWrapperOpenCL {

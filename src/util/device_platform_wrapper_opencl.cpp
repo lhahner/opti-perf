@@ -2,42 +2,44 @@
 #include <CL/cl.h>
 #include <stdexcept>
 
-DevicePlatformWrapperOpenCL* DevicePlatformWrapperOpenCL::devicePlatformWrapperOpenCL_  = nullptr;;
+DevicePlatformWrapperOpenCL *DevicePlatformWrapperOpenCL::devicePlatformWrapperOpenCL_ = nullptr;
+;
 
 /**
  * Core Setup and Implementation
  *
  * @return 0 if success and 1 if not, logs failure cause anyway.
  **/
-int DevicePlatformWrapperOpenCL::setup() 
+int DevicePlatformWrapperOpenCL::setup()
 {
 	this->context = this->createContext();
-	if (this->getClContext() == NULL) {
-		std::cerr 
-			<< "Context Creation in inital setup for OpenCL failed." 
-			<< std::endl;
-		return SETUP_FAILURE;	
-	}
-
-	this->commandQueue = this->createCommandQueue(
-			this->context, 
-			&this->device);
-
-	if (this->commandQueue == NULL) 
+	if (this->getClContext() == NULL)
 	{
-		std::cerr << "Failed to created commandQueue in inital seutp."
+		std::cerr
+			<< "Context Creation in inital setup for OpenCL failed."
 			<< std::endl;
 		return SETUP_FAILURE;
 	}
-	
+
+	this->commandQueue = this->createCommandQueue(
+		this->context,
+		&this->device);
+
+	if (this->commandQueue == NULL)
+	{
+		std::cerr << "Failed to created commandQueue in inital seutp."
+				  << std::endl;
+		return SETUP_FAILURE;
+	}
+
 	return SETUP_SUCCESS;
 }
 
-DevicePlatformWrapperOpenCL* DevicePlatformWrapperOpenCL::getInstance()
+DevicePlatformWrapperOpenCL *DevicePlatformWrapperOpenCL::getInstance()
 {
-	if (devicePlatformWrapperOpenCL_ == nullptr) 
+	if (devicePlatformWrapperOpenCL_ == nullptr)
 	{
-		devicePlatformWrapperOpenCL_ = 
+		devicePlatformWrapperOpenCL_ =
 			new DevicePlatformWrapperOpenCL();
 		return devicePlatformWrapperOpenCL_;
 	}
@@ -47,7 +49,7 @@ DevicePlatformWrapperOpenCL* DevicePlatformWrapperOpenCL::getInstance()
 /**
  * Create an OpenCL context on the first available platform.
  *
- * @return returns the created context with the first available paltform.  
+ * @return returns the created context with the first available paltform.
  **/
 cl_context DevicePlatformWrapperOpenCL::createContext()
 {
@@ -55,51 +57,50 @@ cl_context DevicePlatformWrapperOpenCL::createContext()
 	cl_uint numPlatforms;
 	cl_platform_id firstPlatformId;
 	cl_context context = NULL;
-	errNum = clGetPlatformIDs(1, 
-			&firstPlatformId, 
-			&numPlatforms);
+	errNum = clGetPlatformIDs(1,
+							  &firstPlatformId,
+							  &numPlatforms);
 
 	if (errNum != CL_SUCCESS || numPlatforms <= 0)
 	{
-		std::cerr << "No Platforms found for OpenCL Context" << std::endl;	
+		std::cerr << "No Platforms found for OpenCL Context" << std::endl;
 	}
 	cl_context_properties contextProperties[] =
-	{
-		CL_CONTEXT_PLATFORM,
-		(cl_context_properties)firstPlatformId,
-		0
-	};
+		{
+			CL_CONTEXT_PLATFORM,
+			(cl_context_properties)firstPlatformId,
+			0};
 	context = clCreateContextFromType(
-			contextProperties,
-			CL_DEVICE_TYPE_GPU,
-			NULL, 
-			NULL, 
-			&errNum);
+		contextProperties,
+		CL_DEVICE_TYPE_GPU,
+		NULL,
+		NULL,
+		&errNum);
 	if (errNum != CL_SUCCESS)
 	{
-		std::cout 
-			<< "Could not create GPU context, trying CPU..." 
+		std::cout
+			<< "Could not create GPU context, trying CPU..."
 			<< std::endl;
 		context = clCreateContextFromType(
-				contextProperties,
-				CL_DEVICE_TYPE_CPU,
-				NULL, 
-				NULL, 
-				&errNum);
+			contextProperties,
+			CL_DEVICE_TYPE_CPU,
+			NULL,
+			NULL,
+			&errNum);
 		if (errNum != CL_SUCCESS)
 		{
-			std::cerr 
+			std::cerr
 				<< "Failed to create an OpenCL GPU or CPU context."
 				<< std::endl;
 			return NULL;
 		}
 	}
 	return context;
-}	
+}
 
 cl_command_queue DevicePlatformWrapperOpenCL::createCommandQueue(
-		cl_context context, 
-		cl_device_id *device)
+	cl_context context,
+	cl_device_id *device)
 {
 	cl_int errNum;
 	cl_device_id *devices;
@@ -107,16 +108,16 @@ cl_command_queue DevicePlatformWrapperOpenCL::createCommandQueue(
 	size_t deviceBufferSize = -1;
 
 	errNum = clGetContextInfo(
-			context, 
-			CL_CONTEXT_DEVICES, 
-			0, 
-			NULL,
-			&deviceBufferSize);
+		context,
+		CL_CONTEXT_DEVICES,
+		0,
+		NULL,
+		&deviceBufferSize);
 
 	if (errNum != CL_SUCCESS)
 	{
 		std::cerr << "Failed call to clGetContextInfo()"
-			<< std::endl;
+				  << std::endl;
 		return NULL;
 	}
 	if (deviceBufferSize <= 0)
@@ -127,11 +128,11 @@ cl_command_queue DevicePlatformWrapperOpenCL::createCommandQueue(
 
 	devices = new cl_device_id[deviceBufferSize / sizeof(cl_device_id)];
 	errNum = clGetContextInfo(
-			context, 
-			CL_CONTEXT_DEVICES,	
-			deviceBufferSize, 
-			devices, 
-			NULL);
+		context,
+		CL_CONTEXT_DEVICES,
+		deviceBufferSize,
+		devices,
+		NULL);
 
 	if (errNum != CL_SUCCESS)
 	{
@@ -140,30 +141,63 @@ cl_command_queue DevicePlatformWrapperOpenCL::createCommandQueue(
 	}
 
 	commandQueue = clCreateCommandQueue(
-			context,
-			devices[0],
-			0, 
-			NULL);
+		context,
+		devices[0],
+		CL_QUEUE_PROFILING_ENABLE,
+		NULL);
 	if (commandQueue == NULL)
 	{
 		std::cerr << "Failed to create commandQueue for device 0"
-			<<std::endl;
+				  << std::endl;
 		return NULL;
 	}
 	*device = devices[0];
-	delete [] devices;
+
+	// 1. Query size of device name
+	size_t nameSize = 0;
+	cl_int err = clGetDeviceInfo(
+		*device,
+		CL_DEVICE_NAME,
+		0,
+		nullptr,
+		&nameSize);
+
+	if (err != CL_SUCCESS)
+	{
+		std::cerr << "Failed to get device name size\n";
+		delete[] devices;
+		return NULL;
+	}
+
+	std::vector<char> deviceName(nameSize);
+	err = clGetDeviceInfo(
+		*device,
+		CL_DEVICE_NAME,
+		nameSize,
+		deviceName.data(),
+		nullptr);
+
+	if (err != CL_SUCCESS)
+	{
+		std::cerr << "Failed to get device name\n";
+		delete[] devices;
+		return NULL;
+	}
+
+	std::cout << "Using OpenCL device: " << deviceName.data() << std::endl;
+
+	delete[] devices;
 	return commandQueue;
 }
 
-cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_device_id device, const char* kernel) 
+cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_device_id device, const char *kernel)
 {
 	cl_int errNum;
 	cl_program program;
 	std::ifstream kernelFile(kernel, std::ios::in);
 	if (!kernelFile.is_open())
 	{
-		std::cerr << "Failed to open file for reading: " << kernel <<
-			std::endl;
+		std::cerr << "Failed to open file for reading: " << kernel << std::endl;
 		return NULL;
 	}
 	std::ostringstream oss;
@@ -171,8 +205,8 @@ cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_dev
 	std::string srcStdStr = oss.str();
 	const char *srcStr = srcStdStr.c_str();
 	program = clCreateProgramWithSource(context, 1,
-			(const char**)&srcStr,
-			NULL, NULL);
+										(const char **)&srcStr,
+										NULL, NULL);
 	if (program == NULL)
 	{
 		std::cerr << "Failed to create CL program from source." << std::endl;
@@ -183,7 +217,7 @@ cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_dev
 	{
 		char buildLog[16384];
 		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG,
-				sizeof(buildLog), buildLog, NULL);
+							  sizeof(buildLog), buildLog, NULL);
 		std::cerr << "Error in kernel: " << std::endl;
 		std::cerr << buildLog;
 		clReleaseProgram(program);
@@ -191,7 +225,6 @@ cl_program DevicePlatformWrapperOpenCL::createProgram(cl_context context, cl_dev
 	}
 	return program;
 }
-
 
 /**
  * Getter and Setter Section
@@ -214,4 +247,4 @@ cl_device_id DevicePlatformWrapperOpenCL::getDeviceId()
 cl_command_queue DevicePlatformWrapperOpenCL::getClCommandQueueForDevice()
 {
 	return this->commandQueue;
-}	
+}

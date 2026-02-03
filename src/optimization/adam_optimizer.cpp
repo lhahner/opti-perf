@@ -1,18 +1,27 @@
 #include "optimization/adam_optimizer.h"
 
-void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_index)  {
-	// Precompute bias corrections once per global step
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
+void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostParamView>& params, int step_index)  {
 	const float b1t = std::pow(beta1_, (float)step_index);
 	const float b2t = std::pow(beta2_, (float)step_index);
 	const float bc1 = 1.0f - b1t;
 	const float bc2 = 1.0f - b2t;
 
+	using std::chrono::high_resolution_clock;
+    using std::chrono::duration_cast;
+    using std::chrono::duration;
+    using std::chrono::milliseconds;
+	
+	auto t1 = high_resolution_clock::now();
 	for (const auto& p : params) {
 		if (!p.data || !p.grad || p.count == 0) continue;
 
 		State& st = state_for_(p);
 
-		// Adam update
 		for (size_t i = 0; i < p.count; ++i) {
 			const float g = p.grad[i];
 			st.m[i] = beta1_ * st.m[i] + (1.0f - beta1_) * g;
@@ -24,6 +33,24 @@ void AdamOptimizer::step(const std::vector<HostParamView>& params, int step_inde
 			p.data[i] -= lr_ * mhat / (std::sqrt(vhat) + eps_);
 		}
 	}
+	auto t2 = high_resolution_clock::now();
+	auto ms_int = duration_cast<milliseconds>(t2 - t1);
+
+	// store measurement
+	benchmarkData->setWorkloadType("compute");
+	benchmarkData->setTimeMs(static_cast<float>(ms_int.count()));
+	
+	auto now = std::chrono::system_clock::now();
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm tm{};
+	localtime_r(&tt, &tm);
+	std::ostringstream ts;
+	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+	static thread_local std::string ts_str;
+	ts_str = ts.str();
+	
+	benchmarkData->setTimestamp(ts_str.c_str());
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");	
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)
@@ -42,4 +69,3 @@ AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)
         }
         return it->second;
 }
-

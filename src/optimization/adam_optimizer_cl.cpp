@@ -1,8 +1,28 @@
 #include "optimization/adam_optimizer_cl.h"
 #include "optimization/optimizer.h"
 #include <cstdint>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
-void AdamOptimizerCl::step(const std::vector<HostParamView> &params, int step_index)
+namespace {
+const char *format_timestamp()
+{
+	auto now = std::chrono::system_clock::now();
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm tm{};
+	localtime_r(&tt, &tm);
+	std::ostringstream ts;
+	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+	static thread_local std::string ts_str;
+	ts_str = ts.str();
+	return ts_str.c_str();
+}
+} // namespace
+
+void AdamOptimizerCl::step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index)
 {
 	if (!context_ || !queue_ || !kernel_)
 	{
@@ -11,8 +31,8 @@ void AdamOptimizerCl::step(const std::vector<HostParamView> &params, int step_in
 
 	for (const auto &hp : params)
 	{
-		DeviceParamView &dv = toDevice(context_, queue_, hp);
-		step_one_tensor(queue_, kernel_, dv, step_index,
+		DeviceParamView &dv = toDevice(benchmarkData, context_, queue_, hp);
+		step_one_tensor(benchmarkData, queue_, kernel_, dv, step_index,
 						lr_, beta1_, beta2_, eps_, local_size_);
 		fromDevice(queue_, dv, hp);
 	}
@@ -32,6 +52,7 @@ void AdamOptimizerCl::configure(cl_context ctx, cl_command_queue q, cl_kernel k,
 }
 
 void AdamOptimizerCl::step_one_tensor(
+	BenchmarkData *benchmarkData,
 	cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
 	int step_index, float lr, float beta1, float beta2, float eps,
 	size_t local_size)
@@ -109,6 +130,7 @@ void AdamOptimizerCl::step_one_tensor(
 	const size_t gws[1] = {global_size};
 	const size_t lws[1] = {local_size};
 
+	cl_event event;
 	err = clEnqueueNDRangeKernel(queue,
 								 adam_kernel,
 								 1,
@@ -117,11 +139,26 @@ void AdamOptimizerCl::step_one_tensor(
 								 lws,
 								 0,
 								 nullptr,
-								 nullptr);
+								 &event);
+	clWaitForEvents(1, &event);
 	clFinish(queue);
+	cl_ulong time_start;
+	cl_ulong time_end;
+
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_START, sizeof(time_start), &time_start, NULL);
+	clGetEventProfilingInfo(event, CL_PROFILING_COMMAND_END, sizeof(time_end), &time_end, NULL);
+
+	double nanoSeconds = time_end - time_start;
+
+	benchmarkData->setTimestamp(format_timestamp());
+	benchmarkData->setWorkloadType("compute");
+	benchmarkData->setTimeMs(static_cast<float>(nanoSeconds / 1000000.0));
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
+	std::cout << toString(Marker::INFO) << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
 DeviceParamView &AdamOptimizerCl::toDevice(
+	BenchmarkData *benchmarkData,
 	cl_context ctx,
 	cl_command_queue q,
 	const HostParamView &hp)
@@ -201,7 +238,8 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	}
 
 	size_t bytes = dv.n * sizeof(float);
-	clEnqueueWriteBuffer(
+	cl_event transferEventParameter, transferEventGradient;
+	cl_int errParam = clEnqueueWriteBuffer(
 		q,
 		dv.param,
 		CL_FALSE,
@@ -210,16 +248,43 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 		hp.data,
 		0,
 		nullptr,
-		nullptr);
-	clEnqueueWriteBuffer(q,
-						 dv.grad,
-						 CL_FALSE,
-						 0,
-						 bytes,
-						 hp.grad,
-						 0,
-						 nullptr,
-						 nullptr);
+		&transferEventParameter);
+	if (errParam != CL_SUCCESS)
+	{
+		throw std::runtime_error("clEnqueueWriteBuffer(param) failed");
+	}
+	clWaitForEvents(1, &transferEventParameter);
+	cl_ulong startParam = 0;
+	cl_ulong endParam = 0;
+	clGetEventProfilingInfo(transferEventParameter, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &startParam, NULL);
+	clGetEventProfilingInfo(transferEventParameter, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endParam, NULL);
+	cl_ulong transferTimeParam = endParam - startParam;
+	std::cout << toString(Marker::INFO) << "OpenCl Transfer to Device time Parameter is: " << (transferTimeParam / 1000000.0) << " milliseconds \n";
+	cl_int errGrad = clEnqueueWriteBuffer(q,
+										  dv.grad,
+										  CL_FALSE,
+										  0,
+										  bytes,
+										  hp.grad,
+										  0,
+										  nullptr,
+										  &transferEventGradient);
+	if (errGrad != CL_SUCCESS)
+	{
+		throw std::runtime_error("clEnqueueWriteBuffer(grad) failed");
+	}
+	clWaitForEvents(1, &transferEventGradient);
+	unsigned long startGrad = 0;
+	unsigned long endGrad = 0;
+	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &startGrad, NULL);
+	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endGrad, NULL);
+	unsigned long transferTimeGrad = endGrad - startGrad + transferTimeParam;
+
+	benchmarkData->setTimestamp(format_timestamp());
+	benchmarkData->setWorkloadType("data_transfer");
+	benchmarkData->setTimeMs(static_cast<float>(transferTimeGrad / 1000000.0));
+	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
+	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	return dv;
 }
 
