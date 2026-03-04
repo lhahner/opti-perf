@@ -1,0 +1,67 @@
+% How is the project structured ?
+\subsection{Architecture}
+
+% How is the project structured?
+The benchmark program follows a layered architecture pattern. Each layer represents a distinct 
+subsystem responsible for handling specific tasks and clearly defined responsibilities.
+
+% https://daneshjavaji.wordpress.com/wp-content/uploads/2018/02/sznikak_jegyzet_pattern-oriented-sa_vol1.pdf
+
+% Why is it structured this way?
+This architectural approach enables flexible combinations of workloads and optimizers. 
+It allows the system to be extended beyond machine learning workloads to support other 
+computational tasks for performance evaluation. 
+Figure \ref{fig:architecture-overview} provides an overview of the architecture and its modules.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=17cm, height=10cm]{diagrams/umls/architecture-overview.pdf}
+	\caption{Layered architecture of the benchmark system. The User Interaction Layer 
+		(implemented as a CLI) communicates with the Benchmark Layer, which manages 
+		multiple workloads. The Optimization Layer provides different optimizers that 
+		execute these workloads. All layers rely on shared functionality provided by 
+		the Util Layer.}
+	\label{fig:architecture-overview}
+\end{figure}
+
+% Which targets follow each component?
+User interaction is handled exclusively through the CLI, which allows the user to configure 
+and execute benchmarks. The CLI abstracts low-level system interactions and provides a 
+clean and user-friendly interface.
+The Benchmark Layer is responsible for defining and managing benchmark executions. 
+Each workload represents a specific computational task to be solved by an optimizer. 
+This layer initializes workloads and provides the required configuration to the 
+Optimization Layer.
+The Optimization Layer defines different optimizer implementations that execute 
+the given workloads. These optimizers encapsulate the optimization logic and 
+performance-critical computations.
+All layers interact with the Util Layer, which contains shared utilities such as 
+wrapper classes, logging functionality, and other cross-cutting concerns.
+The following subsections describe each layer and its components in greater detail.
+
+\subsubsection{Benchmark layer}
+The benchmark layer is the entrypoint of the application and defines and runs different
+workloads. The layer is split in two different modules one is the benchmark moulde and the
+other is the workload module. The following figures \ref{} provides an overview of the 
+structure.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14cm, height=14cm]{diagrams/umls/benchmark-layer-uml.pdf}
+	\caption{Layered architecture of the benchmark system. The User Interaction Layer 
+		(implemented as a CLI) communicates with the Benchmark Layer, which manages 
+		multiple workloads. The Optimization Layer provides different optimizers that 
+		execute these workloads. All layers rely on shared functionality provided by 
+		the Util Layer.}
+	\label{fig:architecture-overview}
+\end{figure}
+
+ Where the \verb|BenchmarkTrainer| is responsible for allocate the workload and also 
+ execute all the preprocessing steps needed to run the optimizer in the end. Each 
+workload implements the workload interface or extends this abstract class. The interface
+is then used to implement a workload-agnostic approcach to makke it possible to
+implement different workloads from other domains.
+ 
+\subsubsection{Optimization layer}
+\subsubsection{Util layer}
+\subsubsection{Data layer}
