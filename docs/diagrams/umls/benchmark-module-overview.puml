@@ -1,0 +1,84 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Benchmark Module - Technical Overview (Approximate)
+
+package "src/benchmark" {
+  class BenchmarkEntrypoints {
+    +BM_GEMM_Adam(state)
+    +BM_GEMM_Adam_cuda(state)
+  }
+
+  class BenchmarkTrainer {
+    -workloads_: vector<Workload&>
+    -optimizers_: vector<Optimizer&>
+    +runWorkloads()
+    +runOptimizerWithWorkload(workload, optimizer, iters)
+  }
+
+  abstract class Workload {
+    +runForward()
+    +computeLoss(): pair<int,float>
+    +parameters(): vector<HostParamView>
+  }
+
+  class GEMM {
+    -dimensions_: vector<int>
+    -W_, X_, Yt_, Y_, E_, dW_, Xt_: vector<float>
+    +initializeInput()
+    +runForward()
+    +computeLoss()
+    +parameters()
+  }
+
+  class FFT
+  class Mnist
+  class DCGAN
+}
+
+package "optimization" {
+  abstract class Optimizer {
+    +step(benchmarkData, params, step_index)
+  }
+
+  class AdamOptimizer
+  class AdamOptimizerCl
+  class AdamOptimizerCu
+}
+
+package "util" {
+  class BenchmarkData
+  class HostParamView
+}
+
+Workload <|-- GEMM
+Workload <|-- FFT
+Workload <|-- Mnist
+Workload <|-- DCGAN
+
+Optimizer <|-- AdamOptimizer
+Optimizer <|-- AdamOptimizerCl
+Optimizer <|-- AdamOptimizerCu
+
+BenchmarkTrainer --> Workload : executes
+BenchmarkTrainer --> Optimizer : applies
+BenchmarkEntrypoints --> GEMM : creates/runs
+BenchmarkEntrypoints --> AdamOptimizer : CPU path
+BenchmarkEntrypoints --> AdamOptimizerCu : CUDA path
+
+Workload --> HostParamView : exposes params/grad
+Optimizer --> HostParamView : consumes
+Optimizer --> BenchmarkData : logs metrics
+
+note right of Mnist
+  currently mostly commented/stubbed
+end note
+
+note right of DCGAN
+  currently mostly commented/stubbed
+end note
+
+note right of FFT
+  placeholder class in current source
+end note
+
+@enduml
