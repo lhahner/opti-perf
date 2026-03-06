@@ -1,47 +1,157 @@
-\documentclass[onecolumn,12pt]{IEEEtran}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Report Template
+% LaTeX Template
+% Version 1.2.1 (2024-02-20)
+%
+% This template was adapted by:
+% Jonathan Decker (jonathan.decker@uni-goettingen.de)
+% Adapted from the informatics master and bachelor thesis template
+% offered by the University Göttingen
+% https://www.uni-goettingen.de/de/626775.html
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt, a4paper, hidelinks]{article}
 
-\include{./packages/packs.tex}
-\usepackage{setspace}
 \usepackage{graphicx}
-\onehalfspacing
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage[nottoc]{tocbibind}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{ref.bib} % The filename of the bibliography
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{acronym}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{lipsum}
+\usepackage{array, tabularx, booktabs} % For better tables
+\usepackage{longtable}
+\usepackage{minted}
+\usemintedstyle{tango}
+\setminted{linenos, autogobble, bgcolor=gray!5}
+\usepackage{titlesec}
+\usepackage{amssymb}
+\setlength{\marginparwidth}{2cm}
+\usepackage{todonotes}
+\usepackage{nicematrix}
+\usepackage[autostyle=true]{csquotes}
+\usepackage{cleveref}
+
+\titleformat{\section}[hang]{\huge\bfseries}{\thesection\hspace{20pt}}{0pt}{\huge\bfseries}
+\graphicspath{{figures/}{./}{assets/}}
+
+\newcommand{\ccheckmark}{\mbox{\ooalign{$\checkmark$\cr\hidewidth$\square$\hidewidth\cr}}}
+\newcommand{\ccheckbox}{\mbox{$\square$}}
+
+% --- document configuration ---
+
+\newcommand{\thesistitle}{[Put your title here]}
+\newcommand{\supervisor}{[Put your supervisors name here]}
+\newcommand{\authorname}{[Put your name here]}
+\newcommand{\university}{Georg-August-Universität Göttingen}
+\newcommand{\department}{Institute of Computer Science}
+\newcommand{\thesistype}{Seminar Report}
+\newcommand{\matrikelnumber}{[Put your matrikel number here]}
+\newcommand{\keywords}{} % Set keywords that describe your report
+
+\hypersetup{pdftitle=\thesistitle} % Set the PDF's title to your title
+\hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
+\hypersetup{pdfkeywords=\keywords} % Set the PDF's keywords to your keywords
+
 \begin{document}
-	
 
-\title{A performance comparision of various machine learning optimizers in CUDA and OpenCL }
-\maketitle
-\begin{abstract}
-	\normalsize
-	Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-\end{abstract}
+\fancyhead{}
+\fancyhead[R]{\footnotesize \thesistitle}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{Section \thesection}
+\fancyfoot[C]{\authorname}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
-\pagebreak 
+\pagestyle{plain}
+\input{titlepage}
 
+% --- abstract ---
 
+\newpage
+\pagenumbering{roman}
+\setcounter{page}{1}
 
-\section{Introduction}
-\input{./sections/intro.tex}
+\section*{Abstract}
+\input{abstract}
 
-\section{Related Work}
-\input{./sections/related-work.tex}
+\newpage
 
-\section{Conecptual differences between OpenCL and CUDA}
-\input{./sections/conceptual-difference-opencl-and-cuda.tex}
+\vfill
 
-\pagebreak
-\section{The Implementation}
-\input{./sections/implementation.tex}
+% Fill out the statement by setting \ccheckbox for points that do not apply and \ccheckmark for points that do apply
 
-\section{Performance Benchmarks}
-% What is the definition of the benchmark?
-% How is it implemented in the project?
-% What are the results?
+\subsection*{Declaration on the use of ChatGPT and comparable tools\\ in the context of examinations}
+\noindent In this work I have used ChatGPT or another AI as follows:
+\begin{itemize}
+	\item[\ccheckmark] Not at all
+	\item[\ccheckbox] During brainstorming
+	\item[\ccheckbox] When creating the outline
+	\item[\ccheckbox] To write individual passages, altogether to the extent of 0\% of the entire text % Set the percentage if this point applies
+	\item[\ccheckbox] For the development of software source texts
+	\item[\ccheckbox] For optimizing or restructuring software source texts
+	\item[\ccheckbox] For proofreading or optimizing
+	\item[\ccheckbox] Further, namely: - % List here things that you used AI-systems for with regard to this document
+\end{itemize}
+I hereby declare that I have stated all uses completely.\\
+Missing or incorrect information will be considered as an attempt to cheat.
 
-\section{Conclusion}
-% Summary of results
+\vfill
 
-\section{References}
-% \begin{thebibliography}{00}
+\newpage
 
-% \end{thebibliography}
+% --- table of contents ---
+% Comment out the lists you are not using
+\clearpage
+\phantomsection\pdfbookmark{\contentsname}{toc}
+\tableofcontents
 
-\end {document}
+\newpage
+\clearpage\phantomsection
+\listoftables
+%\newpage
+%\clearpage
+\phantomsection
+\listoffigures
+%\newpage
+%\clearpage
+\phantomsection
+\listoflistings \addcontentsline{toc}{section}{List of Listings}
+
+% If you have abbreviations
+\input{abbreviations}
+
+\thispagestyle{plain}
+\newpage
+
+% --- content ---
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagestyle{fancy}
+
+\input{content}
+
+% --- references ---
+
+\newpage
+\printbibliography[heading=bibintoc]
+
+% --- your appendix ---
+\appendix
+\break
+
+\pagenumbering{arabic}
+\renewcommand*{\thepage}{A\arabic{page}}
+
+\input{appendix}
+
+\end{document}
