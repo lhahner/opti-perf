@@ -1,165 +1,203 @@
 % ---------------------------------------------------------
 \subsection{Architecture}
 % ---------------------------------------------------------
-
-The benchmark program follows a layered architecture pattern. Each layer represents a
-distinct subsystem that is responsible for a specific set of tasks and clearly defined
-responsibilities.
-This architectural approach enables flexible combinations of workloads and optimizers.
-Furthermore, the system can be extended beyond machine learning workloads to support
+To benchmark and compare OpenCL to CUDA a benchmark program was implemented in C++ and the build-tool CMake.
+Which follows a layered architecture. \cite{software-architecture-patterns} Each layer represents a subsystem responsible for a specific set of tasks. This design enables flexible combinations of workloads and optimizers and
+allows the system to be extended beyond machine learning workloads to support
 other computational tasks for performance evaluation.  
-Figure \ref{fig:architecture-overview} illustrates an overview of the architecture and
-its modules.
+Figure \ref{fig:architecture-overview} provides an overview of the architecture and its modules.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=17cm,height=10cm]{diagrams/umls/architecture-overview.pdf}
-	\caption{Layered architecture of the benchmark system. The User Interaction Layer
-	(implemented as a CLI) communicates with the Benchmark Layer, which manages
-	multiple workloads. The Optimization Layer provides different optimizers that
-	execute these workloads. All layers rely on shared functionality provided by
-	the Util Layer.}
+	\includegraphics[width=17cm,height=10cm]{architecture-overview.pdf}
+	\caption{Layered architecture of the benchmark system. The User Interaction
+		Layer (CLI) communicates with the Benchmark Layer, which manages workloads.
+		The Optimization Layer executes workloads using different optimizers, while
+		the Util Layer provides shared functionality.}
 	\label{fig:architecture-overview}
 \end{figure}
 
-User interaction is handled through the command-line interface (CLI), which
-allows users to configure and execute benchmark experiments. The CLI abstracts low-level
-system interactions and provides a simple and consistent interface.
-The Benchmark Layer is responsible for defining and managing benchmark executions.
-Each workload represents a specific computational task that is executed by an optimizer.
-This layer initializes workloads and provides the required configuration to the
-Optimization Layer.
-The Optimization Layer contains the implementations of the optimizers that execute the
-workloads. These optimizers encapsulate the optimization logic and performance-critical
-computations.
-All layers interact with the Util Layer, which provides shared functionality such as
-wrapper classes, logging mechanisms, and other cross-cutting utilities.
-
-The following subsections describe each layer in more detail.
+Program execution starts through the command-line interface (CLI), which
+initiates the benchmark run. The CLI triggers the Benchmark Layer, which
+creates the benchmark environment and instantiates the predefined workload.
+Each workload represents a computational task that is executed by an optimizer. During execution, the Optimization Layer applies the corresponding optimizer to the workload and performs the iterative optimization steps. Throughout the execution, shared functionality provided by the Util Layer is used for tasks such as data handling, framework abstraction, and logging of benchmark results. The following subsections describe the individual layers in more detail.
 
 % ---------------------------------------------------------
 \subsubsection{Benchmark Layer}
 % ---------------------------------------------------------
 
-The Benchmark Layer serves as the entry point of the application and is responsible
-for defining and executing different workloads. The layer consists of two main modules:
-the benchmark module and the workload module.
+The Benchmark Layer is the entry point of the application and defines and
+executes workloads. It consists of two modules: the benchmark module and the
+workload module.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=14cm,height=14cm]{diagrams/umls/benchmark-layer-uml.pdf}
-	\caption{Domain-agnostic implementation of workloads. The design enables
-	maintainable integration of additional workloads in the future.}
+	\includegraphics[width=15cm,height=14cm]{benchmark-layer-uml.pdf}
+	\caption{Domain-agnostic class Workload design to enable maintainable
+		integration of additional workloads.}
 	\label{fig:benchmark-layer}
 \end{figure}
 
-Figure \ref{fig:benchmark-layer} illustrates the implementation of the Benchmark Layer.
-The class \verb|BenchmarkTrainer| is responsible for allocating the workload and
-executing all required preprocessing steps before running the optimizer.
-Each workload implements the abstract class or interface \verb|Workload|.
-This design provides a domain-agnostic abstraction that decouples the workload
-implementation from the optimization and benchmarking logic. As a result,
-the benchmark program can support a wide variety of workloads.
-Within the scope of this project, the class \verb|GEMM| implements a simple
-neural-network workload consisting of a forward pass only. Since the current
-implementation does not perform learning via backpropagation and instead only
-executes forward propagation, the workload is effectively equivalent to a
-general matrix multiplication (GEMM) operation rather than a full machine
-learning training process.
-
-The primary purpose of this workload is therefore to evaluate the performance
-of large matrix multiplications that are transferred to and executed on the GPU
-during optimization.
+Figure \ref{fig:benchmark-layer} shows the structure of the Benchmark Layer.
+The class \verb|BenchmarkTrainer| allocates workloads and performs the
+required preprocessing steps before executing the optimizer. Each workload implements the abstract interface \verb|Workload|. This
+abstraction decouples workload implementations from the benchmarking and
+optimization logic, allowing the framework to support different workload
+types. Within the scope of this project, the class \verb|GEMM| implements a simple
+neural-network workload consisting only of a forward pass. Since no
+backpropagation is performed, the workload effectively corresponds to a
+general matrix multiplication (GEMM) operation. The primary purpose of this workload is to evaluate the performance of large
+matrix multiplications executed on GPU devices.
 
 % ---------------------------------------------------------
 \subsubsection{Optimization Layer}
 % ---------------------------------------------------------
 
-In addition to initializing workloads, the class \verb|BenchmarkTrainer|
-also applies a selected optimizer to the workload.
-
-The Optimization Layer follows a design similar to the Benchmark Layer,
-allowing multiple optimizer implementations to be integrated and combined
-with different workloads.
+The Optimization Layer contains the optimizer implementations applied to
+workloads by the \verb|BenchmarkTrainer|.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=14cm,height=14cm]{diagrams/umls/optimization-layer-uml.pdf}
-	\caption{Domain-agnostic optimizer architecture. Different optimizer
-	implementations can be provided for specific execution platforms.}
+	\includegraphics[width=14cm,height=12cm]{optimization-layer-uml.pdf}
+	\caption{Domain-agnostic optimizer architecture supporting multiple
+		implementations for different execution platforms.}
 	\label{fig:optimization-layer}
 \end{figure}
 
-Figure \ref{fig:optimization-layer} shows the implementation concept of the
-Optimization Layer. Each optimizer implements the abstract class or interface
-\verb|Optimizer|.
-All optimizer implementations must provide an implementation of the
-\verb|step| function. This function is executed during each iteration of the
-training or optimization process and updates the parameters toward a local
-or global optimum.
-For example, the Adam optimizer is implemented in the classes
+Figure \ref{fig:optimization-layer} illustrates the structure of the
+Optimization Layer. Each optimizer implements the abstract class
+\verb|Optimizer| and must provide an implementation of the \verb|step|
+function. The \verb|step| function is executed during each iteration of the optimization process and updates parameters toward an optimum. For example, the Adam optimizer is implemented in the classes
 \verb|AdamOptimizer|, \verb|AdamOptimizerCl| (OpenCL), and
-\verb|AdamOptimizerCu| (CUDA). In this case, the \verb|step| function performs
-a parameter update in the parameter space at time step $t$, as described by
-Kingma and Ba \cite{adam}.
-Because data transfer to GPU devices differs between frameworks,
-additional functions such as \verb|fromDevice| or
-\verb|launch_adam_kernel| are required to manage device-specific execution.
+\verb|AdamOptimizerCu| (CUDA). The \verb|step| function performs parameter
+updates at timestep $t$ as described by Kingma and Ba \cite{adam}. Because GPU data handling differs between frameworks, additional functions
+such as \verb|fromDevice| and \verb|launch_adam_kernel| are required.
 
 % ---------------------------------------------------------
 \subsubsection{Util Layer}
 % ---------------------------------------------------------
 
-The Util Layer provides shared functionality that is used throughout the
-entire project. These utilities address cross-cutting concerns such as
-data representation, logging, and framework abstraction.
+The Util Layer provides shared functionality used throughout the application, including data views, logging, and framework wrappers.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=14cm,height=14cm]{diagrams/umls/util-layer.pdf}
-	\caption{Utility layer components providing shared functionality
-	across the application.}
+	\includegraphics[width=14cm,height=7cm]{util-layer.pdf}
+	\caption{Utility components providing shared functionality across the
+		application.}
 	\label{fig:util-layer}
 \end{figure}
 
-Figure \ref{fig:util-layer} illustrates the interactions between the
-different utility components. Data view classes such as
-\verb|HostParamsView| and \verb|DeviceParamView| provide platform-specific
-representations of parameter data.
-Since OpenCL and CUDA require different data representations for GPU
-execution, parameter data must be converted from the host representation
-(\verb|HostParamsView|) to the device representation
-(\verb|DeviceParamView|). This conversion is handled by the respective
-optimizer implementations.
-Furthermore, optimizer classes interact with wrapper classes that
-encapsulate OpenCL and CUDA functionality. These wrappers significantly
-reduce the amount of boilerplate code required to execute workloads on
-GPU devices.
-At the end of each benchmark execution, the collected benchmark results,
-stored in the \verb|benchmarkData| class, are written to a CSV file.
-This process is handled by the \verb|Logger| class.
+Figure \ref{fig:util-layer} shows the interactions between the utility
+components. Data view classes such as \verb|HostParamsView| and
+\verb|DeviceParamView| represent parameter data for CPU and GPU execution. Since OpenCL and CUDA require different device representations, parameter
+data must be converted from host to device format. This conversion is handled by the optimizer implementations. Framework wrapper classes encapsulate OpenCL and CUDA functionality,
+reducing the boilerplate code required for GPU execution. Benchmark results collected in the \verb|benchmarkData| class are written to a
+CSV file using the \verb|Logger| class.
 
 % ---------------------------------------------------------
 \subsubsection{Data Layer}
 % ---------------------------------------------------------
 
-The Data Layer consists of the benchmark CSV file that stores the results
-of all benchmark executions. These results can later be used for further
-analysis.
-A snippet of the file is shown in Listing \ref{listing:benchmark-data}.
+The Data Layer stores benchmark results in a CSV file for later analysis. The logging system records both the execution context and performance
+measurements. Context information includes hyperparameter such as
+\verb|learning_rate|, \verb|beta1|, and \verb|beta2|, while execution time is
+captured by the variable \verb|time_ms|. Recording this contextual information enables more detailed analysis of
+relationships between configuration parameters and performance.
 
-\begin{verbatim}
-timestamp,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms,batch_index,loss
-2026-02-02-11-13-36,None,GEMM_Adam_CPU,compute,CPU,10,1048723456,Adam,0.001,0.9,0.999,1e-08,113,1,0
-2026-02-02-11-13-41,None,GEMM_Adam_CPU,compute,CPU,10,1048723456,Adam,0.001,0.9,0.999,1e-08,83,2,0.0224746
-...
-\end{verbatim}
+% ---------------------------------------------------------
+\subsection{Measured Metrics}
+% ---------------------------------------------------------
+In this section, different metric categories and the corresponding key
+performance indicators are presented. The selected metrics follow the
+benchmarking best practices proposed by Beiranvand et al. \cite{best-practices-benchmark}.
 
-The goal of the logging system is to capture as much contextual information
-as possible from each benchmark execution. Most of the recorded data
-describes the experimental configuration, including hyperparameters such as
-\verb|learning_rate|, \verb|beta1|, and \verb|beta2|.
-The actual performance measurement is represented by the variable
-\verb|time_ms|. However, including the surrounding context allows a more
-detailed analysis of potential correlations between execution conditions
-and performance characteristics.
+\subsubsection{Efficiency}
+
+One measured category is efficiency. The efficiency of an optimization
+algorithm describes the computational effort required to obtain a solution.
+Typical indicators include the number of function evaluations, execution
+time, and memory usage \cite{best-practices-benchmark}.
+To improve reproducibility, execution time is measured in CPU time or GPU
+time. In contrast, wall-clock time can be influenced by hardware conditions
+and may therefore reduce reproducibility \cite{best-practices-benchmark}.
+In addition to overall execution time, the benchmark measures both the GPU
+computation time of the workload and the data transfer time from the host
+(CPU) to the device (GPU). These measurements are performed for both CUDA
+and OpenCL in order to enable a direct comparison of the two frameworks.
+In the current implementation, the optimizer update step is executed as a
+GPU kernel.
+
+Figure \ref{fig:program-flow} illustrates the execution flow of the benchmark
+program and highlights the parts executed on the GPU. Time measurements start
+when data is transferred to the GPU and stops whenever the transfer is done. 
+The measurement for computation time of the kernel is measured during the execution of the
+optimizer update step.
+The update function is measured because it contains the core computations
+required to update the parameters toward the optimum in Adam.
+
+% How is it calculated? Provide Formular 
+
+\subsubsection{Reliability}
+
+The reliability metric verifies that the implementations across the different
+frameworks behave as expected. In general, the reliability and robustness of an
+optimization algorithm describe its ability to consistently produce valid and
+stable results \cite{best-practices-benchmark}.
+In this context, reliability is used to confirm the correctness of the
+implementation and to observe how execution time and data transfer time
+relate to the produced results. However, reliability is not treated as a
+key performance indicator in this report, since it primarily reflects the
+performance of the optimization algorithm itself rather than the performance
+of the underlying execution frameworks.
+
+\pagebreak
+% How is it calculated? Provide Formular 
+% ---------------------------------------------------------
+\subsection{Hardware and Platforms}
+% ---------------------------------------------------------
+
+The benchmark was executed only on NVIDIA GPUs, namely an NVIDIA GeForce GTX 970 with 4\,GB 
+VRAM, an NVIDIA A100-SXM4 with 80\,GB, and an NVIDIA Quadro RTX 5000 with 16\,GB of VRAM. 
+The A100-SXM4 is actually a GPU accelerator designed for \ac{HPC} workloads. 
+The RTX 5000 represents a more modern counterpart compared to the GeForce GTX 970. Since CUDA 
+is only accessible on NVIDIA GPUs, the benchmark was executed exclusively on these devices. 
+Consequently, this setup does not provide insights into the performance portability of OpenCL 
+to GPUs from other vendors such as Intel or AMD.
+
+\begin{table}[th]
+	\caption{Hardware specifications of the GPUs used in the benchmark. \cite{970}\cite{5000} \cite{A100}}
+	\label{tab:gpus}
+	\centering
+	\begin{NiceTabular}{lrrr}
+		\CodeBefore
+		\rowcolors{2}{gray!10}{white}
+		\Body
+		\textbf{Spec} & \textbf{GTX 970} & \textbf{A100-SXM4} & \textbf{RTX 5000} \\
+		\multicolumn{4}{c}{\textbf{General}} \\
+		Year  & 2014 & 2020 & 2018\\
+		Architecture  & Maxwell & Ampere & Turing\\
+		Launch price (USD)  & 329 & 8,000--10,000 & 2,299\\
+		\multicolumn{4}{c}{\textbf{Clock speeds}} \\
+		Base Clock (MHz) & 1050 & 1095 & 1620\\
+		Boost Clock (MHz) & 1178 & 1410 & 1815\\
+		\multicolumn{4}{c}{\textbf{Memory}} \\
+		Bandwidth (GB/s) & 224.4 & 1560 (1.56 TB/s) & 448.0 \\
+		Memory Size (GB) & 4 & 80 & 16\\
+		\multicolumn{4}{c}{\textbf{Render configuration}} \\
+		Shading Units & 1664 & 6912 & 3072\\
+		TMUs & 104 & 432 & 192\\
+		ROPs & 56 & 160 & 64\\
+		SM (M) Count & 13 & 108 & 48\\
+		Tensor Cores & 0 & 432 & 384\\
+		L1 Cache (KB) & 48 & 192 & 64\\
+		L2 Cache (MB)  & 2 & 40 & 4\\
+	\end{NiceTabular}
+\end{table}
+
+Table \ref{tab:gpus} shows the hardware specifications of the GPUs used in the benchmark. 
+All three devices originate from different time periods and represent milestones in GPU 
+hardware development. It is also important to note that the GTX 970 is a consumer graphics 
+card designed primarily for gaming and general graphics computation, whereas the A100 and 
+the RTX 5000 are mainly used in high-performance computing environments, where the benchmark 
+was also executed. The selection of these different hardware classes also motivates a 
+separate presentation and interpretation of the benchmark results.

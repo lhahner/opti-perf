@@ -1,0 +1,49 @@
+digraph benchmark_adam_gemm_flow {
+  rankdir=TB;
+  graph [fontname="Helvetica", bgcolor="white", pad="0.2", nodesep="0.4", ranksep="0.45"];
+  node [shape=box, style="rounded,filled", fillcolor="#F7F7F7", color="#333333", fontname="Helvetica", fontsize=10];
+  edge [color="#333333", fontname="Helvetica", fontsize=9];
+
+  start [shape=oval, fillcolor="#E8F5E9", label="Start: bench executable\n(google benchmark_main)"];
+  reg [label="Registered benchmarks in\nsrc/benchmark/benchmark_adam_gemm.cpp:\nBM_GEMM_Adam\nBM_GEMM_Adam_cl\nBM_GEMM_Adam_cuda"];
+  dispatch [shape=diamond, fillcolor="#FFF8E1", label="Dispatch benchmark case"];
+
+  cpu1 [label="BM_GEMM_Adam:\ncreate BenchmarkData + GEMM + AdamOptimizer\ninitializeInput()"];
+  cpu2 [label="for t=1..batch_size:\nrunForward() -> adam.step() -> computeLoss()\nstore/print loss"];
+  cpu3 [label="for state iterations:\ncomputeLoss() + DoNotOptimize"];
+  cpu4 [label="delete BenchmarkData; return"];
+
+  cl1 [label="BM_GEMM_Adam_cl:\ncreate BenchmarkData + GEMM + AdamOptimizerCl\ninitializeInput()"];
+  cl2 [shape=diamond, fillcolor="#FFF8E1", label="OpenCL setup success?"];
+  cl_fail [label="print error; return"];
+  cl3 [label="create program from kernels/adam_optimizer.cl\ncreate kernel 'adam_update'"];
+  cl4 [shape=diamond, fillcolor="#FFF8E1", label="clCreateKernel ok?"];
+  cl_kfail [label="print error; return"];
+  cl5 [label="configure optimizer\nfor t=1..10: runForward() -> step() -> computeLoss()"];
+  cl6 [label="for state iterations:\nBenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters)"];
+  cl7 [label="release kernel/program\ndelete BenchmarkData; return"];
+
+  cu1 [label="BM_GEMM_Adam_cuda:\ncreate BenchmarkData + GEMM + AdamOptimizerCu\ninitializeInput()"];
+  cu2 [label="for t=1..10:\nrunForward() -> adam.step() -> computeLoss()\nstore/print loss"];
+  cu3 [label="for state iterations:\ncomputeLoss() + DoNotOptimize"];
+  cu4 [label="return"];
+
+  end [shape=oval, fillcolor="#E3F2FD", label="Benchmark run finished"];
+
+  start -> reg -> dispatch;
+
+  dispatch -> cpu1 [label="BM_GEMM_Adam"];
+  cpu1 -> cpu2 -> cpu3 -> cpu4 -> end;
+
+  dispatch -> cl1 [label="BM_GEMM_Adam_cl"];
+  cl1 -> cl2;
+  cl2 -> cl_fail [label="No"];
+  cl2 -> cl3 [label="Yes"];
+  cl3 -> cl4;
+  cl4 -> cl_kfail [label="No"];
+  cl4 -> cl5 [label="Yes"];
+  cl5 -> cl6 -> cl7 -> end;
+
+  dispatch -> cu1 [label="BM_GEMM_Adam_cuda"];
+  cu1 -> cu2 -> cu3 -> cu4 -> end;
+}
