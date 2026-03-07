@@ -27,6 +27,7 @@ if (( is_hpc )); then
 	check module load cuda/12.6.2
 
 	CUDA_ROOT="$(dirname "$(dirname "$(readlink -f "$(which nvcc)")")")"
+	CUDA_ARCH="${CUDA_ARCH:-75}"
 
 	rm -rf build
 	cmake -S . -B build \
@@ -36,7 +37,8 @@ if (( is_hpc )); then
    		-DLIBTORCH_ROOT="$PWD/lib/libtorch" \
    		-DCUDAToolkit_ROOT="$CUDA_ROOT" \
    		-DCMAKE_CUDA_COMPILER="$CUDA_ROOT/bin/nvcc" \
-   		-DCMAKE_CXX_FLAGS="-I$HOME/.local/include"
+   		-DCMAKE_CXX_FLAGS="-I$HOME/.local/include" \
+   		-DCMAKE_CUDA_ARCHITECTURES="$CUDA_ARCH"
  
 	# pick a filesystem with quota/space (examples)
 	mkdir -p "$HOME/tmp" "$HOME/.nv/tmp"

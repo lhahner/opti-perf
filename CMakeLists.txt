@@ -9,7 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-set(CMAKE_CUDA_ARCHITECTURES 52)
+# Default to RTX5000 (sm_75) unless the user overrides via -DCMAKE_CUDA_ARCHITECTURES.
+if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+	set(CMAKE_CUDA_ARCHITECTURES 75 CACHE STRING "CUDA arch list" FORCE)
+endif()
+if(CMAKE_CUDA_ARCHITECTURES MATCHES "^[0-9]+$")
+	# Some dependencies inject CUDA gencode flags; force-append the requested arch.
+	string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_${CMAKE_CUDA_ARCHITECTURES},code=sm_${CMAKE_CUDA_ARCHITECTURES}")
+endif()
 
 option(ENABLE_TORCH "Enable LibTorch integration" ON)
 
@@ -162,6 +169,7 @@ if(BUILD_BENCHMARKS)
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer_cl.cpp
 	)
 	target_apply_common(bench)
+	target_enable_cuda(bench)
 	target_compile_definitions(bench PRIVATE OPTI_PERF_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 	target_link_libraries(bench PRIVATE workloads benchmark::benchmark benchmark::benchmark_main)
 
