@@ -1,57 +1,51 @@
 % What is the problem/question I try to solve/answer?
-Training a neural network typically requires large-scale data sets, such as
-ImageNet \cite{bibid} or MNIST \cite{}, to achieve robust generalization
-performance. As training involves multiple passes over these data sets and
-computationally expensive gradient-based optimization, the overall process is
-highly data-intensive.
+Training neural networks typically requires large-scale datasets such as
+ImageNet \cite{bibid} or MNIST \cite{} to achieve robust generalization.
+Because training involves multiple passes over these datasets and
+computationally expensive gradient-based optimization, the process is highly
+data-intensive.
 
-To handle data-intensive workloads, data parallelism is required. Data
+To process such workloads efficiently, data parallelism is required. Data
 parallelism refers to applying the same arithmetic operations to multiple data
-elements simultaneously. While modern CPUs support limited forms of data
-parallelism, their architecture is primarily optimized for low-latency and
+elements simultaneously. Although modern CPUs support limited forms of data
+parallelism, their architectures are primarily optimized for low-latency and
 control-intensive tasks rather than high-throughput parallel computation
-\cite{}. GPUs, in contrast, are designed according to a
-Single-Instruction-Multiple-Data (SIMD) execution model, which enables a much
-higher degree of data parallelism. Therefore, utilizing GPUs for training neural
-networks is crucial for the efficient implementation of AI products and
-solutions. Various hardware vendors provide different software solutions to
-exploit GPU capabilities.
+\cite{}. GPUs, in contrast, follow a
+Single-Instruction-Multiple-Data (SIMD) execution model that enables a much
+higher degree of data parallelism. Consequently, GPUs have become essential for
+efficient neural network training. Several hardware vendors provide different
+software frameworks to exploit GPU capabilities.
 
 % What is the target of the paper?
-This work compares the performance of Graphics Processing Unit (GPU) frameworks
-such as OpenCL \cite{} and CUDA \cite{}, which enable users to exploit the
-computational capabilities of GPUs. More precise it compares the solutions based on the benchmark defined in section \ref{}. To facilitate this comparison, various
-optimization algorithms are implemented using each framework. This approach is
-intended to provide insights into the performance characteristics of the
-different frameworks. In the presented application \cite{}, several optimizers
-commonly used for training machine learning models are implemented, including
-Adam \cite{}, AdamW \cite{}, and Stochastic Gradient Descent \cite{}.
+This work compares GPU computing frameworks such as OpenCL \cite{} and CUDA
+\cite{}, which allow developers to utilize the computational capabilities of
+GPUs. More specifically, the frameworks are compared using the benchmark
+defined in Section \ref{}. To facilitate this comparison, the Adam optimization
+algorithm \cite{} is implemented in each framework. This implementation enables
+an evaluation of the performance characteristics of the different approaches.
 
 % Why is this problem relevant?
-CUDA is a software framework for utilizing GPUs, but it is restricted to hardware
-from the vendor NVIDIA. Furthermore, CUDA is neither standardized nor
-cross-platform. Nevertheless, it is the most commonly used solution for
-accessing GPUs in neural network training, as it is implemented in frameworks
-such as PyTorch, Keras, and TensorFlow \cite{}. This results in a strong
-dependence on NVIDIA graphics cards, as other vendors, such as AMD or ARM, are
-not compatible with the CUDA API \cite{}. In contrast, OpenCL provides a
-standardized, cross-platform parallel computing API based on C and C++. OpenCL
-is open source and maintained by the Khronos Group \cite{}. Therefore, this
-report aims to present the performance of non-NVIDIA-dependent solutions in
-comparison to NVIDIA-specific solutions. However, the application is executed
-on an NVIDIA GPU.
+CUDA is a widely used framework for GPU computing but is restricted to NVIDIA
+hardware. In addition, CUDA is neither standardized nor fully cross-platform.
+Nevertheless, it remains the dominant solution for neural network training,
+as it is integrated into frameworks such as PyTorch, Keras, and TensorFlow
+\cite{}. This creates a strong dependency on NVIDIA GPUs, since hardware from
+other vendors, such as AMD or ARM, is not compatible with the CUDA API
+\cite{}.
 
-The different optimizer implementations are integrated into a Deep Convolutional
-Generative Adversarial Network (DCGAN), whose architecture is based on the
-PyTorch API Guide \cite{}. The model architecture, training procedure, and
-hyperparameters are kept identical across all experiments, with only the
-optimizer implementation differing between the CUDA- and OpenCL-based
-approaches.
+In contrast, OpenCL provides a standardized, cross-platform parallel computing
+API based on C and C++. It is an open standard maintained by the Khronos Group
+\cite{}. This report therefore evaluates the performance of a vendor-neutral
+solution in comparison with an NVIDIA-specific framework. However, the
+experiments are executed on an NVIDIA GPU.
 
-The following presents implementation of various machine learning optimizers with CUDA and OpenCL
-with benchmarks measured on the metioned workload DCGAN. In section \ref{related-work} an overview 
-of prior work is given and introduces other findings. Further in section \ref{the-impelementation} 
-the implementation of Adam, AdamW and SGD in CUDA and OpenCL are implemeted to demonstrate conceptual
-difference between the both frameworks. Further in section \ref{} the executed benchmarks are described
-and results prestend. At least in section \ref{} the results are compared and evaluated.
-\pagebreak
+The Adam optimizer is applied to a GEMM workload that simulates the training
+process of a neural network. The model architecture, training procedure, and
+hyperparameters remain identical across all experiments; only the optimizer
+implementation differs between the CUDA- and OpenCL-based approaches.
+
+The remainder of this paper is structured as follows. Section
+\ref{related-work} provides an overview of related work. Section
+\ref{the-impelementation} describes the implementation of the benchmark
+program. Finally, Section \ref{} presents the benchmark setup and discusses the
+results.

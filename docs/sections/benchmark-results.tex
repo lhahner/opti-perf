@@ -1,5 +1,48 @@
 % TODO increase workload sizes so we can compare really large workloads
+% TODO build time in OpenCL
 
-\subsection{Results for GTX 970}
-\subsection{Results for A-100}
+\subsection{Results for NVIDIA GeForce GTX 970}
+The benchmark program using the Adam optimizer and the \ac{GEMM} workload was first executed
+on an NVIDIA GeForce GTX 970 with 8 GB of VRAM. For this benchmark, the following results
+were obtained for data transfer time and computation time using CUDA and OpenCL.
+
+\begin{table}[th]
+	\caption{Data transfer time and computation time across all batch indices}
+	\label{tab:gtx970results}
+	\centering
+	\begin{NiceTabular}{lrrr}
+		\CodeBefore
+		\rowcolors{2}{gray!10}{white}
+		\Body
+		\textbf{Metric} & \textbf{CUDA} & \textbf{OpenCL} & \textbf{Perf. Ratio} \\
+		Average data-transfer time (ms) & 4.06 & 4.43 & ? \% \\
+		Average computation time (ms) & 2.45 & 0.77 & ? \% \\
+	\end{NiceTabular}
+\end{table}
+
+Table \ref{tab:gtx970results} presents the benchmark results obtained with the specified
+hyperparameters. The data transfer time was averaged across all measurements performed for
+both OpenCL and CUDA. The results show that CUDA is 9\% faster in terms of data transfer time
+on the NVIDIA GeForce GTX 970. Similarly, the computation time was averaged over all runs,
+resulting in CUDA being 66\% faster than OpenCL.
+
+\begin{figure}[th]
+	\begin{center}
+		\includegraphics[width=16cm, height=8cm]{nvidia_geforce_gtx_970_compute_and_transfer_batch_line_normalized}
+	\end{center}
+	\caption{Results of running the GEMM workload using the Adam optimizer}
+	\label{fig:pltgtx970}
+	\centering
+\end{figure}
+
+Figure \ref{fig:pltgtx970} shows the average computation time per \verb|batch_index| and
+also includes the average loss per \verb|batch_index| for both frameworks. This illustrates
+the efficiency of both frameworks while also providing an indication of their reliability.
+The figure shows that the loss decreases over time, which matches the expected behavior
+during optimization. Furthermore, the figure highlights the results summarized in
+Table \ref{tab:gtx970results}. This data shows that on data transfer time CUDA provides 
+better results while for computation OpenCL provides better results on the GTX 970 representing
+here the Maxwell architecture from NVIDIA.
+
 \subsection{Results for RTX 5000}
+\subsection{Results for A-100}
