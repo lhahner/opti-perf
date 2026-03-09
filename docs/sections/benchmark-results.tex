@@ -24,7 +24,7 @@ Table \ref{tab:gtx970results} presents the benchmark results obtained with the s
 hyperparameters. The data transfer time was averaged across all measurements performed for
 both OpenCL and CUDA. The results show that CUDA is 9\% faster in terms of data transfer time
 on the NVIDIA GeForce GTX 970. Similarly, the computation time was averaged over all runs,
-resulting in CUDA being 66\% faster than OpenCL.
+resulting in OpenCL being 66\% faster than CUDA.
 
 \begin{figure}[th]
 	\begin{center}
@@ -40,9 +40,81 @@ also includes the average loss per \verb|batch_index| for both frameworks. This 
 the efficiency of both frameworks while also providing an indication of their reliability.
 The figure shows that the loss decreases over time, which matches the expected behavior
 during optimization. Furthermore, the figure highlights the results summarized in
-Table \ref{tab:gtx970results}. This data shows that on data transfer time CUDA provides 
-better results while for computation OpenCL provides better results on the GTX 970 representing
-here the Maxwell architecture from NVIDIA.
+Table \ref{tab:gtx970results}. The data indicates that CUDA provides slightly better
+performance in terms of data transfer time, while OpenCL performs better in terms of
+computation time on the GTX 970, which represents the Maxwell architecture from NVIDIA.
 
-\subsection{Results for RTX 5000}
-\subsection{Results for A-100}
+\subsection{Results for NVIDIA GeForce Quadro RTX 5000}
+The benchmark program was also executed on an NVIDIA Quadro RTX 5000, which is part of an
+\ac{HPC} facility. Again, the Adam update step was measured in terms of data-transfer time
+and computation time for the GEMM workload.
+
+\begin{table}[th]
+	\caption{Data transfer time and computation time across all batch indices}
+	\label{tab:rtx5000results}
+	\centering
+	\begin{NiceTabular}{lrrr}
+		\CodeBefore
+		\rowcolors{2}{gray!10}{white}
+		\Body
+		\textbf{Metric} & \textbf{CUDA} & \textbf{OpenCL} & \textbf{Perf. Ratio} \\
+		Average data-transfer time (ms) & 6.62 & 6.76 & ? \% \\
+		Average computation time (ms) & 0.30 & 0.28 & ? \% \\
+	\end{NiceTabular}
+\end{table}
+
+Table \ref{tab:rtx5000results} shows the results of the workload executed on the RTX 5000.
+Again, the data-transfer time and computation time were averaged across all batch indices.
+On this platform, OpenCL performs slightly faster in terms of computation time, while CUDA
+performs slightly better in terms of data-transfer time.
+
+\begin{figure}[th]
+	\begin{center}
+		\includegraphics[width=16cm, height=8cm]{quadro_rtx_5000_compute_and_transfer_batch_line_normalized}
+	\end{center}
+	\caption{Results of running the GEMM workload using the Adam optimizer on NVIDIA Quadro RTX 5000}
+	\label{fig:rtx5000}
+	\centering
+\end{figure}
+
+Figure \ref{fig:rtx5000} further supports these results and validates the reliability of the
+benchmark. The decreasing loss curve, measured at each batch index, indicates that the
+optimization process behaves as expected.
+
+\pagebreak
+\subsection{Results for NVIDIA A100-SXM4}
+The final benchmark was executed on the NVIDIA A100-SXM4, which is also primarily used in
+\ac{HPC} environments. This GPU represents the most recent architecture included in the
+benchmark and is also the most powerful device according to the specifications shown in
+Table \ref{}.
+
+\begin{table}[th]
+	\caption{Data transfer time and computation time across all batch indices}
+	\label{tab:a100}
+	\centering
+	\begin{NiceTabular}{lrrr}
+		\CodeBefore
+		\rowcolors{2}{gray!10}{white}
+		\Body
+		\textbf{Metric} & \textbf{CUDA} & \textbf{OpenCL} & \textbf{Perf. Ratio} \\
+		Average data-transfer time (ms) & 2.19 & 2.21 & ? \% \\
+		Average computation time (ms) & 0.11 & 0.08 & ? \% \\
+	\end{NiceTabular}
+\end{table}
+
+The results shown in Table \ref{tab:a100} again indicate that OpenCL performs faster in terms
+of computation time, while CUDA performs slightly better in terms of data-transfer time.
+
+\begin{figure}[th]
+	\begin{center}
+		\includegraphics[width=16cm, height=8cm]{nvidia_a100_sxm4_80gb_compute_and_transfer_batch_line_normalized}
+	\end{center}
+	\caption{Results of running the GEMM workload using the Adam optimizer on NVIDIA A100}
+	\label{fig:a100}
+	\centering
+\end{figure}
+
+Figure \ref{fig:a100} again confirms these results and shows that, across the different batch
+index iterations, CUDA and OpenCL perform similarly on average on the A100. Furthermore, the
+average loss per batch index is presented to demonstrate the reliability of the optimization
+process during computation.

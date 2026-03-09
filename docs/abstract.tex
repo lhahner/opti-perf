@@ -1,20 +1,5 @@
-[Put your abstract here.]
-Note that we typically publish your report as PDF on our webpage. Let us know if you disagree.]
+Graphics Processing Units (GPUs) play a central role in accelerating machine learning workloads due to their ability to efficiently execute data-parallel computations. Several programming frameworks exist to exploit GPU hardware, with CUDA and OpenCL being two widely used solutions. While CUDA is optimized for NVIDIA hardware, OpenCL provides a vendor-neutral and cross-platform programming model. This raises the question of how both frameworks compare in terms of performance for machine learning workloads.
 
-\medskip
+This report presents a performance comparison of CUDA and OpenCL using an implementation of the Adam optimization algorithm applied to a matrix multiplication workload (GEMM) that simulates neural network training operations. A modular benchmark framework was implemented in C++ with a layered architecture to execute the optimizer in both frameworks under identical conditions.
 
-General structure of an abstract, write 1 to 2 sentences per section
-\begin{enumerate}
-\item  A general statement introducing the broad research area of the particular topic being investigated.
-\item  An explanation of the specific problem (difficulty, obstacle, challenge) to be solved.
-\item  A review of existing or standard solutions to this problem and their limitations.
-\item  An outline of the proposed new solution.
-\item  A summary of how the solution was evaluated and what the outcomes of the evaluation were.
-\end{enumerate}
-
-You may find the following resources useful:
-\begin{itemize}
-    \item \url{https://www.grammarly.com/blog/write-an-abstract/}
-    \item \url{https://www.editage.com/insights/manuscript-structure-how-to-convey-your-most-important-ideas-through-your-paper}
-    \item More useful links: \url{https://hps.vi4io.org/teaching/ressources/start}
-\end{itemize}
+The evaluation measures GPU computation time and host–device data transfer time across three NVIDIA GPUs representing different hardware generations: the GTX 970, Quadro RTX 5000, and A100-SXM4. The results show that OpenCL achieves slightly faster computation times in most experiments, while CUDA often performs better in data transfer operations. Overall, both frameworks demonstrate comparable performance, highlighting the trade-off between hardware-specific optimization and cross-platform portability.

@@ -1,3 +1,5 @@
 \babel@toc {english}{}\relax 
-\contentsline {table}{\numberline {1}{\ignorespaces Hardware specifications of the GPUs used in the benchmark. \blx@tocontentsinit {0}\cite {970}\blx@tocontentsinit {0}\cite {5000} \blx@tocontentsinit {0}\cite {A100}}}{12}{table.1}%
+\contentsline {table}{\numberline {1}{\ignorespaces Hardware specifications of the GPUs used in the benchmark. \blx@tocontentsinit {0}\cite {970}\blx@tocontentsinit {0}\cite {5000} \blx@tocontentsinit {0}\cite {A100}}}{13}{table.1}%
 \contentsline {table}{\numberline {2}{\ignorespaces Data transfer time and computation time across all batch indices}}{13}{table.2}%
+\contentsline {table}{\numberline {3}{\ignorespaces Data transfer time and computation time across all batch indices}}{14}{table.3}%
+\contentsline {table}{\numberline {4}{\ignorespaces Data transfer time and computation time across all batch indices}}{15}{table.4}%

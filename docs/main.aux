@@ -13,8 +13,23 @@
 \@writefile{toc}{\contentsline {section}{List of Listings}{iv}{section*.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{List of Abbreviations}{v}{section*.4}\protected@file@percent }
 \newacro{HPC}[\AC@hyperlink{HPC}{HPC}]{High-Performance Computing}
-\abx@aux@cite{0}{bibid}
-\abx@aux@segm{0}{0}{bibid}
+\newacro{SIMD}[\AC@hyperlink{SIMD}{SIMD}]{Single Instruction Multiple Data}
+\newacro{GPU}[\AC@hyperlink{GPU}{GPU}]{General Graphic Processing Unit}
+\abx@aux@cite{0}{kirk2016parallel}
+\abx@aux@segm{0}{0}{kirk2016parallel}
+\abx@aux@cite{0}{kingma2015adam}
+\abx@aux@segm{0}{0}{kingma2015adam}
+\abx@aux@cite{0}{nvidia2024cuda}
+\abx@aux@segm{0}{0}{nvidia2024cuda}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\AC@undonewlabel{acro:GPU}
+\newlabel{acro:GPU}{{1}{1}{Introduction}{section*.5}{}}
+\newlabel{acro:GPU@cref}{{[section][1][]1}{[1][1][]1}}
+\acronymused{GPU}
+\AC@undonewlabel{acro:SIMD}
+\newlabel{acro:SIMD}{{1}{1}{Introduction}{section*.6}{}}
+\newlabel{acro:SIMD@cref}{{[section][1][]1}{[1][1][]1}}
+\acronymused{SIMD}
 \abx@aux@cite{0}{Du2011OpenCLCUDA}
 \abx@aux@segm{0}{0}{Du2011OpenCLCUDA}
 \abx@aux@cite{0}{Fang2011CUDAOpenCL}
@@ -23,8 +38,7 @@
 \abx@aux@segm{0}{0}{Du2011OpenCLCUDA}
 \abx@aux@cite{0}{https://arxiv.org/abs/1005.2581}
 \abx@aux@segm{0}{0}{https://arxiv.org/abs/1005.2581}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \abx@aux@cite{0}{https://www.sciencedirect.com/science/article/abs/pii/S0167819111001335}
 \abx@aux@segm{0}{0}{https://www.sciencedirect.com/science/article/abs/pii/S0167819111001335}
 \abx@aux@cite{0}{https://ieeexplore.ieee.org/document/6047190}
@@ -41,10 +55,10 @@
 \abx@aux@segm{0}{0}{opencl-programming-guide}
 \abx@aux@cite{0}{programming-massively-parallel-processors}
 \abx@aux@segm{0}{0}{programming-massively-parallel-processors}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The interaction with the host and OpenCL devices which are possible GPUs is displayed here. In a GPU and CPU setup the Host is considered to be the CPU. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{3}{figure.1}\protected@file@percent }
-\newlabel{index-space}{{1}{3}{The interaction with the host and OpenCL devices which are possible GPUs is displayed here. In a GPU and CPU setup the Host is considered to be the CPU. \cite {opencl-programming-guide}}{figure.1}{}}
-\newlabel{index-space@cref}{{[figure][1][]1}{[1][3][]3}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Conecptual differences of OpenCL and CUDA}{3}{section.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The interaction with the host and OpenCL devices which are possible GPUs is displayed here. In a GPU and CPU setup the Host is considered to be the CPU. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{4}{figure.1}\protected@file@percent }
+\newlabel{index-space}{{1}{4}{The interaction with the host and OpenCL devices which are possible GPUs is displayed here. In a GPU and CPU setup the Host is considered to be the CPU. \cite {opencl-programming-guide}}{figure.1}{}}
+\newlabel{index-space@cref}{{[figure][1][]1}{[1][4][]4}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Conecptual differences of OpenCL and CUDA}{4}{section.3}\protected@file@percent }
 \abx@aux@cite{0}{opencl-programming-guide}
 \abx@aux@segm{0}{0}{opencl-programming-guide}
 \abx@aux@cite{0}{opencl-programming-guide}
@@ -55,15 +69,15 @@
 \abx@aux@segm{0}{0}{opencl-programming-guide}
 \abx@aux@cite{0}{opencl-programming-guide}
 \abx@aux@segm{0}{0}{opencl-programming-guide}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{4}{figure.2}\protected@file@percent }
-\newlabel{index-space}{{2}{4}{The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \cite {opencl-programming-guide}}{figure.2}{}}
-\newlabel{index-space@cref}{{[figure][2][]2}{[1][3][]4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces A multidimensional illustration of CUDA grid organization \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{5}{figure.3}\protected@file@percent }
-\newlabel{index-space}{{3}{5}{A multidimensional illustration of CUDA grid organization \cite {opencl-programming-guide}}{figure.3}{}}
-\newlabel{index-space@cref}{{[figure][3][]3}{[1][4][]5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The given image presents all of the architecture parts of the OpenCL framework with considration of the memory model presented. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{5}{figure.4}\protected@file@percent }
-\newlabel{index-space}{{4}{5}{The given image presents all of the architecture parts of the OpenCL framework with considration of the memory model presented. \cite {opencl-programming-guide}}{figure.4}{}}
-\newlabel{index-space@cref}{{[figure][4][]4}{[1][4][]5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{5}{figure.2}\protected@file@percent }
+\newlabel{index-space}{{2}{5}{The work-item resides in an $N \times N$ index-space. Where the shades box is one workitem at location $(6, 5)$ inside the work-group $(1,1)$. Overall the size of the NDRange index space is $12$ divided in $3$ work-groups. While each work-group has $4$ work-items. \cite {opencl-programming-guide}}{figure.2}{}}
+\newlabel{index-space@cref}{{[figure][2][]2}{[1][4][]5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces A multidimensional illustration of CUDA grid organization \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{6}{figure.3}\protected@file@percent }
+\newlabel{index-space}{{3}{6}{A multidimensional illustration of CUDA grid organization \cite {opencl-programming-guide}}{figure.3}{}}
+\newlabel{index-space@cref}{{[figure][3][]3}{[1][5][]6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The given image presents all of the architecture parts of the OpenCL framework with considration of the memory model presented. \blx@tocontentsinit {0}\cite {opencl-programming-guide}}}{6}{figure.4}\protected@file@percent }
+\newlabel{index-space}{{4}{6}{The given image presents all of the architecture parts of the OpenCL framework with considration of the memory model presented. \cite {opencl-programming-guide}}{figure.4}{}}
+\newlabel{index-space@cref}{{[figure][4][]4}{[1][5][]6}}
 \abx@aux@cite{0}{openCL-programming-guide}
 \abx@aux@segm{0}{0}{openCL-programming-guide}
 \abx@aux@cite{0}{programming-massively-parallel-processors}
@@ -76,37 +90,36 @@
 \abx@aux@segm{0}{0}{https://registry.khronos.org/OpenCL/specs/3.0-unified/html/OpenCL_API.html?utm_source=chatgpt.com}
 \abx@aux@cite{0}{software-architecture-patterns}
 \abx@aux@segm{0}{0}{software-architecture-patterns}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Benchmark implementation}{7}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Architecture}{7}{subsection.4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Layered architecture of the benchmark system. The User Interaction Layer (CLI) communicates with the Benchmark Layer, which manages workloads. The Optimization Layer executes workloads using different optimizers, while the Util Layer provides shared functionality.}}{7}{figure.5}\protected@file@percent }
-\newlabel{fig:architecture-overview}{{5}{7}{Layered architecture of the benchmark system. The User Interaction Layer (CLI) communicates with the Benchmark Layer, which manages workloads. The Optimization Layer executes workloads using different optimizers, while the Util Layer provides shared functionality}{figure.5}{}}
-\newlabel{fig:architecture-overview@cref}{{[figure][5][]5}{[1][7][]7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Benchmark Layer}{8}{subsubsection.4.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Domain-agnostic class Workload design to enable maintainable integration of additional workloads.}}{8}{figure.6}\protected@file@percent }
-\newlabel{fig:benchmark-layer}{{6}{8}{Domain-agnostic class Workload design to enable maintainable integration of additional workloads}{figure.6}{}}
-\newlabel{fig:benchmark-layer@cref}{{[figure][6][]6}{[1][7][]8}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Benchmark implementation}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Architecture}{8}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Layered architecture of the benchmark system. The User Interaction Layer (CLI) communicates with the Benchmark Layer, which manages workloads. The Optimization Layer executes workloads using different optimizers, while the Util Layer provides shared functionality.}}{8}{figure.5}\protected@file@percent }
+\newlabel{fig:architecture-overview}{{5}{8}{Layered architecture of the benchmark system. The User Interaction Layer (CLI) communicates with the Benchmark Layer, which manages workloads. The Optimization Layer executes workloads using different optimizers, while the Util Layer provides shared functionality}{figure.5}{}}
+\newlabel{fig:architecture-overview@cref}{{[figure][5][]5}{[1][8][]8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Benchmark Layer}{9}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Domain-agnostic class Workload design to enable maintainable integration of additional workloads.}}{9}{figure.6}\protected@file@percent }
+\newlabel{fig:benchmark-layer}{{6}{9}{Domain-agnostic class Workload design to enable maintainable integration of additional workloads}{figure.6}{}}
+\newlabel{fig:benchmark-layer@cref}{{[figure][6][]6}{[1][8][]9}}
 \abx@aux@cite{0}{adam}
 \abx@aux@segm{0}{0}{adam}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Optimization Layer}{9}{subsubsection.4.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Domain-agnostic optimizer architecture supporting multiple implementations for different execution platforms.}}{9}{figure.7}\protected@file@percent }
-\newlabel{fig:optimization-layer}{{7}{9}{Domain-agnostic optimizer architecture supporting multiple implementations for different execution platforms}{figure.7}{}}
-\newlabel{fig:optimization-layer@cref}{{[figure][7][]7}{[1][8][]9}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Util Layer}{9}{subsubsection.4.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Optimization Layer}{10}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Domain-agnostic optimizer architecture supporting multiple implementations for different execution platforms.}}{10}{figure.7}\protected@file@percent }
+\newlabel{fig:optimization-layer}{{7}{10}{Domain-agnostic optimizer architecture supporting multiple implementations for different execution platforms}{figure.7}{}}
+\newlabel{fig:optimization-layer@cref}{{[figure][7][]7}{[1][9][]10}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Util Layer}{10}{subsubsection.4.1.3}\protected@file@percent }
 \abx@aux@cite{0}{best-practices-benchmark}
 \abx@aux@segm{0}{0}{best-practices-benchmark}
 \abx@aux@cite{0}{best-practices-benchmark}
 \abx@aux@segm{0}{0}{best-practices-benchmark}
 \abx@aux@cite{0}{best-practices-benchmark}
 \abx@aux@segm{0}{0}{best-practices-benchmark}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Utility components providing shared functionality across the application.}}{10}{figure.8}\protected@file@percent }
-\newlabel{fig:util-layer}{{8}{10}{Utility components providing shared functionality across the application}{figure.8}{}}
-\newlabel{fig:util-layer@cref}{{[figure][8][]8}{[1][9][]10}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Data Layer}{10}{subsubsection.4.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Measured Metrics}{10}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Efficiency}{10}{subsubsection.4.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Utility components providing shared functionality across the application.}}{11}{figure.8}\protected@file@percent }
+\newlabel{fig:util-layer}{{8}{11}{Utility components providing shared functionality across the application}{figure.8}{}}
+\newlabel{fig:util-layer@cref}{{[figure][8][]8}{[1][10][]11}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.4}Data Layer}{11}{subsubsection.4.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Measured Metrics}{11}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Efficiency}{11}{subsubsection.4.2.1}\protected@file@percent }
 \abx@aux@cite{0}{best-practices-benchmark}
 \abx@aux@segm{0}{0}{best-practices-benchmark}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Reliability}{11}{subsubsection.4.2.2}\protected@file@percent }
 \abx@aux@cite{0}{970}
 \abx@aux@segm{0}{0}{970}
 \abx@aux@cite{0}{5000}
@@ -124,213 +137,308 @@
 \char_set_catcode_space:n {32}
 \tl_gset:cn {c__nicematrix_1_tl}{\seq_gset_from_clist:Nn \g__nicematrix_size_seq {1,19,19,1,4,4}\seq_gset_from_clist:Nn \g__nicematrix_pos_of_blocks_seq {{2}{1}{2}{4}{},{6}{1}{6}{4}{},{9}{1}{9}{4}{},{12}{1}{12}{4}{}}\seq_gset_from_clist:Nn \g__nicematrix_multicolumn_cells_seq {11-1,8-1,5-1,1-1}\seq_gset_from_clist:Nn \g__nicematrix_multicolumn_sizes_seq {4,4,4,4}}
 \ExplSyntaxOff 
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Reliability}{12}{subsubsection.4.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Hardware and Platforms}{12}{subsection.4.3}\protected@file@percent }
 \AC@undonewlabel{acro:HPC}
-\newlabel{acro:HPC}{{4.3}{12}{Hardware and Platforms}{section*.5}{}}
+\newlabel{acro:HPC}{{4.3}{12}{Hardware and Platforms}{section*.7}{}}
 \newlabel{acro:HPC@cref}{{[subsection][3][4]4.3}{[1][12][]12}}
 \acronymused{HPC}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Hardware specifications of the GPUs used in the benchmark. \blx@tocontentsinit {0}\cite {970}\blx@tocontentsinit {0}\cite {5000} \blx@tocontentsinit {0}\cite {A100}}}{12}{table.1}\protected@file@percent }
-\newlabel{tab:gpus}{{1}{12}{Hardware specifications of the GPUs used in the benchmark. \cite {970}\cite {5000} \cite {A100}}{table.1}{}}
-\newlabel{tab:gpus@cref}{{[table][1][]1}{[1][12][]12}}
-\pgfsyspdfmark {nm-1-position}{7934760}{30134762}
-\pgfsyspdfmark {pgfid2}{7934760}{30134762}
-\pgfsyspdfmark {pgfid3}{7934760}{30134762}
-\pgfsyspdfmark {nm-1-row-1}{7934760}{39345838}
-\pgfsyspdfmark {pgfid6}{7934760}{39358945}
-\pgfsyspdfmark {pgfid7}{8327977}{38693758}
-\pgfsyspdfmark {pgfid8}{9230014}{38693758}
-\pgfsyspdfmark {pgfid9}{17714271}{38693758}
-\pgfsyspdfmark {pgfid10}{23745760}{38693758}
-\pgfsyspdfmark {pgfid11}{28863791}{38693758}
-\pgfsyspdfmark {nm-1-row-2}{7934760}{38395567}
-\pgfsyspdfmark {pgfid12}{7934760}{38408674}
-\pgfsyspdfmark {pgfid13}{18063763}{37743487}
-\pgfsyspdfmark {pgfid14}{19579139}{37743487}
-\pgfsyspdfmark {nm-1-row-3}{7934760}{37445296}
-\pgfsyspdfmark {pgfid15}{7934760}{37458403}
-\pgfsyspdfmark {pgfid16}{8327977}{36793216}
-\pgfsyspdfmark {pgfid17}{9097701}{36793216}
-\pgfsyspdfmark {pgfid18}{18744390}{36793216}
-\pgfsyspdfmark {pgfid19}{25340989}{36793216}
-\pgfsyspdfmark {pgfid20}{30060440}{36793216}
-\pgfsyspdfmark {nm-1-row-4}{7934760}{36495025}
-\pgfsyspdfmark {pgfid21}{7934760}{36508132}
-\pgfsyspdfmark {pgfid22}{8327977}{35842945}
-\pgfsyspdfmark {pgfid23}{10423570}{35842945}
-\pgfsyspdfmark {pgfid24}{18113670}{35842945}
-\pgfsyspdfmark {pgfid25}{24785115}{35842945}
-\pgfsyspdfmark {pgfid26}{29707588}{35842945}
-\pgfsyspdfmark {nm-1-row-5}{7934760}{35544754}
-\pgfsyspdfmark {pgfid27}{7934760}{35557861}
-\pgfsyspdfmark {pgfid28}{8327977}{34892674}
-\pgfsyspdfmark {pgfid29}{11727918}{34892674}
-\pgfsyspdfmark {pgfid30}{18936855}{34892674}
-\pgfsyspdfmark {pgfid31}{23972350}{34892674}
-\pgfsyspdfmark {pgfid32}{29953516}{34892674}
-\pgfsyspdfmark {nm-1-row-6}{7934760}{34594483}
-\pgfsyspdfmark {pgfid33}{7934760}{34607590}
-\pgfsyspdfmark {pgfid34}{17082191}{33942403}
-\pgfsyspdfmark {pgfid35}{19579139}{33942403}
-\pgfsyspdfmark {nm-1-row-7}{7934760}{33644212}
-\pgfsyspdfmark {pgfid36}{7934760}{33657319}
-\pgfsyspdfmark {pgfid37}{8327977}{32992132}
-\pgfsyspdfmark {pgfid38}{11435943}{32992132}
-\pgfsyspdfmark {pgfid39}{18744390}{32992132}
-\pgfsyspdfmark {pgfid40}{25340989}{32992132}
-\pgfsyspdfmark {pgfid41}{30060440}{32992132}
-\pgfsyspdfmark {nm-1-row-8}{7934760}{32693941}
-\pgfsyspdfmark {pgfid42}{7934760}{32707048}
-\pgfsyspdfmark {pgfid43}{8327977}{32041861}
-\pgfsyspdfmark {pgfid44}{11617714}{32041861}
-\pgfsyspdfmark {pgfid45}{18744390}{32041861}
-\pgfsyspdfmark {pgfid46}{25340989}{32041861}
-\pgfsyspdfmark {pgfid47}{30060440}{32041861}
-\pgfsyspdfmark {nm-1-row-9}{7934760}{31743670}
-\pgfsyspdfmark {pgfid48}{7934760}{31756777}
-\pgfsyspdfmark {pgfid49}{17947966}{31091590}
-\pgfsyspdfmark {pgfid50}{19579139}{31091590}
-\pgfsyspdfmark {nm-1-row-10}{7934760}{30793399}
-\pgfsyspdfmark {pgfid51}{7934760}{30806506}
-\pgfsyspdfmark {pgfid52}{8327977}{30141319}
-\pgfsyspdfmark {pgfid53}{11529674}{30141319}
-\pgfsyspdfmark {pgfid54}{18637466}{30141319}
-\pgfsyspdfmark {pgfid55}{23205766}{30141319}
-\pgfsyspdfmark {pgfid56}{29953516}{30141319}
-\pgfsyspdfmark {nm-1-row-11}{7934760}{29843128}
-\pgfsyspdfmark {pgfid57}{7934760}{29856235}
-\pgfsyspdfmark {pgfid58}{8327977}{29191048}
-\pgfsyspdfmark {pgfid59}{11511429}{29191048}
-\pgfsyspdfmark {pgfid60}{19321785}{29191048}
-\pgfsyspdfmark {pgfid61}{25725919}{29191048}
-\pgfsyspdfmark {pgfid62}{30445370}{29191048}
-\pgfsyspdfmark {nm-1-row-12}{7934760}{28892857}
-\pgfsyspdfmark {pgfid63}{7934760}{28905964}
-\pgfsyspdfmark {pgfid64}{15493014}{28240777}
-\pgfsyspdfmark {pgfid65}{19579139}{28240777}
-\pgfsyspdfmark {nm-1-row-13}{7934760}{27942586}
-\pgfsyspdfmark {pgfid66}{7934760}{27955693}
-\pgfsyspdfmark {pgfid67}{8327977}{27290506}
-\pgfsyspdfmark {pgfid68}{10714405}{27290506}
-\pgfsyspdfmark {pgfid69}{18744390}{27290506}
-\pgfsyspdfmark {pgfid70}{25340989}{27290506}
-\pgfsyspdfmark {pgfid71}{30060440}{27290506}
-\pgfsyspdfmark {nm-1-row-14}{7934760}{26992315}
-\pgfsyspdfmark {pgfid72}{7934760}{27005422}
-\pgfsyspdfmark {pgfid73}{8327977}{26340235}
-\pgfsyspdfmark {pgfid74}{9399092}{26340235}
-\pgfsyspdfmark {pgfid75}{18936855}{26340235}
-\pgfsyspdfmark {pgfid76}{25533454}{26340235}
-\pgfsyspdfmark {pgfid77}{30252905}{26340235}
-\pgfsyspdfmark {nm-1-row-15}{7934760}{26042044}
-\pgfsyspdfmark {pgfid78}{7934760}{26055151}
-\pgfsyspdfmark {pgfid79}{8327977}{25389964}
-\pgfsyspdfmark {pgfid80}{9313687}{25389964}
-\pgfsyspdfmark {pgfid81}{19129320}{25389964}
-\pgfsyspdfmark {pgfid82}{25533454}{25389964}
-\pgfsyspdfmark {pgfid83}{30445370}{25389964}
-\pgfsyspdfmark {nm-1-row-16}{7934760}{25091773}
-\pgfsyspdfmark {pgfid84}{7934760}{25104880}
-\pgfsyspdfmark {pgfid85}{8327977}{24439693}
-\pgfsyspdfmark {pgfid86}{10840441}{24439693}
-\pgfsyspdfmark {pgfid87}{19129320}{24439693}
-\pgfsyspdfmark {pgfid88}{25533454}{24439693}
-\pgfsyspdfmark {pgfid89}{30445370}{24439693}
-\pgfsyspdfmark {nm-1-row-17}{7934760}{24141502}
-\pgfsyspdfmark {pgfid90}{7934760}{24154609}
-\pgfsyspdfmark {pgfid91}{8327977}{23489422}
-\pgfsyspdfmark {pgfid92}{10524216}{23489422}
-\pgfsyspdfmark {pgfid93}{19321785}{23489422}
-\pgfsyspdfmark {pgfid94}{25533454}{23489422}
-\pgfsyspdfmark {pgfid95}{30252905}{23489422}
-\pgfsyspdfmark {nm-1-row-18}{7934760}{23191231}
-\pgfsyspdfmark {pgfid96}{7934760}{23204338}
-\pgfsyspdfmark {pgfid97}{8327977}{22539151}
-\pgfsyspdfmark {pgfid98}{10904596}{22539151}
-\pgfsyspdfmark {pgfid99}{19129320}{22539151}
-\pgfsyspdfmark {pgfid100}{25533454}{22539151}
-\pgfsyspdfmark {pgfid101}{30445370}{22539151}
-\pgfsyspdfmark {nm-1-row-19}{7934760}{22240960}
-\pgfsyspdfmark {pgfid102}{7934760}{22254067}
-\pgfsyspdfmark {pgfid103}{8327977}{21588880}
-\pgfsyspdfmark {pgfid104}{10958059}{21588880}
-\pgfsyspdfmark {pgfid105}{19321785}{21588880}
-\pgfsyspdfmark {pgfid106}{25725919}{21588880}
-\pgfsyspdfmark {pgfid107}{30637835}{21588880}
-\pgfsyspdfmark {nm-1-row-20}{7934760}{21290689}
-\pgfsyspdfmark {pgfid108}{7934760}{21303796}
-\pgfsyspdfmark {nm-1-col-1}{7947867}{21303796}
-\pgfsyspdfmark {pgfid109}{7934760}{21303796}
-\pgfsyspdfmark {nm-1-col-2}{15507968}{21303796}
-\pgfsyspdfmark {pgfid110}{15521075}{21303796}
-\pgfsyspdfmark {nm-1-col-3}{19894359}{21303796}
-\pgfsyspdfmark {pgfid111}{19907466}{21303796}
-\pgfsyspdfmark {nm-1-col-4}{26490958}{21303796}
-\pgfsyspdfmark {pgfid112}{26504065}{21303796}
-\pgfsyspdfmark {nm-1-col-5}{31210409}{21303796}
-\pgfsyspdfmark {pgfid113}{31223516}{21303796}
-\pgfsyspdfmark {pgfid114}{31223516}{30134762}
-\pgfsyspdfmark {pgfid116}{31223516}{30134762}
 \ExplSyntaxOn 
 \char_set_catcode_space:n {32}
 \tl_gset:cn {c__nicematrix_2_tl}{\seq_gset_from_clist:Nn \g__nicematrix_size_seq {1,3,3,1,4,4}}
 \ExplSyntaxOff 
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Hardware specifications of the GPUs used in the benchmark. \blx@tocontentsinit {0}\cite {970}\blx@tocontentsinit {0}\cite {5000} \blx@tocontentsinit {0}\cite {A100}}}{13}{table.1}\protected@file@percent }
+\newlabel{tab:gpus}{{1}{13}{Hardware specifications of the GPUs used in the benchmark. \cite {970}\cite {5000} \cite {A100}}{table.1}{}}
+\newlabel{tab:gpus@cref}{{[table][1][]1}{[1][12][]13}}
+\pgfsyspdfmark {nm-1-position}{7934760}{39987972}
+\pgfsyspdfmark {pgfid2}{7934760}{39987972}
+\pgfsyspdfmark {pgfid3}{7934760}{39987972}
+\pgfsyspdfmark {nm-1-row-1}{7934760}{49199048}
+\pgfsyspdfmark {pgfid6}{7934760}{49212155}
+\pgfsyspdfmark {pgfid7}{8327977}{48546968}
+\pgfsyspdfmark {pgfid8}{9230014}{48546968}
+\pgfsyspdfmark {pgfid9}{17714271}{48546968}
+\pgfsyspdfmark {pgfid10}{23745760}{48546968}
+\pgfsyspdfmark {pgfid11}{28863791}{48546968}
+\pgfsyspdfmark {nm-1-row-2}{7934760}{48248777}
+\pgfsyspdfmark {pgfid12}{7934760}{48261884}
+\pgfsyspdfmark {pgfid13}{18063763}{47596697}
+\pgfsyspdfmark {pgfid14}{19579139}{47596697}
+\pgfsyspdfmark {nm-1-row-3}{7934760}{47298506}
+\pgfsyspdfmark {pgfid15}{7934760}{47311613}
+\pgfsyspdfmark {pgfid16}{8327977}{46646426}
+\pgfsyspdfmark {pgfid17}{9097701}{46646426}
+\pgfsyspdfmark {pgfid18}{18744390}{46646426}
+\pgfsyspdfmark {pgfid19}{25340989}{46646426}
+\pgfsyspdfmark {pgfid20}{30060440}{46646426}
+\pgfsyspdfmark {nm-1-row-4}{7934760}{46348235}
+\pgfsyspdfmark {pgfid21}{7934760}{46361342}
+\pgfsyspdfmark {pgfid22}{8327977}{45696155}
+\pgfsyspdfmark {pgfid23}{10423570}{45696155}
+\pgfsyspdfmark {pgfid24}{18113670}{45696155}
+\pgfsyspdfmark {pgfid25}{24785115}{45696155}
+\pgfsyspdfmark {pgfid26}{29707588}{45696155}
+\pgfsyspdfmark {nm-1-row-5}{7934760}{45397964}
+\pgfsyspdfmark {pgfid27}{7934760}{45411071}
+\pgfsyspdfmark {pgfid28}{8327977}{44745884}
+\pgfsyspdfmark {pgfid29}{11727918}{44745884}
+\pgfsyspdfmark {pgfid30}{18936855}{44745884}
+\pgfsyspdfmark {pgfid31}{23972350}{44745884}
+\pgfsyspdfmark {pgfid32}{29953516}{44745884}
+\pgfsyspdfmark {nm-1-row-6}{7934760}{44447693}
+\pgfsyspdfmark {pgfid33}{7934760}{44460800}
+\pgfsyspdfmark {pgfid34}{17082191}{43795613}
+\pgfsyspdfmark {pgfid35}{19579139}{43795613}
+\pgfsyspdfmark {nm-1-row-7}{7934760}{43497422}
+\pgfsyspdfmark {pgfid36}{7934760}{43510529}
+\pgfsyspdfmark {pgfid37}{8327977}{42845342}
+\pgfsyspdfmark {pgfid38}{11435943}{42845342}
+\pgfsyspdfmark {pgfid39}{18744390}{42845342}
+\pgfsyspdfmark {pgfid40}{25340989}{42845342}
+\pgfsyspdfmark {pgfid41}{30060440}{42845342}
+\pgfsyspdfmark {nm-1-row-8}{7934760}{42547151}
+\pgfsyspdfmark {pgfid42}{7934760}{42560258}
+\pgfsyspdfmark {pgfid43}{8327977}{41895071}
+\pgfsyspdfmark {pgfid44}{11617714}{41895071}
+\pgfsyspdfmark {pgfid45}{18744390}{41895071}
+\pgfsyspdfmark {pgfid46}{25340989}{41895071}
+\pgfsyspdfmark {pgfid47}{30060440}{41895071}
+\pgfsyspdfmark {nm-1-row-9}{7934760}{41596880}
+\pgfsyspdfmark {pgfid48}{7934760}{41609987}
+\pgfsyspdfmark {pgfid49}{17947966}{40944800}
+\pgfsyspdfmark {pgfid50}{19579139}{40944800}
+\pgfsyspdfmark {nm-1-row-10}{7934760}{40646609}
+\pgfsyspdfmark {pgfid51}{7934760}{40659716}
+\pgfsyspdfmark {pgfid52}{8327977}{39994529}
+\pgfsyspdfmark {pgfid53}{11529674}{39994529}
+\pgfsyspdfmark {pgfid54}{18637466}{39994529}
+\pgfsyspdfmark {pgfid55}{23205766}{39994529}
+\pgfsyspdfmark {pgfid56}{29953516}{39994529}
+\pgfsyspdfmark {nm-1-row-11}{7934760}{39696338}
+\pgfsyspdfmark {pgfid57}{7934760}{39709445}
+\pgfsyspdfmark {pgfid58}{8327977}{39044258}
+\pgfsyspdfmark {pgfid59}{11511429}{39044258}
+\pgfsyspdfmark {pgfid60}{19321785}{39044258}
+\pgfsyspdfmark {pgfid61}{25725919}{39044258}
+\pgfsyspdfmark {pgfid62}{30445370}{39044258}
+\pgfsyspdfmark {nm-1-row-12}{7934760}{38746067}
+\pgfsyspdfmark {pgfid63}{7934760}{38759174}
+\pgfsyspdfmark {pgfid64}{15493014}{38093987}
+\pgfsyspdfmark {pgfid65}{19579139}{38093987}
+\pgfsyspdfmark {nm-1-row-13}{7934760}{37795796}
+\pgfsyspdfmark {pgfid66}{7934760}{37808903}
+\pgfsyspdfmark {pgfid67}{8327977}{37143716}
+\pgfsyspdfmark {pgfid68}{10714405}{37143716}
+\pgfsyspdfmark {pgfid69}{18744390}{37143716}
+\pgfsyspdfmark {pgfid70}{25340989}{37143716}
+\pgfsyspdfmark {pgfid71}{30060440}{37143716}
+\pgfsyspdfmark {nm-1-row-14}{7934760}{36845525}
+\pgfsyspdfmark {pgfid72}{7934760}{36858632}
+\pgfsyspdfmark {pgfid73}{8327977}{36193445}
+\pgfsyspdfmark {pgfid74}{9399092}{36193445}
+\pgfsyspdfmark {pgfid75}{18936855}{36193445}
+\pgfsyspdfmark {pgfid76}{25533454}{36193445}
+\pgfsyspdfmark {pgfid77}{30252905}{36193445}
+\pgfsyspdfmark {nm-1-row-15}{7934760}{35895254}
+\pgfsyspdfmark {pgfid78}{7934760}{35908361}
+\pgfsyspdfmark {pgfid79}{8327977}{35243174}
+\pgfsyspdfmark {pgfid80}{9313687}{35243174}
+\pgfsyspdfmark {pgfid81}{19129320}{35243174}
+\pgfsyspdfmark {pgfid82}{25533454}{35243174}
+\pgfsyspdfmark {pgfid83}{30445370}{35243174}
+\pgfsyspdfmark {nm-1-row-16}{7934760}{34944983}
+\pgfsyspdfmark {pgfid84}{7934760}{34958090}
+\pgfsyspdfmark {pgfid85}{8327977}{34292903}
+\pgfsyspdfmark {pgfid86}{10840441}{34292903}
+\pgfsyspdfmark {pgfid87}{19129320}{34292903}
+\pgfsyspdfmark {pgfid88}{25533454}{34292903}
+\pgfsyspdfmark {pgfid89}{30445370}{34292903}
+\pgfsyspdfmark {nm-1-row-17}{7934760}{33994712}
+\pgfsyspdfmark {pgfid90}{7934760}{34007819}
+\pgfsyspdfmark {pgfid91}{8327977}{33342632}
+\pgfsyspdfmark {pgfid92}{10524216}{33342632}
+\pgfsyspdfmark {pgfid93}{19321785}{33342632}
+\pgfsyspdfmark {pgfid94}{25533454}{33342632}
+\pgfsyspdfmark {pgfid95}{30252905}{33342632}
+\pgfsyspdfmark {nm-1-row-18}{7934760}{33044441}
+\pgfsyspdfmark {pgfid96}{7934760}{33057548}
+\pgfsyspdfmark {pgfid97}{8327977}{32392361}
+\pgfsyspdfmark {pgfid98}{10904596}{32392361}
+\pgfsyspdfmark {pgfid99}{19129320}{32392361}
+\pgfsyspdfmark {pgfid100}{25533454}{32392361}
+\pgfsyspdfmark {pgfid101}{30445370}{32392361}
+\pgfsyspdfmark {nm-1-row-19}{7934760}{32094170}
+\pgfsyspdfmark {pgfid102}{7934760}{32107277}
+\pgfsyspdfmark {pgfid103}{8327977}{31442090}
+\pgfsyspdfmark {pgfid104}{10958059}{31442090}
+\pgfsyspdfmark {pgfid105}{19321785}{31442090}
+\pgfsyspdfmark {pgfid106}{25725919}{31442090}
+\pgfsyspdfmark {pgfid107}{30637835}{31442090}
+\pgfsyspdfmark {nm-1-row-20}{7934760}{31143899}
+\pgfsyspdfmark {pgfid108}{7934760}{31157006}
+\pgfsyspdfmark {nm-1-col-1}{7947867}{31157006}
+\pgfsyspdfmark {pgfid109}{7934760}{31157006}
+\pgfsyspdfmark {nm-1-col-2}{15507968}{31157006}
+\pgfsyspdfmark {pgfid110}{15521075}{31157006}
+\pgfsyspdfmark {nm-1-col-3}{19894359}{31157006}
+\pgfsyspdfmark {pgfid111}{19907466}{31157006}
+\pgfsyspdfmark {nm-1-col-4}{26490958}{31157006}
+\pgfsyspdfmark {pgfid112}{26504065}{31157006}
+\pgfsyspdfmark {nm-1-col-5}{31210409}{31157006}
+\pgfsyspdfmark {pgfid113}{31223516}{31157006}
+\pgfsyspdfmark {pgfid114}{31223516}{39987972}
+\pgfsyspdfmark {pgfid116}{31223516}{39987972}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Benchmark results}{13}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Results for NVIDIA GeForce GTX 970}{13}{subsection.5.1}\protected@file@percent }
 \AC@undonewlabel{acro:GEMM}
-\newlabel{acro:GEMM}{{5.1}{13}{Results for NVIDIA GeForce GTX 970}{section*.6}{}}
+\newlabel{acro:GEMM}{{5.1}{13}{Results for NVIDIA GeForce GTX 970}{section*.8}{}}
 \newlabel{acro:GEMM@cref}{{[subsection][1][5]5.1}{[1][13][]13}}
 \acronymused{GEMM}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Data transfer time and computation time across all batch indices}}{13}{table.2}\protected@file@percent }
 \newlabel{tab:gtx970results}{{2}{13}{Data transfer time and computation time across all batch indices}{table.2}{}}
 \newlabel{tab:gtx970results@cref}{{[table][2][]2}{[1][13][]13}}
-\pgfsyspdfmark {nm-2-position}{7482764}{38666653}
-\pgfsyspdfmark {pgfid118}{7482764}{38666653}
-\pgfsyspdfmark {pgfid119}{7482764}{38666653}
-\pgfsyspdfmark {nm-2-row-1}{7482764}{40275561}
-\pgfsyspdfmark {pgfid122}{7482764}{40288668}
-\pgfsyspdfmark {pgfid123}{7875981}{39623481}
-\pgfsyspdfmark {pgfid124}{9169317}{39623481}
-\pgfsyspdfmark {pgfid125}{20768688}{39623481}
-\pgfsyspdfmark {pgfid126}{24497831}{39623481}
-\pgfsyspdfmark {pgfid127}{29094658}{39623481}
-\pgfsyspdfmark {nm-2-row-2}{7482764}{39325290}
-\pgfsyspdfmark {pgfid128}{7482764}{39338397}
-\pgfsyspdfmark {pgfid129}{7875981}{38673210}
-\pgfsyspdfmark {pgfid130}{13269141}{38673210}
-\pgfsyspdfmark {pgfid131}{21404323}{38673210}
-\pgfsyspdfmark {pgfid132}{25436268}{38673210}
-\pgfsyspdfmark {pgfid133}{30608669}{38673210}
-\pgfsyspdfmark {nm-2-row-3}{7482764}{38375019}
-\pgfsyspdfmark {pgfid134}{7482764}{38388126}
-\pgfsyspdfmark {pgfid135}{7875981}{37722939}
-\pgfsyspdfmark {pgfid136}{13213539}{37722939}
-\pgfsyspdfmark {pgfid137}{21404323}{37722939}
-\pgfsyspdfmark {pgfid138}{25436268}{37722939}
-\pgfsyspdfmark {pgfid139}{30608669}{37722939}
-\pgfsyspdfmark {nm-2-row-4}{7482764}{37424748}
-\pgfsyspdfmark {pgfid140}{7482764}{37437855}
-\pgfsyspdfmark {nm-2-col-1}{7495871}{37437855}
-\pgfsyspdfmark {pgfid141}{7482764}{37437855}
-\pgfsyspdfmark {nm-2-col-2}{19042410}{37437855}
-\pgfsyspdfmark {pgfid142}{19055517}{37437855}
-\pgfsyspdfmark {nm-2-col-3}{22468751}{37437855}
-\pgfsyspdfmark {pgfid143}{22481858}{37437855}
-\pgfsyspdfmark {nm-2-col-4}{26500696}{37437855}
-\pgfsyspdfmark {pgfid144}{26513803}{37437855}
-\pgfsyspdfmark {nm-2-col-5}{31662405}{37437855}
-\pgfsyspdfmark {pgfid145}{31675512}{37437855}
-\pgfsyspdfmark {pgfid146}{31675512}{38666653}
-\pgfsyspdfmark {pgfid148}{31675512}{38666653}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Results of running the GEMM workload using the Adam optimizer}}{13}{figure.9}\protected@file@percent }
-\newlabel{fig:pltgtx970}{{9}{13}{Results of running the GEMM workload using the Adam optimizer}{figure.9}{}}
-\newlabel{fig:pltgtx970@cref}{{[figure][9][]9}{[1][13][]13}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Results for RTX 5000}{14}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Results for A-100}{14}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{14}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Work sharing}{A1}{appendix.A}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Hans}{A1}{subsection.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Peter}{A1}{subsection.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {B}Code samples}{A1}{appendix.B}\protected@file@percent }
+\pgfsyspdfmark {nm-2-position}{7482764}{17793648}
+\pgfsyspdfmark {pgfid118}{7482764}{17793648}
+\pgfsyspdfmark {pgfid119}{7482764}{17793648}
+\pgfsyspdfmark {nm-2-row-1}{7482764}{19402556}
+\pgfsyspdfmark {pgfid122}{7482764}{19415663}
+\pgfsyspdfmark {pgfid123}{7875981}{18750476}
+\pgfsyspdfmark {pgfid124}{9169317}{18750476}
+\pgfsyspdfmark {pgfid125}{20768688}{18750476}
+\pgfsyspdfmark {pgfid126}{24497831}{18750476}
+\pgfsyspdfmark {pgfid127}{29094658}{18750476}
+\pgfsyspdfmark {nm-2-row-2}{7482764}{18452285}
+\pgfsyspdfmark {pgfid128}{7482764}{18465392}
+\pgfsyspdfmark {pgfid129}{7875981}{17800205}
+\pgfsyspdfmark {pgfid130}{13269141}{17800205}
+\pgfsyspdfmark {pgfid131}{21404323}{17800205}
+\pgfsyspdfmark {pgfid132}{25436268}{17800205}
+\pgfsyspdfmark {pgfid133}{30608669}{17800205}
+\pgfsyspdfmark {nm-2-row-3}{7482764}{17502014}
+\pgfsyspdfmark {pgfid134}{7482764}{17515121}
+\pgfsyspdfmark {pgfid135}{7875981}{16849934}
+\pgfsyspdfmark {pgfid136}{13213539}{16849934}
+\pgfsyspdfmark {pgfid137}{21404323}{16849934}
+\pgfsyspdfmark {pgfid138}{25436268}{16849934}
+\pgfsyspdfmark {pgfid139}{30608669}{16849934}
+\pgfsyspdfmark {nm-2-row-4}{7482764}{16551743}
+\pgfsyspdfmark {pgfid140}{7482764}{16564850}
+\pgfsyspdfmark {nm-2-col-1}{7495871}{16564850}
+\pgfsyspdfmark {pgfid141}{7482764}{16564850}
+\pgfsyspdfmark {nm-2-col-2}{19042410}{16564850}
+\pgfsyspdfmark {pgfid142}{19055517}{16564850}
+\pgfsyspdfmark {nm-2-col-3}{22468751}{16564850}
+\pgfsyspdfmark {pgfid143}{22481858}{16564850}
+\pgfsyspdfmark {nm-2-col-4}{26500696}{16564850}
+\pgfsyspdfmark {pgfid144}{26513803}{16564850}
+\pgfsyspdfmark {nm-2-col-5}{31662405}{16564850}
+\pgfsyspdfmark {pgfid145}{31675512}{16564850}
+\pgfsyspdfmark {pgfid146}{31675512}{17793648}
+\pgfsyspdfmark {pgfid148}{31675512}{17793648}
+\ExplSyntaxOn 
+\char_set_catcode_space:n {32}
+\tl_gset:cn {c__nicematrix_3_tl}{\seq_gset_from_clist:Nn \g__nicematrix_size_seq {1,3,3,1,4,4}}
+\ExplSyntaxOff 
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Results of running the GEMM workload using the Adam optimizer}}{14}{figure.9}\protected@file@percent }
+\newlabel{fig:pltgtx970}{{9}{14}{Results of running the GEMM workload using the Adam optimizer}{figure.9}{}}
+\newlabel{fig:pltgtx970@cref}{{[figure][9][]9}{[1][13][]14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Results for NVIDIA GeForce Quadro RTX 5000}{14}{subsection.5.2}\protected@file@percent }
+\acronymused{HPC}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Data transfer time and computation time across all batch indices}}{14}{table.3}\protected@file@percent }
+\newlabel{tab:rtx5000results}{{3}{14}{Data transfer time and computation time across all batch indices}{table.3}{}}
+\newlabel{tab:rtx5000results@cref}{{[table][3][]3}{[1][14][]14}}
+\pgfsyspdfmark {nm-3-position}{7482764}{20332035}
+\pgfsyspdfmark {pgfid150}{7482764}{20332035}
+\pgfsyspdfmark {pgfid151}{7482764}{20332035}
+\pgfsyspdfmark {nm-3-row-1}{7482764}{21940943}
+\pgfsyspdfmark {pgfid154}{7482764}{21954050}
+\pgfsyspdfmark {pgfid155}{7875981}{21288863}
+\pgfsyspdfmark {pgfid156}{9169317}{21288863}
+\pgfsyspdfmark {pgfid157}{20768688}{21288863}
+\pgfsyspdfmark {pgfid158}{24497831}{21288863}
+\pgfsyspdfmark {pgfid159}{29094658}{21288863}
+\pgfsyspdfmark {nm-3-row-2}{7482764}{20990672}
+\pgfsyspdfmark {pgfid160}{7482764}{21003779}
+\pgfsyspdfmark {pgfid161}{7875981}{20338592}
+\pgfsyspdfmark {pgfid162}{13269141}{20338592}
+\pgfsyspdfmark {pgfid163}{21404323}{20338592}
+\pgfsyspdfmark {pgfid164}{25436268}{20338592}
+\pgfsyspdfmark {pgfid165}{30608669}{20338592}
+\pgfsyspdfmark {nm-3-row-3}{7482764}{20040401}
+\pgfsyspdfmark {pgfid166}{7482764}{20053508}
+\pgfsyspdfmark {pgfid167}{7875981}{19388321}
+\pgfsyspdfmark {pgfid168}{13213539}{19388321}
+\pgfsyspdfmark {pgfid169}{21404323}{19388321}
+\pgfsyspdfmark {pgfid170}{25436268}{19388321}
+\pgfsyspdfmark {pgfid171}{30608669}{19388321}
+\pgfsyspdfmark {nm-3-row-4}{7482764}{19090130}
+\pgfsyspdfmark {pgfid172}{7482764}{19103237}
+\pgfsyspdfmark {nm-3-col-1}{7495871}{19103237}
+\pgfsyspdfmark {pgfid173}{7482764}{19103237}
+\pgfsyspdfmark {nm-3-col-2}{19042410}{19103237}
+\pgfsyspdfmark {pgfid174}{19055517}{19103237}
+\pgfsyspdfmark {nm-3-col-3}{22468751}{19103237}
+\pgfsyspdfmark {pgfid175}{22481858}{19103237}
+\pgfsyspdfmark {nm-3-col-4}{26500696}{19103237}
+\pgfsyspdfmark {pgfid176}{26513803}{19103237}
+\pgfsyspdfmark {nm-3-col-5}{31662405}{19103237}
+\pgfsyspdfmark {pgfid177}{31675512}{19103237}
+\pgfsyspdfmark {pgfid178}{31675512}{20332035}
+\pgfsyspdfmark {pgfid180}{31675512}{20332035}
+\ExplSyntaxOn 
+\char_set_catcode_space:n {32}
+\tl_gset:cn {c__nicematrix_4_tl}{\seq_gset_from_clist:Nn \g__nicematrix_size_seq {1,3,3,1,4,4}}
+\ExplSyntaxOff 
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Results of running the GEMM workload using the Adam optimizer on NVIDIA Quadro RTX 5000}}{15}{figure.10}\protected@file@percent }
+\newlabel{fig:rtx5000}{{10}{15}{Results of running the GEMM workload using the Adam optimizer on NVIDIA Quadro RTX 5000}{figure.10}{}}
+\newlabel{fig:rtx5000@cref}{{[figure][10][]10}{[1][14][]15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Results for NVIDIA A100-SXM4}{15}{subsection.5.3}\protected@file@percent }
+\acronymused{HPC}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Data transfer time and computation time across all batch indices}}{15}{table.4}\protected@file@percent }
+\newlabel{tab:a100}{{4}{15}{Data transfer time and computation time across all batch indices}{table.4}{}}
+\newlabel{tab:a100@cref}{{[table][4][]4}{[1][15][]15}}
+\pgfsyspdfmark {nm-4-position}{7482764}{21775163}
+\pgfsyspdfmark {pgfid182}{7482764}{21775163}
+\pgfsyspdfmark {pgfid183}{7482764}{21775163}
+\pgfsyspdfmark {nm-4-row-1}{7482764}{23384071}
+\pgfsyspdfmark {pgfid186}{7482764}{23397178}
+\pgfsyspdfmark {pgfid187}{7875981}{22731991}
+\pgfsyspdfmark {pgfid188}{9169317}{22731991}
+\pgfsyspdfmark {pgfid189}{20768688}{22731991}
+\pgfsyspdfmark {pgfid190}{24497831}{22731991}
+\pgfsyspdfmark {pgfid191}{29094658}{22731991}
+\pgfsyspdfmark {nm-4-row-2}{7482764}{22433800}
+\pgfsyspdfmark {pgfid192}{7482764}{22446907}
+\pgfsyspdfmark {pgfid193}{7875981}{21781720}
+\pgfsyspdfmark {pgfid194}{13269141}{21781720}
+\pgfsyspdfmark {pgfid195}{21404323}{21781720}
+\pgfsyspdfmark {pgfid196}{25436268}{21781720}
+\pgfsyspdfmark {pgfid197}{30608669}{21781720}
+\pgfsyspdfmark {nm-4-row-3}{7482764}{21483529}
+\pgfsyspdfmark {pgfid198}{7482764}{21496636}
+\pgfsyspdfmark {pgfid199}{7875981}{20831449}
+\pgfsyspdfmark {pgfid200}{13213539}{20831449}
+\pgfsyspdfmark {pgfid201}{21404323}{20831449}
+\pgfsyspdfmark {pgfid202}{25436268}{20831449}
+\pgfsyspdfmark {pgfid203}{30608669}{20831449}
+\pgfsyspdfmark {nm-4-row-4}{7482764}{20533258}
+\pgfsyspdfmark {pgfid204}{7482764}{20546365}
+\pgfsyspdfmark {nm-4-col-1}{7495871}{20546365}
+\pgfsyspdfmark {pgfid205}{7482764}{20546365}
+\pgfsyspdfmark {nm-4-col-2}{19042410}{20546365}
+\pgfsyspdfmark {pgfid206}{19055517}{20546365}
+\pgfsyspdfmark {nm-4-col-3}{22468751}{20546365}
+\pgfsyspdfmark {pgfid207}{22481858}{20546365}
+\pgfsyspdfmark {nm-4-col-4}{26500696}{20546365}
+\pgfsyspdfmark {pgfid208}{26513803}{20546365}
+\pgfsyspdfmark {nm-4-col-5}{31662405}{20546365}
+\pgfsyspdfmark {pgfid209}{31675512}{20546365}
+\pgfsyspdfmark {pgfid210}{31675512}{21775163}
+\pgfsyspdfmark {pgfid212}{31675512}{21775163}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Results of running the GEMM workload using the Adam optimizer on NVIDIA A100}}{16}{figure.11}\protected@file@percent }
+\newlabel{fig:a100}{{11}{16}{Results of running the GEMM workload using the Adam optimizer on NVIDIA A100}{figure.11}{}}
+\newlabel{fig:a100@cref}{{[figure][11][]11}{[1][15][]16}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{16}{section.6}\protected@file@percent }
 \abx@aux@read@bbl@mdfivesum{D41D8CD98F00B204E9800998ECF8427E}
 \abx@aux@read@bblrerun
-\gdef \@abspage@last{21}
+\gdef \@abspage@last{22}
