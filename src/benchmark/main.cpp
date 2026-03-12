@@ -1,10 +1,8 @@
 #include <benchmark/benchmark.h>
-#include <yaml-cpp/yaml.h>
-#include <stdexcept>
-#include <string>
-#include <iostream>
-#include <filesystem>
+
 #include <cstdlib>
+#include <filesystem>
+#include <iostream>
 
 #include "benchmark/benchmark_adam_gemm.h"
 
@@ -50,4 +48,3 @@ int main(int argc, char **argv)
 	benchmark::Shutdown();
 	return 0;
 }
-

@@ -18,28 +18,41 @@ if(CMAKE_CUDA_ARCHITECTURES MATCHES "^[0-9]+$")
 	string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_${CMAKE_CUDA_ARCHITECTURES},code=sm_${CMAKE_CUDA_ARCHITECTURES}")
 endif()
 
-option(ENABLE_TORCH "Enable LibTorch integration" ON)
+option(ENABLE_YAML "Enable yaml-cpp integration" ON)
+option(USE_SYSTEM_YAMLCPP "Use system-provided yaml-cpp" OFF)
 
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
-# ---- LibTorch ----
-
-set(LIBTORCH_ROOT "${CMAKE_SOURCE_DIR}/lib/libtorch" CACHE PATH "Path to LibTorch root")
-
-if(ENABLE_TORCH)
-	list(APPEND CMAKE_PREFIX_PATH "${LIBTORCH_ROOT}")
-	# More robust than CMAKE_PREFIX_PATH alone:
-	set(Torch_DIR "${LIBTORCH_ROOT}/share/cmake/Torch" CACHE PATH "Torch CMake config dir")
-	find_package(Torch REQUIRED)
-else()
-	message(STATUS "LibTorch disabled (ENABLE_TORCH=OFF)")
-endif()
-
 # ---- OpenMP ----
 find_package(OpenMP)
+
+# ---- yaml-cpp ----
+if(ENABLE_YAML)
+	if(USE_SYSTEM_YAMLCPP)
+		find_package(yaml-cpp REQUIRED)
+	else()
+		set(YAMLCPP_ROOT "${CMAKE_SOURCE_DIR}/lib/yaml-cpp" CACHE PATH "Path to yaml-cpp source")
+		if(EXISTS "${YAMLCPP_ROOT}/CMakeLists.txt")
+			set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+			set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+			add_subdirectory("${YAMLCPP_ROOT}" EXCLUDE_FROM_ALL)
+		else()
+			message(FATAL_ERROR "yaml-cpp not found. Set YAMLCPP_ROOT or enable USE_SYSTEM_YAMLCPP.")
+		endif()
+	endif()
+
+	# Normalize target name for linking.
+	if(TARGET yaml-cpp::yaml-cpp)
+		set(YAMLCPP_TARGET yaml-cpp::yaml-cpp)
+	elseif(TARGET yaml-cpp)
+		set(YAMLCPP_TARGET yaml-cpp)
+	else()
+		message(FATAL_ERROR "yaml-cpp target not available after configuration.")
+	endif()
+endif()
 
 # ---- CUDA ----
 find_package(CUDAToolkit REQUIRED)
@@ -86,13 +99,8 @@ function(target_apply_common tgt)
 	target_link_libraries(${tgt})
 	target_enable_openmp(${tgt})
 	target_enable_opencl(${tgt})
-
-	if(ENABLE_TORCH)
-		set_target_properties(${tgt} PROPERTIES
-			BUILD_RPATH "${LIBTORCH_ROOT}/lib"
-			INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${LIBTORCH_ROOT}/lib"
-			INSTALL_RPATH_USE_LINK_PATH TRUE
-		)
+	if(ENABLE_YAML)
+		target_link_libraries(${tgt} PRIVATE ${YAMLCPP_TARGET})
 	endif()
 
 endfunction()
@@ -115,20 +123,6 @@ target_enable_opencl(workloads)
 target_enable_cuda(workloads PUBLIC)
 
 # -----------------------------
-# App (no benchmark harness sources)
-# -----------------------------
-file(GLOB_RECURSE APP_SOURCES CONFIGURE_DEPENDS
-	"${CMAKE_SOURCE_DIR}/src/*.cpp"
-)
-# Exclude EVERYTHING in src/benchmark from app
-list(FILTER APP_SOURCES EXCLUDE REGEX ".*/src/benchmark/.*\\.cpp$")
-
-add_executable(app ${APP_SOURCES})
-target_apply_common(app)
-target_enable_cuda(app)
-target_link_libraries(app PRIVATE workloads)
-
-# -----------------------------
 # Bench (Google Benchmark)
 # -----------------------------
 option(BUILD_BENCHMARKS "Build google-benchmark benchmarks" ON)
@@ -141,19 +135,39 @@ if(BUILD_BENCHMARKS)
 	# Older/newer versions vary; these are safe to set:
 	set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "" FORCE)
 	set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
-	# Extract _GLIBCXX_USE_CXX11_ABI from TORCH_CXX_FLAGS, if present, and apply globally
-	if(ENABLE_TORCH)
-		string(REGEX MATCH "-D_GLIBCXX_USE_CXX11_ABI=([01])" _abi_match "${TORCH_CXX_FLAGS}")
-	endif()
-
-	if(_abi_match)
-		set(_abi_value "${CMAKE_MATCH_1}")
-		add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=${_abi_value})
-		message(STATUS "Forcing _GLIBCXX_USE_CXX11_ABI=${_abi_value} for all targets (incl. vendored benchmark)")
-	endif()
 	# Build the vendored benchmark
 	add_subdirectory(${CMAKE_SOURCE_DIR}/lib/benchmark EXCLUDE_FROM_ALL)
+endif()
 
+# -----------------------------
+# App (no benchmark harness sources)
+# -----------------------------
+file(GLOB_RECURSE APP_SOURCES CONFIGURE_DEPENDS
+	"${CMAKE_SOURCE_DIR}/src/*.cpp"
+)
+# Exclude EVERYTHING in src/benchmark from app
+list(FILTER APP_SOURCES EXCLUDE REGEX ".*/src/benchmark/.*\\.cpp$")
+
+add_executable(app ${APP_SOURCES})
+target_apply_common(app)
+target_enable_cuda(app)
+target_compile_definitions(app PRIVATE OPTI_PERF_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+target_link_libraries(app PRIVATE workloads)
+# app.cpp calls register_adam_gemm_benchmarks; add its implementation explicitly.
+target_sources(app PRIVATE
+	${CMAKE_SOURCE_DIR}/src/benchmark/benchmark_adam_gemm.cpp
+	${CMAKE_SOURCE_DIR}/src/benchmark/benchmark_trainer.cpp
+)
+if(BUILD_BENCHMARKS)
+	target_link_libraries(app PRIVATE benchmark::benchmark)
+else()
+	message(FATAL_ERROR "BUILD_BENCHMARKS=OFF is not supported because app depends on Google Benchmark.")
+endif()
+
+# -----------------------------
+# Bench (Google Benchmark)
+# -----------------------------
+if(BUILD_BENCHMARKS)
 	file(GLOB_RECURSE BENCH_SOURCES CONFIGURE_DEPENDS
 		"${CMAKE_SOURCE_DIR}/src/benchmark/*.cpp"
 	)
@@ -163,6 +177,7 @@ if(BUILD_BENCHMARKS)
 		${BENCH_SOURCES}
 
 		# Explicitly add the implementation files that bench needs
+		${CMAKE_SOURCE_DIR}/src/util/config_reader.cpp
 		${CMAKE_SOURCE_DIR}/src/util/logger.cpp
 		${CMAKE_SOURCE_DIR}/src/util/device_platform_wrapper_opencl.cpp
 		${CMAKE_SOURCE_DIR}/src/optimization/adam_optimizer.cpp

@@ -13,9 +13,11 @@ Just make sure you are connected to a GPU and have run permission on the file.
 
 ## Run
 After install the program is already compiled with the options defined in the 
-install.sh file. Just run the following command to gather benchmark data.
+install.sh file. To run the benchmark first verify which combination
+you want to run for benchmark in `config.yaml`. If have setup your configs,
+just run: 
 
 ```
-./build/bench
+./build/app
 ```
 The benchmark data is stored inside of `data/logs/benchmarks-logs.csv`.
