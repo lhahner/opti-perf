@@ -37,8 +37,8 @@ void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostPar
 	auto ms_int = duration_cast<milliseconds>(t2 - t1);
 
 	// store measurement
-	benchmarkData->setWorkloadType("compute");
-	benchmarkData->setTimeMs(static_cast<float>(ms_int.count()));
+	benchmarkData->workload_type = "compute";
+	benchmarkData->time_ms = static_cast<float>(ms_int.count());
 	
 	auto now = std::chrono::system_clock::now();
 	std::time_t tt = std::chrono::system_clock::to_time_t(now);
@@ -49,7 +49,7 @@ void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostPar
 	static thread_local std::string ts_str;
 	ts_str = ts.str();
 	
-	benchmarkData->setTimestamp(ts_str.c_str());
+	benchmarkData->timestamp = ts_str.c_str();
 	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");	
 }
 

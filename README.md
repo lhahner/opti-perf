@@ -21,3 +21,11 @@ just run:
 ./build/app
 ```
 The benchmark data is stored inside of `data/logs/benchmarks-logs.csv`.
+
+### Run a batch 
+If you want to executed a bunch of runs use `run.sh` and specify how
+much iterations of the program you want to run. E.g. to run 10 batches:
+
+```
+run.sh 10
+```

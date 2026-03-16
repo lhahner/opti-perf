@@ -3,6 +3,7 @@
 #include "optimization/optimizer.h"
 #include "util/host_param_view.h"
 #include "util/cuda_device_param_view.h"
+#include "util/device_platform_handler_cuda.h"
 #include <unordered_map>
 #include <vector>
 #include <cstdint>
