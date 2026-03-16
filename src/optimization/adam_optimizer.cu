@@ -61,7 +61,8 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     float h2d_ms_total = 0.0f;
     float kernel_ms_total = 0.0f;
     float d2h_ms_total = 0.0f;
-
+    DevicePlatformHandlerCuda device_platform_handler_cuda;
+    benchmarkData->device_name = device_platform_handler_cuda.get_device_name();
     for (const auto &p : params)
     {
         if (!p.data || !p.grad || p.count == 0)
@@ -109,14 +110,14 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     }
     cudaStreamSynchronize(stream);
 
-    benchmarkData->setTimestamp(format_timestamp());
-    benchmarkData->setWorkloadType("data_transfer");
-    benchmarkData->setTimeMs(h2d_ms_total);
+    benchmarkData->timestamp = format_timestamp();
+    benchmarkData->workload_type = "data_transfer";
+    benchmarkData->time_ms = h2d_ms_total;
     logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
    
-    benchmarkData->setTimestamp(format_timestamp());
-    benchmarkData->setWorkloadType("compute");
-    benchmarkData->setTimeMs(kernel_ms_total);
+    benchmarkData->timestamp = format_timestamp();
+    benchmarkData->workload_type = "compute";
+    benchmarkData->time_ms = kernel_ms_total;
     logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
 
     std::cout << toString(Marker::INFO) << "Data Transfer: " << d2h_ms_total

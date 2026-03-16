@@ -117,6 +117,9 @@ file(GLOB_RECURSE CUDA_SOURCES CONFIGURE_DEPENDS
 add_library(workloads STATIC ${WORKLOAD_SOURCES} ${CUDA_SOURCES})
 target_include_directories(workloads PUBLIC "${CMAKE_SOURCE_DIR}/include")
 target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic)
+target_sources(workloads PRIVATE
+	${CMAKE_SOURCE_DIR}/src/util/device_platform_handler_cuda.cpp
+)
 target_link_libraries(workloads)
 target_enable_openmp(workloads)
 target_enable_opencl(workloads)

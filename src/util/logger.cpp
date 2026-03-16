@@ -32,9 +32,9 @@ int Logger::logToCsv(BenchmarkData benchmarkData, const char *filename)
 
     if (file.tellp() == 0)
     {
-        file << benchmarkData.getCSVHeader() << "\n"; // Write header only once
+        file << BenchmarkData::csv_header() << "\n"; // Write header only once
     }
-    file << benchmarkData.toCSVString() << "\n";
+    file << benchmarkData.to_csv_string() << "\n";
     file.close();
     return LOG_TO_FILE_SUCESS;
 }

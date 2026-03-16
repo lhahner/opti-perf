@@ -22,13 +22,13 @@ namespace {
 
 struct AdamGemmConfig
 {
-	float lr = 1e-3f;
+	float learning_rate = 1e-3f;
 	float beta1 = 0.9f;
 	float beta2 = 0.999f;
-	float eps = 1e-8f;
-	int m = 2024;
-	int k = 2024;
-	int n = 256;
+	float epsilon = 1e-8f;
+	long width = 2024;
+	long height = 2024;
+	long depth = 256;
 	int batch_size = 10;
 	std::string framework = "CPU";
 };
@@ -47,13 +47,13 @@ AdamGemmConfig load_config(ConfigReader &config_reader)
 
 	AdamGemmConfig config;
 	config.framework = runtime["framework"].as<std::string>();
-	config.lr = optimizer["learning_rate"].as<float>();
+	config.learning_rate = optimizer["learning_rate"].as<float>();
 	config.beta1 = optimizer["beta_1"].as<float>();
 	config.beta2 = optimizer["beta_2"].as<float>();
-	config.eps = optimizer["epsilon"].as<float>();
-	config.m = optimizer["dim_m"].as<int>();
-	config.k = optimizer["dim_k"].as<int>();
-	config.n = optimizer["dim_n"].as<int>();
+	config.epsilon = optimizer["epsilon"].as<float>();
+	config.width = optimizer["dim_m"].as<long>();
+	config.height = optimizer["dim_k"].as<long>();
+	config.depth = optimizer["dim_n"].as<long>();
 	config.batch_size = optimizer["batch_size"].as<int>();
 	return config;
 }
@@ -65,17 +65,18 @@ static void BM_GEMM_Adam(benchmark::State &state)
 	const AdamGemmConfig &cfg = config();
 	BenchmarkData *benchmarkData = new BenchmarkData(
 		nullptr,
+		"CPU",
 		(char *)"None",
 		(char *)"GEMM_Adam_CPU",
 		nullptr,
 		(char *)"CPU",
 		cfg.batch_size,
-		cfg.m * cfg.k * cfg.n,
+		cfg.width * cfg.height * cfg.depth,
 		(char *)"Adam",
-		cfg.lr,
+		cfg.learning_rate,
 		cfg.beta1,
 		cfg.beta2,
-		cfg.eps,
+		cfg.epsilon,
 		0.0f,
 		0,
 		0.0f);
@@ -83,18 +84,18 @@ static void BM_GEMM_Adam(benchmark::State &state)
 	std::cout << toString(Marker::INFO) << "Running workload for CPU" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({cfg.m, cfg.k, cfg.n});
-	AdamOptimizer adam(cfg.lr, cfg.beta1, cfg.beta2, cfg.eps);
+	GEMM gemm({cfg.width, cfg.height, cfg.depth});
+	AdamOptimizer adam(cfg.learning_rate, cfg.beta1, cfg.beta2, cfg.epsilon);
 
 	gemm.initializeInput();
 	for (int t = 1; t <= cfg.batch_size; ++t)
 	{
-		benchmarkData->setBatchIndex(t);
+		benchmarkData->batch_index = t;
 		gemm.runForward();
 		adam.step(benchmarkData, gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		benchmarkData->setLoss(loss.second);
+		benchmarkData->loss = loss.second;
 		std::cout << toString(Marker::INFO) << "Computed loss: " << loss.first << ", " << loss.second << std::endl;
 	}
 
@@ -112,17 +113,18 @@ static void BM_GEMM_Adam_cl(benchmark::State &state)
 	const AdamGemmConfig &cfg = config();
 	BenchmarkData *benchmarkData = new BenchmarkData(
 		nullptr,
+		nullptr,
 		(char *)"OpenCL",
 		(char *)"GEMM_Adam_CPU",
 		nullptr,
 		(char *)"GPU",
 		cfg.batch_size,
-		cfg.m * cfg.k * cfg.n,
+		cfg.width * cfg.height * cfg.depth,
 		(char *)"Adam",
-		cfg.lr,
+		cfg.learning_rate,
 		cfg.beta1,
 		cfg.beta2,
-		cfg.eps,
+		cfg.epsilon,
 		0.0f,
 		0,
 		0.0f
@@ -131,28 +133,29 @@ static void BM_GEMM_Adam_cl(benchmark::State &state)
 	std::cout << "Running workload for OpenCL" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({cfg.m, cfg.k, cfg.n});
+	GEMM gemm({cfg.width, cfg.height, cfg.depth});
 
-	AdamOptimizerCl adam(cfg.lr, cfg.beta1, cfg.beta2, cfg.eps);
+	AdamOptimizerCl adam(cfg.learning_rate, cfg.beta1, cfg.beta2, cfg.epsilon);
 	gemm.initializeInput();
 
-	auto *wrapper = DevicePlatformWrapperOpenCL::getInstance();
+	auto *wrapper = DevicePlatformWrapperOpenCL::get_instance();
 	int setupSucess = wrapper->setup();
 	if (setupSucess != SETUP_SUCCESS)
 	{
 		std::cerr << toString(Marker::ERROR) << "Setup initalization failed." << std::endl;
 		return;
 	}
+	benchmarkData->device_name = wrapper->get_device_name();
 
-	cl_context ctx = wrapper->getClContext();
-	cl_command_queue queue = wrapper->getClCommandQueueForDevice();
+	cl_context ctx = wrapper->get_context();
+	cl_command_queue queue = wrapper->get_command_queue();
 
 	static const char kernel_path[] =
 		OPTI_PERF_SOURCE_DIR "/kernels/adam_optimizer.cl";
 
-	cl_program program = wrapper->createProgram(
+	cl_program program = wrapper->create_program(
 		ctx,
-		wrapper->getDeviceId(),
+		wrapper->get_device_id(),
 		kernel_path);
 
 	cl_int err = CL_SUCCESS;
@@ -167,15 +170,15 @@ static void BM_GEMM_Adam_cl(benchmark::State &state)
 
 	const size_t local_size = 256;
 	(void)local_size;
-	adam.configure(ctx, queue, kernel, cfg.lr, cfg.beta1, cfg.beta2, cfg.eps, 256);
+	adam.configure(ctx, queue, kernel, cfg.learning_rate, cfg.beta1, cfg.beta2, cfg.epsilon, 256);
 	for (int t = 1; t <= cfg.batch_size; ++t)
 	{
-		benchmarkData->setBatchIndex(t);
+		benchmarkData->batch_index = t;
 		gemm.runForward();
 		adam.step(benchmarkData, gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		benchmarkData->setLoss(loss.second);
+		benchmarkData->loss = loss.second;
 		std::cout << toString(Marker::INFO) << "Computed loss h: " << loss.first << ", " << loss.second << std::endl;
 	}
 	for (auto _ : state)
@@ -192,17 +195,18 @@ static void BM_GEMM_Adam_cuda(benchmark::State &state)
 	const AdamGemmConfig &cfg = config();
 	BenchmarkData *benchmarkData = new BenchmarkData(
 		nullptr,
+		"CUDA",
 		(char *)"CUDA",
 		(char *)"GEMM_Adam_CUDA",
 		nullptr,
 		(char *)"GPU",
 		cfg.batch_size,
-		cfg.m * cfg.k * cfg.n,
+		cfg.width * cfg.height * cfg.depth,
 		(char *)"Adam",
-		cfg.lr,
+		cfg.learning_rate,
 		cfg.beta1,
 		cfg.beta2,
-		cfg.eps,
+		cfg.epsilon,
 		0.0f,
 		0,
 		0.0f
@@ -211,8 +215,8 @@ static void BM_GEMM_Adam_cuda(benchmark::State &state)
 	std::cout << toString(Marker::INFO) << "Running workload for CUDA" << std::endl;
 	int iters = static_cast<int>(state.range(0));
 
-	GEMM gemm({cfg.m, cfg.k, cfg.n});
-	AdamOptimizerCu adam(cfg.lr, cfg.beta1, cfg.beta2, cfg.eps);
+	GEMM gemm({cfg.width, cfg.height, cfg.depth});
+	AdamOptimizerCu adam(cfg.learning_rate, cfg.beta1, cfg.beta2, cfg.epsilon);
 
 	gemm.initializeInput();
 	for (int t = 1; t <= cfg.batch_size; ++t)
@@ -221,7 +225,7 @@ static void BM_GEMM_Adam_cuda(benchmark::State &state)
 		adam.step(benchmarkData, gemm.parameters(), t);
 		benchmark::DoNotOptimize(gemm.computeLoss());
 		auto loss = gemm.computeLoss();
-		benchmarkData->setLoss(loss.second);
+		benchmarkData->loss = loss.second;
 		std::cout << toString(Marker::INFO) << "Computed loss: " << loss.first << ", " << loss.second << std::endl;
 	}
 
