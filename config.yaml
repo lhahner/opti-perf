@@ -1,14 +1,14 @@
 runtime:
   workload: "GEMM"
   optimizer: "Adam"
-  framework: "CUDA"
+  framework: "OpenCL"
 
 optimizer:
   learning_rate: 0.001
   beta_1: 0.9
   beta_2: 0.999
   epsilon: 1e-08
-  dim_m: 4024
-  dim_k: 4024
+  dim_m: 10024
+  dim_k: 10024
   dim_n: 256
   batch_size: 10
