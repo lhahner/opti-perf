@@ -31,6 +31,15 @@ if (( is_hpc )); then
 
 	CUDA_ROOT="$(dirname "$(dirname "$(readlink -f "$(which nvcc)")")")"
 	CUDA_ARCH="${CUDA_ARCH:-75}"
+	if [[ -n "${HOST_GCC:-}" && -n "${HOST_GXX:-}" ]]; then
+		:
+	elif command -v gcc >/dev/null 2>&1 && command -v g++ >/dev/null 2>&1; then
+		HOST_GCC="$(command -v gcc)"
+		HOST_GXX="$(command -v g++)"
+	else
+		echo "No CUDA host compiler found. Set HOST_GCC/HOST_GXX or load a GCC module." >&2
+		exit 1
+	fi
 
 	rm -rf build
 	cmake -S . -B build \
@@ -39,7 +48,9 @@ if (( is_hpc )); then
    		-DBUILD_BENCHMARKS=ON \
    		-DCUDAToolkit_ROOT="$CUDA_ROOT" \
    		-DCMAKE_CUDA_COMPILER="$CUDA_ROOT/bin/nvcc" \
-		-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/gcc-11 \
+		-DCMAKE_C_COMPILER="$HOST_GCC" \
+		-DCMAKE_CXX_COMPILER="$HOST_GXX" \
+		-DCMAKE_CUDA_HOST_COMPILER="$HOST_GCC" \
    		-DCMAKE_CXX_FLAGS="-I$HOME/.local/include" \
    		-DCMAKE_CUDA_ARCHITECTURES="$CUDA_ARCH" \
 		-DENABLE_YAML=ON \

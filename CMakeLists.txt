@@ -120,6 +120,9 @@ target_compile_options(workloads PRIVATE -Wall -Wextra -Wpedantic)
 target_link_libraries(workloads)
 target_enable_openmp(workloads)
 target_enable_opencl(workloads)
+if(ENABLE_YAML)
+	target_link_libraries(workloads PRIVATE ${YAMLCPP_TARGET})
+endif()
 target_enable_cuda(workloads PUBLIC)
 
 # -----------------------------
