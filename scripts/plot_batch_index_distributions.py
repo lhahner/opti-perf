@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+plt.rcParams["font.family"] = "Times New Roman"
 
 DEVICE_LABELS = {
     "gtx_970": "GTX 970",
@@ -96,7 +97,7 @@ def plot_device_type(df: pd.DataFrame, device_key: str, workload_type: str, outd
     ylabel = "Time (ms)"
     plt.ylabel(ylabel)
     device_label = DEVICE_LABELS[device_key]
-    title = f"{device_label}: {workload_type.replace('_', ' ').title()} Time by Batch Index"
+    title = f""
     plt.title(title)
     plt.legend(title="Workload size", fontsize=8)
 
