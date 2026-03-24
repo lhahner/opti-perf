@@ -1,16 +1,20 @@
 #include <CL/cl.h>
 #include <benchmark/benchmark.h>
 
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
 #include "benchmark/benchmark_adam_training.h"
-#include "benchmark/benchmark_trainer.h"
 #include "benchmark/workloads/mnist_linear/mnist_linear.h"
 #include "optimization/adam_optimizer.h"
 #include "optimization/adam_optimizer_cl.h"
 #include "optimization/adam_optimizer_cu.h"
 #include "util/device_platform_wrapper_opencl.h"
+#include "util/logger.h"
 
 #ifndef OPTI_PERF_SOURCE_DIR
 #define OPTI_PERF_SOURCE_DIR "."
@@ -18,6 +22,19 @@
 
 namespace
 {
+const char *format_timestamp()
+{
+	auto now = std::chrono::system_clock::now();
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+	std::tm tm{};
+	localtime_r(&tt, &tm);
+	std::ostringstream ts;
+	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+	static thread_local std::string ts_str;
+	ts_str = ts.str();
+	return ts_str.c_str();
+}
+
 struct AdamTrainingConfig
 {
 	float learning_rate = 1e-3f;
@@ -81,7 +98,19 @@ BenchmarkData make_benchmark_data(const AdamTrainingConfig &cfg, const char *fra
 		cfg.epsilon,
 		0.0f,
 		0,
+		0.0f,
 		0.0f);
+}
+
+void log_evaluation(BenchmarkData &benchmark_data, MnistLinear &workload)
+{
+	Logger logger;
+	benchmark_data.timestamp = format_timestamp();
+	benchmark_data.workload_type = "evaluation";
+	benchmark_data.loss = workload.evaluateTestLoss();
+	benchmark_data.accuracy = workload.evaluateTestAccuracy();
+	benchmark_data.time_ms = 0.0f;
+	logger.logToCsv(benchmark_data, "benchmarks-logs.csv");
 }
 } // namespace
 
@@ -102,6 +131,7 @@ static void BM_Training_Adam(benchmark::State &state)
 			adam.step(&benchmark_data, workload.parameters(), t);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
+		log_evaluation(benchmark_data, workload);
 	}
 }
 
@@ -146,6 +176,7 @@ static void BM_Training_Adam_cl(benchmark::State &state)
 			adam.step(&benchmark_data, workload.parameters(), t);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
+		log_evaluation(benchmark_data, workload);
 	}
 
 	clReleaseKernel(kernel);
@@ -169,6 +200,7 @@ static void BM_Training_Adam_cuda(benchmark::State &state)
 			adam.step(&benchmark_data, workload.parameters(), t);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
+		log_evaluation(benchmark_data, workload);
 	}
 }
 

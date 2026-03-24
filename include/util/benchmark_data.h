@@ -21,6 +21,7 @@ public:
     float time_ms = 0.0f;
     int batch_index = 0;
     float loss = 0.0f;
+    float accuracy = 0.0f;
 
     BenchmarkData()
     {
@@ -28,7 +29,7 @@ public:
     BenchmarkData(const char *ts, const char *device_name, const char *fw, const char *w_name, const char *w_type, const char *dev,
                   int b_size, long in_size,
                   const char *opt, float lr, float b1, float b2,
-                  float eps, float t_ms, int b_index, float l)
+                  float eps, float t_ms, int b_index, float l, float acc = 0.0f)
     {
         this->timestamp = ts;
         this->device_name = device_name;
@@ -46,6 +47,7 @@ public:
         this->time_ms = t_ms;
         this->batch_index = b_index;
         this->loss = l;
+        this->accuracy = acc;
     }
     ~BenchmarkData()
     {
@@ -53,7 +55,7 @@ public:
 
     static constexpr const char *csv_header()
     {
-        return "timestamp,device_name,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms,batch_index,loss";
+        return "timestamp,device_name,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms,batch_index,loss,accuracy";
     }
 
     std::string to_csv_string() const
@@ -65,7 +67,7 @@ public:
            << safe(workload_type) << "," << safe(device) << "," << batch_size << ","
            << input_size << "," << safe(optimizer) << ","
            << learning_rate << "," << beta1 << "," << beta2 << ","
-           << epsilon << "," << time_ms << "," << batch_index << "," << loss;
+           << epsilon << "," << time_ms << "," << batch_index << "," << loss << "," << accuracy;
         return ss.str();
     }
 };

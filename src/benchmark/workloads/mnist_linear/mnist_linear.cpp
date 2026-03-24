@@ -118,13 +118,29 @@ void MnistLinear::loadDataset(const std::string &dataset_dir, int max_samples)
 	int label_count = 0;
 	all_labels_ = loadLabels(dataset_dir + "/train-labels-idx1-ubyte", label_count);
 
+	int test_image_count = 0;
+	int test_rows = 0;
+	int test_cols = 0;
+	test_images_ = loadImages(dataset_dir + "/t10k-images-idx3-ubyte", test_image_count, test_rows, test_cols);
+
+	int test_label_count = 0;
+	test_labels_ = loadLabels(dataset_dir + "/t10k-labels-idx1-ubyte", test_label_count);
+
 	if (image_count != label_count)
 	{
 		throw std::runtime_error("MNIST image/label count mismatch");
 	}
+	if (test_image_count != test_label_count)
+	{
+		throw std::runtime_error("MNIST test image/label count mismatch");
+	}
 
 	sample_count_ = image_count;
 	input_dim_ = rows * cols;
+	if (test_rows * test_cols != input_dim_)
+	{
+		throw std::runtime_error("MNIST train/test dimensions mismatch");
+	}
 
 	if (max_samples > 0 && max_samples < sample_count_)
 	{
@@ -268,4 +284,73 @@ float MnistLinear::stableSoftmaxCrossEntropy(const float *logits, int label, int
 
 	const float probability = std::max(probs_out[label], 1e-12f);
 	return -std::log(probability);
+}
+
+float MnistLinear::evaluateTestAccuracy() const
+{
+	if (test_labels_.empty())
+	{
+		throw std::logic_error("MNIST test set is empty");
+	}
+
+	int correct = 0;
+	std::vector<float> logits(num_classes_, 0.0f);
+	for (size_t sample = 0; sample < test_labels_.size(); ++sample)
+	{
+		const float *x = test_images_.data() + sample * input_dim_;
+		for (int cls = 0; cls < num_classes_; ++cls)
+		{
+			float sum = bias_[cls];
+			const float *weight_row = weights_.data() + static_cast<size_t>(cls) * input_dim_;
+			for (int feature = 0; feature < input_dim_; ++feature)
+			{
+				sum += weight_row[feature] * x[feature];
+			}
+			logits[cls] = sum;
+		}
+
+		int predicted = 0;
+		for (int cls = 1; cls < num_classes_; ++cls)
+		{
+			if (logits[cls] > logits[predicted])
+			{
+				predicted = cls;
+			}
+		}
+		if (predicted == test_labels_[sample])
+		{
+			++correct;
+		}
+	}
+
+	return static_cast<float>(correct) / static_cast<float>(test_labels_.size());
+}
+
+float MnistLinear::evaluateTestLoss() const
+{
+	if (test_labels_.empty())
+	{
+		throw std::logic_error("MNIST test set is empty");
+	}
+
+	double loss_accumulator = 0.0;
+	std::vector<float> logits(num_classes_, 0.0f);
+	std::vector<float> probs(num_classes_, 0.0f);
+	for (size_t sample = 0; sample < test_labels_.size(); ++sample)
+	{
+		const float *x = test_images_.data() + sample * input_dim_;
+		for (int cls = 0; cls < num_classes_; ++cls)
+		{
+			float sum = bias_[cls];
+			const float *weight_row = weights_.data() + static_cast<size_t>(cls) * input_dim_;
+			for (int feature = 0; feature < input_dim_; ++feature)
+			{
+				sum += weight_row[feature] * x[feature];
+			}
+			logits[cls] = sum;
+		}
+		loss_accumulator += stableSoftmaxCrossEntropy(logits.data(), test_labels_[sample], num_classes_, probs.data());
+	}
+
+	return static_cast<float>(loss_accumulator / static_cast<double>(test_labels_.size()));
 }

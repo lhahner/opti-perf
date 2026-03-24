@@ -18,6 +18,8 @@ public:
 	void runForward() override;
 	std::pair<int, float> computeLoss() override;
 	std::vector<HostParamView> parameters() override;
+	float evaluateTestAccuracy() const;
+	float evaluateTestLoss() const;
 
 	const char *workloadType = "Training";
 	const char *workloadName = "MNIST Linear Classifier";
@@ -43,6 +45,8 @@ private:
 
 	std::vector<float> all_images_;
 	std::vector<uint8_t> all_labels_;
+	std::vector<float> test_images_;
+	std::vector<uint8_t> test_labels_;
 
 	std::vector<float> batch_x_;
 	std::vector<uint8_t> batch_y_;
