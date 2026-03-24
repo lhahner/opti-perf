@@ -113,12 +113,12 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     benchmarkData->timestamp = format_timestamp();
     benchmarkData->workload_type = "data_transfer";
     benchmarkData->time_ms = h2d_ms_total;
-    logger.logToCsv(*benchmarkData, benchmarkData->log_filename);
+    logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
    
     benchmarkData->timestamp = format_timestamp();
     benchmarkData->workload_type = "compute";
     benchmarkData->time_ms = kernel_ms_total;
-    logger.logToCsv(*benchmarkData, benchmarkData->log_filename);
+    logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
 
     std::cout << toString(Marker::INFO) << "Data Transfer: " << d2h_ms_total
               << " ms ,Execution Time: " << kernel_ms_total

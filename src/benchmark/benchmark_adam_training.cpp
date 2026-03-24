@@ -129,7 +129,7 @@ void log_evaluation(BenchmarkData &benchmark_data, MnistLinear &workload)
 	benchmark_data.loss = workload.evaluateTestLoss();
 	benchmark_data.accuracy = workload.evaluateTestAccuracy();
 	benchmark_data.time_ms = 0.0f;
-	logger.logToCsv(benchmark_data, benchmark_data.log_filename);
+	logger.logToCsv(benchmark_data, benchmark_data.log_filename.c_str());
 	std::cout << toString(Marker::INFO)
 	          << "Validation evaluation: test_loss=" << benchmark_data.loss
 	          << ", test_accuracy=" << benchmark_data.accuracy << '\n';
@@ -141,7 +141,7 @@ void log_training_step(BenchmarkData &benchmark_data, const char *phase, float t
 	benchmark_data.timestamp = format_timestamp();
 	benchmark_data.workload_type = phase;
 	benchmark_data.time_ms = time_ms;
-	logger.logToCsv(benchmark_data, benchmark_data.log_filename);
+	logger.logToCsv(benchmark_data, benchmark_data.log_filename.c_str());
 }
 } // namespace
 

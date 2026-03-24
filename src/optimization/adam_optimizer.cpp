@@ -50,7 +50,7 @@ void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostPar
 	ts_str = ts.str();
 	
 	benchmarkData->timestamp = ts_str.c_str();
-	logger.logToCsv(*benchmarkData, benchmarkData->log_filename);	
+	logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());	
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)
