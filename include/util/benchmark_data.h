@@ -22,6 +22,7 @@ public:
     int batch_index = 0;
     float loss = 0.0f;
     float accuracy = 0.0f;
+    const char *log_filename = "benchmarks-logs.csv";
 
     BenchmarkData()
     {
@@ -29,7 +30,7 @@ public:
     BenchmarkData(const char *ts, const char *device_name, const char *fw, const char *w_name, const char *w_type, const char *dev,
                   int b_size, long in_size,
                   const char *opt, float lr, float b1, float b2,
-                  float eps, float t_ms, int b_index, float l, float acc = 0.0f)
+                  float eps, float t_ms, int b_index, float l, float acc = 0.0f, const char *log_file = "benchmarks-logs.csv")
     {
         this->timestamp = ts;
         this->device_name = device_name;
@@ -48,6 +49,7 @@ public:
         this->batch_index = b_index;
         this->loss = l;
         this->accuracy = acc;
+        this->log_filename = log_file;
     }
     ~BenchmarkData()
     {

@@ -153,7 +153,7 @@ void AdamOptimizerCl::step_one_tensor(
 	benchmarkData->timestamp = format_timestamp();
 	benchmarkData->workload_type = "compute";
 	benchmarkData->time_ms = static_cast<float>(nanoSeconds / 1000000.0);
-	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
+	logger.logToCsv(*benchmarkData, benchmarkData->log_filename);
 	std::cout << toString(Marker::INFO) << "OpenCl Execution time is: " << (nanoSeconds / 1000000.0) << " milliseconds \n";
 }
 
@@ -283,7 +283,7 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	benchmarkData->timestamp = format_timestamp();
 	benchmarkData->workload_type = "data_transfer";
 	benchmarkData->time_ms = static_cast<float>(transferTimeGrad / 1000000.0);
-	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
+	logger.logToCsv(*benchmarkData, benchmarkData->log_filename);
 	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	return dv;
 }

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -15,6 +16,7 @@
 #include "optimization/adam_optimizer_cu.h"
 #include "util/device_platform_wrapper_opencl.h"
 #include "util/logger.h"
+#include "util/markers.h"
 
 #ifndef OPTI_PERF_SOURCE_DIR
 #define OPTI_PERF_SOURCE_DIR "."
@@ -22,6 +24,8 @@
 
 namespace
 {
+constexpr const char *kValidationLogFile = "validation-benchmark-logs.csv";
+
 const char *format_timestamp()
 {
 	auto now = std::chrono::system_clock::now();
@@ -99,7 +103,8 @@ BenchmarkData make_benchmark_data(const AdamTrainingConfig &cfg, const char *fra
 		0.0f,
 		0,
 		0.0f,
-		0.0f);
+		0.0f,
+		kValidationLogFile);
 }
 
 void log_evaluation(BenchmarkData &benchmark_data, MnistLinear &workload)
@@ -110,7 +115,19 @@ void log_evaluation(BenchmarkData &benchmark_data, MnistLinear &workload)
 	benchmark_data.loss = workload.evaluateTestLoss();
 	benchmark_data.accuracy = workload.evaluateTestAccuracy();
 	benchmark_data.time_ms = 0.0f;
-	logger.logToCsv(benchmark_data, "benchmarks-logs.csv");
+	logger.logToCsv(benchmark_data, benchmark_data.log_filename);
+	std::cout << toString(Marker::INFO)
+	          << "Validation evaluation: test_loss=" << benchmark_data.loss
+	          << ", test_accuracy=" << benchmark_data.accuracy << '\n';
+}
+
+void log_training_step(BenchmarkData &benchmark_data, const char *phase, float time_ms)
+{
+	Logger logger;
+	benchmark_data.timestamp = format_timestamp();
+	benchmark_data.workload_type = phase;
+	benchmark_data.time_ms = time_ms;
+	logger.logToCsv(benchmark_data, benchmark_data.log_filename);
 }
 } // namespace
 
@@ -125,10 +142,14 @@ static void BM_Training_Adam(benchmark::State &state)
 	{
 		for (int t = 1; t <= state.range(0); ++t)
 		{
+			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
 			workload.runForward();
 			benchmark_data.loss = workload.computeLoss().second;
 			adam.step(&benchmark_data, workload.parameters(), t);
+			const auto step_end = std::chrono::high_resolution_clock::now();
+			const auto step_ms = std::chrono::duration_cast<std::chrono::microseconds>(step_end - step_start).count() / 1000.0f;
+			log_training_step(benchmark_data, "full_step", step_ms);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
 		log_evaluation(benchmark_data, workload);
@@ -170,10 +191,14 @@ static void BM_Training_Adam_cl(benchmark::State &state)
 	{
 		for (int t = 1; t <= state.range(0); ++t)
 		{
+			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
 			workload.runForward();
 			benchmark_data.loss = workload.computeLoss().second;
 			adam.step(&benchmark_data, workload.parameters(), t);
+			const auto step_end = std::chrono::high_resolution_clock::now();
+			const auto step_ms = std::chrono::duration_cast<std::chrono::microseconds>(step_end - step_start).count() / 1000.0f;
+			log_training_step(benchmark_data, "full_step", step_ms);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
 		log_evaluation(benchmark_data, workload);
@@ -194,10 +219,14 @@ static void BM_Training_Adam_cuda(benchmark::State &state)
 	{
 		for (int t = 1; t <= state.range(0); ++t)
 		{
+			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
 			workload.runForward();
 			benchmark_data.loss = workload.computeLoss().second;
 			adam.step(&benchmark_data, workload.parameters(), t);
+			const auto step_end = std::chrono::high_resolution_clock::now();
+			const auto step_ms = std::chrono::duration_cast<std::chrono::microseconds>(step_end - step_start).count() / 1000.0f;
+			log_training_step(benchmark_data, "full_step", step_ms);
 			benchmark::DoNotOptimize(benchmark_data.loss);
 		}
 		log_evaluation(benchmark_data, workload);
