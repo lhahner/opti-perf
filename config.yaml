@@ -1,7 +1,7 @@
 runtime:
   workload: "Training"
   optimizer: "Adam"
-  framework: "OpenCL"
+  framework: "CUDA"
 
 optimizer:
   learning_rate: 0.001
@@ -16,3 +16,4 @@ optimizer:
 workload:
   dataset_dir: "data/mnist"
   max_samples: 1024
+  num_epochs: 5

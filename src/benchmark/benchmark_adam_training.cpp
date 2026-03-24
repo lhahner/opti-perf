@@ -47,6 +47,7 @@ struct AdamTrainingConfig
 	float epsilon = 1e-8f;
 	int batch_size = 64;
 	int max_samples = 1024;
+	int num_epochs = 1;
 	std::string framework = "CPU";
 	std::string dataset_dir = std::string(OPTI_PERF_SOURCE_DIR) + "/data/mnist";
 };
@@ -80,8 +81,21 @@ AdamTrainingConfig load_config(ConfigReader &config_reader)
 	{
 		config.max_samples = workload["max_samples"].as<int>();
 	}
+	if (workload["num_epochs"])
+	{
+		config.num_epochs = workload["num_epochs"].as<int>();
+	}
+	if (config.num_epochs <= 0)
+	{
+		config.num_epochs = 1;
+	}
 
 	return config;
+}
+
+int batches_per_epoch(const AdamTrainingConfig &cfg)
+{
+	return std::max(1, (cfg.max_samples + cfg.batch_size - 1) / cfg.batch_size);
 }
 
 BenchmarkData make_benchmark_data(const AdamTrainingConfig &cfg, const char *framework, const char *device)
@@ -140,7 +154,8 @@ static void BM_Training_Adam(benchmark::State &state)
 
 	for (auto _ : state)
 	{
-		for (int t = 1; t <= state.range(0); ++t)
+		const int total_batches = cfg.num_epochs * batches_per_epoch(cfg);
+		for (int t = 1; t <= total_batches; ++t)
 		{
 			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
@@ -189,7 +204,8 @@ static void BM_Training_Adam_cl(benchmark::State &state)
 
 	for (auto _ : state)
 	{
-		for (int t = 1; t <= state.range(0); ++t)
+		const int total_batches = cfg.num_epochs * batches_per_epoch(cfg);
+		for (int t = 1; t <= total_batches; ++t)
 		{
 			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
@@ -217,7 +233,8 @@ static void BM_Training_Adam_cuda(benchmark::State &state)
 
 	for (auto _ : state)
 	{
-		for (int t = 1; t <= state.range(0); ++t)
+		const int total_batches = cfg.num_epochs * batches_per_epoch(cfg);
+		for (int t = 1; t <= total_batches; ++t)
 		{
 			const auto step_start = std::chrono::high_resolution_clock::now();
 			benchmark_data.batch_index = t;
@@ -248,17 +265,17 @@ bool register_adam_training_benchmarks(ConfigReader &config_reader)
 
 	if (g_training_config.framework == "CPU" || g_training_config.framework == "None")
 	{
-		benchmark::RegisterBenchmark("BM_Training_Adam", &BM_Training_Adam)->Arg(10)->Iterations(1);
+		benchmark::RegisterBenchmark("BM_Training_Adam", &BM_Training_Adam)->Iterations(1);
 		return true;
 	}
 	if (g_training_config.framework == "OpenCL")
 	{
-		benchmark::RegisterBenchmark("BM_Training_Adam_cl", &BM_Training_Adam_cl)->Arg(10)->Iterations(1);
+		benchmark::RegisterBenchmark("BM_Training_Adam_cl", &BM_Training_Adam_cl)->Iterations(1);
 		return true;
 	}
 	if (g_training_config.framework == "CUDA")
 	{
-		benchmark::RegisterBenchmark("BM_Training_Adam_cuda", &BM_Training_Adam_cuda)->Arg(10)->Iterations(1);
+		benchmark::RegisterBenchmark("BM_Training_Adam_cuda", &BM_Training_Adam_cuda)->Iterations(1);
 		return true;
 	}
 
