@@ -19,9 +19,9 @@ public:
 		: lr_(lr), beta1_(beta1), beta2_(beta2), eps_(eps) {}
 	AdamOptimizerCl() = default;
 	void step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index);
-	void step_one_tensor(BenchmarkData *benchmarkData, cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
-						 int step_index, float lr, float beta1, float beta2, float eps,
-						 size_t local_size);
+	double step_one_tensor(cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
+						   int step_index, float lr, float beta1, float beta2, float eps,
+						   size_t local_size);
 	DeviceParamView &toDevice(BenchmarkData *benchmarkData,
 							  cl_context context,
 							  cl_command_queue queue,
