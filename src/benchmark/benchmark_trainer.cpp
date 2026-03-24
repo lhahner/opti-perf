@@ -22,11 +22,12 @@ void BenchmarkTrainer::runWorkloads() {
 void BenchmarkTrainer::runOptimizerWithWorkload(
     Workload& workload,
     Optimizer& optimizer,
-    int iters)
+    int iters,
+    BenchmarkData *benchmarkData)
 {
     for (int t = 1; t <= iters; ++t) {
         workload.runForward();
-        optimizer.step(nullptr, workload.parameters(), t);
+        optimizer.step(benchmarkData, workload.parameters(), t);
         benchmark::DoNotOptimize(workload.computeLoss());
     }
 }
