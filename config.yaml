@@ -1,7 +1,7 @@
 runtime:
   workload: "Training"
   optimizer: "Adam"
-  framework: "CUDA"
+  framework: "OpenCL"
 
 optimizer:
   learning_rate: 0.001
@@ -11,7 +11,7 @@ optimizer:
   dim_m: 10024
   dim_k: 10024
   dim_n: 256
-  batch_size: 64
+  batch_size: 256
 
 workload:
   dataset_dir: "data/mnist"
