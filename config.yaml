@@ -1,5 +1,5 @@
 runtime:
-  workload: "GEMM"
+  workload: "Training"
   optimizer: "Adam"
   framework: "CUDA"
 
@@ -11,4 +11,8 @@ optimizer:
   dim_m: 10024
   dim_k: 10024
   dim_n: 256
-  batch_size: 10
+  batch_size: 64
+
+workload:
+  dataset_dir: "data/mnist"
+  max_samples: 1024

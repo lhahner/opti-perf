@@ -162,6 +162,7 @@ target_link_libraries(app PRIVATE workloads)
 # app.cpp calls register_adam_gemm_benchmarks; add its implementation explicitly.
 target_sources(app PRIVATE
 	${CMAKE_SOURCE_DIR}/src/benchmark/benchmark_adam_gemm.cpp
+	${CMAKE_SOURCE_DIR}/src/benchmark/benchmark_adam_training.cpp
 	${CMAKE_SOURCE_DIR}/src/benchmark/benchmark_trainer.cpp
 )
 if(BUILD_BENCHMARKS)
