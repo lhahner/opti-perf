@@ -8,7 +8,7 @@ optimizer:
   beta_1: 0.9
   beta_2: 0.999
   epsilon: 1e-08
-  dim_m: 2024
-  dim_k: 2024
+  dim_m: 3024
+  dim_k: 3024
   dim_n: 256
   batch_size: 10
