@@ -26,9 +26,9 @@ public:
 							  cl_context context,
 							  cl_command_queue queue,
 							  const HostParamView &parameters);
-	void fromDevice(cl_command_queue q,
-					DeviceParamView &dv,
-					const HostParamView &hp);
+	double fromDevice(cl_command_queue q,
+					  DeviceParamView &dv,
+					  const HostParamView &hp);
 
 private:
 	std::unordered_map<const float *, DeviceParamView> device_state_;
