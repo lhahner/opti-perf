@@ -64,7 +64,10 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     float kernel_ms_total = 0.0f;
     float d2h_ms_total = 0.0f;
     DevicePlatformHandlerCuda device_platform_handler_cuda;
-    benchmarkData->device_name = device_platform_handler_cuda.get_device_name();
+    if (benchmarkData != nullptr)
+    {
+        benchmarkData->device_name = device_platform_handler_cuda.get_device_name();
+    }
     for (const auto &p : params)
     {
         if (!p.data || !p.grad || p.count == 0)
@@ -112,7 +115,7 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     }
     cudaStreamSynchronize(stream);
 
-    if (step_index > kWarmupSteps)
+    if (benchmarkData != nullptr && step_index > kWarmupSteps)
     {
         benchmarkData->timestamp = format_timestamp();
         benchmarkData->workload_type = "h2d_transfer";

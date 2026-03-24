@@ -43,7 +43,7 @@ void AdamOptimizerCl::step(BenchmarkData *benchmarkData, const std::vector<HostP
 		total_transfer_ms += static_cast<double>(benchmarkData->time_ms);
 	}
 
-	if (step_index > kWarmupSteps)
+	if (benchmarkData != nullptr && step_index > kWarmupSteps)
 	{
 		benchmarkData->timestamp = format_timestamp();
 		benchmarkData->workload_type = "h2d_transfer";
@@ -300,7 +300,10 @@ DeviceParamView &AdamOptimizerCl::toDevice(
 	clGetEventProfilingInfo(transferEventGradient, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &endGrad, NULL);
 	unsigned long transferTimeGrad = endGrad - startGrad + transferTimeParam;
 
-	benchmarkData->time_ms = static_cast<float>(transferTimeGrad / 1000000.0);
+	if (benchmarkData != nullptr)
+	{
+		benchmarkData->time_ms = static_cast<float>(transferTimeGrad / 1000000.0);
+	}
 	std::cout << toString(Marker::INFO) << "OpenCl total transfer to device time with gradient is: " << (transferTimeGrad / 1000000.0) << " milliseconds \n";
 	clReleaseEvent(transferEventParameter);
 	clReleaseEvent(transferEventGradient);

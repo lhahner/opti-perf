@@ -46,7 +46,7 @@ def main() -> int:
 
     for row in load_rows(input_path):
         workload_type = (row.get("workload_type") or "").strip()
-        if workload_type not in {"compute", "data_transfer"}:
+        if workload_type not in {"compute", "d2h_transfer"}:
             continue
 
         framework = (row.get("framework") or "").strip()
