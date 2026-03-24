@@ -9,6 +9,7 @@
 
 namespace {
 constexpr int kWarmupSteps = 10;
+constexpr const char *kValidationLogFile = "validation-benchmark-logs.csv";
 
 const char *format_timestamp()
 {
@@ -43,7 +44,10 @@ void AdamOptimizerCl::step(BenchmarkData *benchmarkData, const std::vector<HostP
 		total_transfer_ms += static_cast<double>(benchmarkData->time_ms);
 	}
 
-	if (benchmarkData != nullptr && step_index > kWarmupSteps)
+	const bool use_warmup =
+		benchmarkData != nullptr && benchmarkData->log_filename == kValidationLogFile;
+
+	if (benchmarkData != nullptr && (!use_warmup || step_index > kWarmupSteps))
 	{
 		benchmarkData->timestamp = format_timestamp();
 		benchmarkData->workload_type = "h2d_transfer";
