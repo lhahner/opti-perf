@@ -48,3 +48,10 @@ much iterations of the program you want to run. E.g. to run 10 batches:
 ```
 run.sh 10
 ```
+## Run validation benchmark
+To compare the current implementation with trusted implementations like Adam from PyTroch 
+a script has been implemented. Run it by:
+
+```
+python3 scripts/pytorch_mnist_reference.py     --dataset-dir data/mnist     --batch-size 256     --epochs 5     --max-samples 1024
+```
