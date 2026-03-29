@@ -10,24 +10,23 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
+plt.rcParams["font.family"] = "Times New Roman"
 
 FRAMEWORK_COLORS = {
-    "CUDA": "#1b9e77",
-    "OpenCL": "#d95f02",
+    "CUDA": "#008000",
+    "OpenCL": "#FF0000",
 }
 
 PHASE_LABELS = {
-    "compute": "compute",
-    "data_transfer": "transfer",
-    "h2d_transfer": "h2d",
-    "d2h_transfer": "d2h",
+    "compute": "compute"
 }
 
 PHASE_STYLES = {
-    "compute": "-",
-    "data_transfer": "--",
-    "h2d_transfer": "--",
-    "d2h_transfer": ":",
+    "compute": "-"
+}
+
+PHASE_MARKERS = {
+    "compute": "o"
 }
 
 
@@ -66,6 +65,44 @@ def mean_std(values: list[float]) -> tuple[float, float]:
     return mean, math.sqrt(variance)
 
 
+def median(values: list[float]) -> float:
+    ordered = sorted(values)
+    size = len(ordered)
+    if size == 0:
+        return 0.0
+    mid = size // 2
+    if size % 2 == 1:
+        return ordered[mid]
+    return (ordered[mid - 1] + ordered[mid]) / 2.0
+
+
+def trimmed_limits(series_list: list[tuple[list[float], list[float], list[float]]]) -> tuple[float, float]:
+    lower_candidates: list[float] = []
+    upper_candidates: list[float] = []
+
+    for means, lowers, uppers in series_list:
+        include = [True] * len(means)
+        if len(means) > 1:
+            tail = [value for value in means[1:] if value > 0]
+            tail_median = median(tail)
+            if tail_median > 0 and means[0] > tail_median * 5.0:
+                include[0] = False
+
+        for keep, lower, upper in zip(include, lowers, uppers):
+            if not keep:
+                continue
+            lower_candidates.append(lower)
+            upper_candidates.append(upper)
+
+    if not upper_candidates:
+        return 0.0, 1.0
+
+    ymin = min(lower_candidates) if lower_candidates else 0.0
+    ymax = max(upper_candidates)
+    span = max(ymax - ymin, ymax * 0.05, 1e-6)
+    return max(0.0, ymin - 0.08 * span), ymax + 0.12 * span
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Plot per-device GEMM mean lines with spread bands using all gathered data."
@@ -73,7 +110,7 @@ def main() -> int:
     parser.add_argument(
         "-i",
         "--input",
-        default="scripts/benchmarks-logs.cleaned.csv",
+        default="data/logs/benchmarks-logs.postprocessed.csv",
         help="Path to cleaned GEMM benchmark CSV",
     )
     parser.add_argument(
@@ -103,11 +140,15 @@ def main() -> int:
         device_name = (row.get("device_name") or "").strip() or "unknown-device"
         phase = (row.get("workload_type") or "").strip()
         workload_name = (row.get("workload_name") or "").strip()
+        input_size = (row.get("input_size") or "").strip()
+
         if framework not in {"CUDA", "OpenCL"}:
             continue
         if "GEMM" not in workload_name:
             continue
         if phase not in PHASE_LABELS:
+            continue
+        if "2341011456" not in input_size:
             continue
 
         batch_index = parse_int((row.get("batch_index") or "").strip())
@@ -121,17 +162,22 @@ def main() -> int:
     if not grouped:
         raise SystemExit("No matching GEMM rows found in input CSV.")
 
-    phase_order = [phase for phase in ("compute", "data_transfer", "h2d_transfer", "d2h_transfer") if phase in observed_phases]
+    phase_order = [phase for phase in ("compute", "d2h_transfer") if phase in observed_phases]
 
     for device_name, device_data in grouped.items():
-        fig, ax = plt.subplots(figsize=(9, 5.5))
+        if not phase_order:
+            continue
+        fig, axes = plt.subplots(1, len(phase_order), figsize=(6.5 * len(phase_order), 5.5), squeeze=False)
 
-        for framework in ("CUDA", "OpenCL"):
-            framework_data = device_data.get(framework, {})
-            if not framework_data:
-                continue
+        for axis_index, phase in enumerate(phase_order):
+            ax = axes[0][axis_index]
+            phase_series: list[tuple[list[float], list[float], list[float]]] = []
 
-            for phase in phase_order:
+            for framework in ("CUDA", "OpenCL"):
+                framework_data = device_data.get(framework, {})
+                if not framework_data:
+                    continue
+
                 phase_data = framework_data.get(phase, {})
                 if not phase_data:
                     continue
@@ -145,18 +191,33 @@ def main() -> int:
                     means.append(mean)
                     lowers.append(max(0.0, mean - std))
                     uppers.append(mean + std)
+                phase_series.append((means, lowers, uppers))
 
                 color = FRAMEWORK_COLORS[framework]
                 style = PHASE_STYLES[phase]
+                marker = PHASE_MARKERS[phase]
                 label = f"{framework} {PHASE_LABELS[phase]}"
-                ax.plot(batch_indices, means, linestyle=style, color=color, linewidth=2, label=label)
-                ax.fill_between(batch_indices, lowers, uppers, color=color, alpha=0.12)
+                ax.plot(
+                    batch_indices,
+                    means,
+                    linestyle=style,
+                    marker=marker,
+                    color=color,
+                    linewidth=2,
+                    markersize=4,
+                    label=label,
+                )
+                ax.fill_between(batch_indices, lowers, uppers, color=color, alpha=0.08)
 
-        ax.set_title(device_name)
-        ax.set_xlabel("Batch index")
-        ax.set_ylabel("time_ms")
-        ax.grid(True, alpha=0.25)
-        ax.legend(ncol=2)
+            ax.set_xlabel("Batch index")
+            ax.set_ylabel("time_ms")
+            ax.set_xticks(range(1, 11))
+            ymin, ymax = trimmed_limits(phase_series)
+            ax.set_ylim(ymin, ymax)
+            ax.grid(True, alpha=0.25)
+            handles, labels = ax.get_legend_handles_labels()
+            if handles:
+                ax.legend()
 
         output_path = outdir / f"{slugify(device_name)}_spread_lines.png"
         fig.tight_layout()
