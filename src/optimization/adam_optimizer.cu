@@ -8,6 +8,9 @@
 #include <string>
 
 namespace {
+constexpr int kWarmupSteps = 10;
+constexpr const char *kValidationLogFile = "validation-benchmark-logs.csv";
+
 const char *format_timestamp()
 {
     auto now = std::chrono::system_clock::now();
@@ -62,7 +65,10 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     float kernel_ms_total = 0.0f;
     float d2h_ms_total = 0.0f;
     DevicePlatformHandlerCuda device_platform_handler_cuda;
-    benchmarkData->device_name = device_platform_handler_cuda.get_device_name();
+    if (benchmarkData != nullptr)
+    {
+        benchmarkData->device_name = device_platform_handler_cuda.get_device_name();
+    }
     for (const auto &p : params)
     {
         if (!p.data || !p.grad || p.count == 0)
@@ -110,15 +116,26 @@ void AdamOptimizerCu::step(BenchmarkData *benchmarkData, const std::vector<HostP
     }
     cudaStreamSynchronize(stream);
 
-    benchmarkData->timestamp = format_timestamp();
-    benchmarkData->workload_type = "data_transfer";
-    benchmarkData->time_ms = h2d_ms_total;
-    logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
-   
-    benchmarkData->timestamp = format_timestamp();
-    benchmarkData->workload_type = "compute";
-    benchmarkData->time_ms = kernel_ms_total;
-    logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");
+    const bool use_warmup =
+        benchmarkData != nullptr && benchmarkData->log_filename == kValidationLogFile;
+
+    if (benchmarkData != nullptr && (!use_warmup || step_index > kWarmupSteps))
+    {
+        benchmarkData->timestamp = format_timestamp();
+        benchmarkData->workload_type = "h2d_transfer";
+        benchmarkData->time_ms = h2d_ms_total;
+        logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
+
+        benchmarkData->timestamp = format_timestamp();
+        benchmarkData->workload_type = "compute";
+        benchmarkData->time_ms = kernel_ms_total;
+        logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
+
+        benchmarkData->timestamp = format_timestamp();
+        benchmarkData->workload_type = "d2h_transfer";
+        benchmarkData->time_ms = d2h_ms_total;
+        logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
+    }
 
     std::cout << toString(Marker::INFO) << "Data Transfer: " << d2h_ms_total
               << " ms ,Execution Time: " << kernel_ms_total

@@ -47,7 +47,8 @@ public:
      */
     static void runOptimizerWithWorkload(Workload& workload, 
 		    Optimizer& optimizer, 
-		    int iters);
+		    int iters,
+		    BenchmarkData *benchmarkData = nullptr);
     
     /**
      * @brief Returns the workloads managed by the trainer.

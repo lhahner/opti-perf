@@ -183,7 +183,7 @@ static void BM_GEMM_Adam_cl(benchmark::State &state)
 	}
 	for (auto _ : state)
 	{
-		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters);
+		BenchmarkTrainer::runOptimizerWithWorkload(gemm, adam, iters, benchmarkData);
 	}
 	clReleaseKernel(kernel);
 	clReleaseProgram(program);

@@ -40,46 +40,16 @@ public:
 	 * @param step_index Iteration index of the optimization step.
 	 */
 	void step(BenchmarkData *benchmarkData, const std::vector<HostParamView> &params, int step_index);
-
-	/**
-	 * @brief Launches the OpenCL Adam kernel for a single parameter tensor.
-	 * @param benchmarkData Benchmark row updated with kernel execution timing.
-	 * @param queue OpenCL command queue used for execution.
-	 * @param adam_kernel OpenCL kernel implementing the Adam update.
-	 * @param dv Device-side parameter buffers.
-	 * @param step_index Iteration index of the optimization step.
-	 * @param lr Learning rate.
-	 * @param beta1 Exponential decay factor for the first moment estimate.
-	 * @param beta2 Exponential decay factor for the second moment estimate.
-	 * @param eps Numerical stability epsilon.
-	 * @param local_size OpenCL local work-group size.
-	 */
-	void step_one_tensor(BenchmarkData *benchmarkData, cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
-						 int step_index, float lr, float beta1, float beta2, float eps,
-						 size_t local_size);
-
-	/**
-	 * @brief Transfers a host parameter tensor to device buffers.
-	 * @param benchmarkData Benchmark row updated with transfer timing metadata.
-	 * @param context OpenCL context used for buffer allocation.
-	 * @param queue OpenCL command queue used for transfers.
-	 * @param parameters Host-side parameter view to upload.
-	 * @return Reference to the cached device parameter view.
-	 */
+	double step_one_tensor(cl_command_queue queue, cl_kernel adam_kernel, DeviceParamView &dv,
+						   int step_index, float lr, float beta1, float beta2, float eps,
+						   size_t local_size);
 	DeviceParamView &toDevice(BenchmarkData *benchmarkData,
 							  cl_context context,
 							  cl_command_queue queue,
 							  const HostParamView &parameters);
-
-	/**
-	 * @brief Copies the updated parameter data back from device to host memory.
-	 * @param q OpenCL command queue used for the transfer.
-	 * @param dv Device-side parameter buffers.
-	 * @param hp Host-side parameter view receiving the updated values.
-	 */
-	void fromDevice(cl_command_queue q,
-					DeviceParamView &dv,
-					const HostParamView &hp);
+	double fromDevice(cl_command_queue q,
+					  DeviceParamView &dv,
+					  const HostParamView &hp);
 
 private:
 	std::unordered_map<const float *, DeviceParamView> device_state_;
