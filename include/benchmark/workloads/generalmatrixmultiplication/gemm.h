@@ -11,17 +11,45 @@
 
 #include "benchmark/workloads/workload.h"
 
+/**
+ * @brief Implements a dense matrix multiplication workload with least-squares loss.
+ */
 class GEMM : public Workload {
 public:
-    // dimensions = {M, K, N}
+    /**
+     * @brief Constructs the workload from matrix dimensions.
+     * @param dimensions Dimension triple `{M, K, N}`.
+     */
 	explicit GEMM(const std::vector<int>& dimensions);
+
+    /**
+     * @brief Constructs the workload from an initializer list of dimensions.
+     * @param dims Dimension triple `{M, K, N}`.
+     */
 	explicit GEMM(std::initializer_list<int> dims)
 	        : GEMM(std::vector<int>(dims)) {}
 
-    void initializeInput();   // allocate + initialize W, X, Y*
-    void runForward();        // compute Y, residual, dW, loss
-    std::pair<int, float> computeLoss(); // (step, loss)
-    std::vector<HostParamView> parameters(); // expose W + gradW
+    /**
+     * @brief Allocates and initializes workload input, target, and parameter buffers.
+     */
+    void initializeInput();
+
+    /**
+     * @brief Executes the forward pass and computes gradients for the workload.
+     */
+    void runForward();
+
+    /**
+     * @brief Returns the current training step and loss value.
+     * @return Pair containing the step index and current loss.
+     */
+    std::pair<int, float> computeLoss();
+
+    /**
+     * @brief Returns the host-side parameter views exposed to the optimizer.
+     * @return Collection of parameter and gradient views.
+     */
+    std::vector<HostParamView> parameters();
 
     const char* workloadType = "GEMM";
     const char* workloadName = "LeastSquares (MLP-like)";
@@ -56,6 +84,15 @@ private:
     std::vector<float> Xt_;
 
 private:
+    /**
+     * @brief Computes a row-major matrix multiplication.
+     * @param M Number of rows in `A` and `C`.
+     * @param N Number of columns in `B` and `C`.
+     * @param K Shared inner dimension of `A` and `B`.
+     * @param A Left input matrix in row-major layout.
+     * @param B Right input matrix in row-major layout.
+     * @param C Output matrix in row-major layout.
+     */
     static void gemm_rowmajor(
         int M, int N, int K,
         const float* A, // MxK
@@ -63,12 +100,25 @@ private:
         float* C        // MxN
     );
 
+    /**
+     * @brief Transposes a row-major matrix into another row-major buffer.
+     * @param rows Number of source rows.
+     * @param cols Number of source columns.
+     * @param src Source matrix buffer.
+     * @param dst Destination buffer receiving the transposed matrix.
+     */
     static void transpose_rowmajor(
         int rows, int cols,
         const float* src, // rows x cols
         float* dst         // cols x rows
     );
 
+    /**
+     * @brief Computes the mean squared error term used by the workload loss.
+     * @param E Residual buffer.
+     * @param count Number of residual values.
+     * @return Mean squared error value.
+     */
     static float mse_half(const float* E, size_t count);
 };
 

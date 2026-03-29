@@ -5,12 +5,20 @@
 #include <string>
 #include <sstream>
 
+/**
+ * @brief Identifies the severity level of a log message.
+ */
 enum class Marker {
     INFO,
     WARNING,
     ERROR
 };
 
+/**
+ * @brief Converts a marker level into a timestamped log prefix string.
+ * @param marker Marker level to format.
+ * @return Formatted log prefix string.
+ */
 inline std::string toString(Marker marker) {
     std::time_t now = std::time(nullptr);
     std::tm* localTime = std::localtime(&now);
