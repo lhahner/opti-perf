@@ -20,7 +20,8 @@ public:
     void runClWorkloads();
     static void runOptimizerWithWorkload(Workload& workload, 
 		    Optimizer& optimizer, 
-		    int iters);
+		    int iters,
+		    BenchmarkData *benchmarkData = nullptr);
     
     const std::vector<std::reference_wrapper<Workload>>& getWorkloads() const { return workloads_; }
     const std::vector<std::reference_wrapper<Optimizer>>& getOptimizers() const { return optimizers_; }

@@ -5173,3 +5173,4 @@ timestamp,device_name,framework,workload_name,workload_type,device,batch_size,in
 2026-03-19-15-47-38,NVIDIA GeForce GTX 970,OpenCL,GEMM_Adam_CPU,compute,GPU,10,20846739456,Adam,0.001,0.9,0.999,1e-08,17.0895,9,0.0392113
 2026-03-19-15-47-47,NVIDIA GeForce GTX 970,OpenCL,GEMM_Adam_CPU,data_transfer,GPU,10,20846739456,Adam,0.001,0.9,0.999,1e-08,77.1125,10,0.033113
 2026-03-19-15-47-47,NVIDIA GeForce GTX 970,OpenCL,GEMM_Adam_CPU,compute,GPU,10,20846739456,Adam,0.001,0.9,0.999,1e-08,16.4602,10,0.033113
+

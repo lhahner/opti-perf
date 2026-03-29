@@ -7,6 +7,7 @@
 #include <cstdlib>
 
 #include "benchmark/benchmark_adam_gemm.h"
+#include "benchmark/benchmark_adam_training.h"
 
 int main(int argc, char **argv)
 {
@@ -24,7 +25,8 @@ int main(int argc, char **argv)
 		}
 
 		ConfigReader config_reader(config_path.string());
-		if (!register_adam_gemm_benchmarks(config_reader))
+		if (!register_adam_gemm_benchmarks(config_reader) &&
+		    !register_adam_training_benchmarks(config_reader))
 		{
 			const YAML::Node runtime = config_reader.get_runtime_config();
 			std::cerr << "No benchmark registered for runtime config: workload="
@@ -50,4 +52,3 @@ int main(int argc, char **argv)
 	benchmark::Shutdown();
 	return 0;
 }
-

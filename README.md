@@ -22,10 +22,36 @@ just run:
 ```
 The benchmark data is stored inside of `data/logs/benchmarks-logs.csv`.
 
+### Real training validation benchmark
+To validate the Adam kernel timings against a real machine learning workload,
+set `runtime.workload: "Training"` in `config.yaml`. This runs a mini-batch
+MNIST linear classifier training step while reusing the same CPU, OpenCL, and
+CUDA Adam implementations.
+
+The workload expects the unzipped MNIST IDX files in `data/mnist/`:
+
+```
+train-images-idx3-ubyte
+train-labels-idx1-ubyte
+```
+
+You can download them with:
+
+```
+python3 scripts/load_download_mnist.py -d data/mnist
+```
+
 ### Run a batch 
 If you want to executed a bunch of runs use `run.sh` and specify how
 much iterations of the program you want to run. E.g. to run 10 batches:
 
 ```
 run.sh 10
+```
+## Run validation benchmark
+To compare the current implementation with trusted implementations like Adam from PyTroch 
+a script has been implemented. Run it by:
+
+```
+python3 scripts/pytorch_mnist_reference.py     --dataset-dir data/mnist     --batch-size 256     --epochs 5     --max-samples 1024
 ```

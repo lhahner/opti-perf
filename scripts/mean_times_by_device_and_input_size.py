@@ -46,7 +46,7 @@ def main() -> None:
         reader = csv.DictReader(handle)
         for row in reader:
             workload_type = (row.get("workload_type") or "").strip()
-            if workload_type not in {"compute", "data_transfer"}:
+            if workload_type not in {"compute", "d2h_transfer"}:
                 continue
 
             input_size = (row.get("input_size") or "").strip()
@@ -76,7 +76,7 @@ def main() -> None:
     )
     for framework, device, input_size in grouped_keys:
         compute_key = (framework, device, input_size, "compute")
-        transfer_key = (framework, device, input_size, "data_transfer")
+        transfer_key = (framework, device, input_size, "d2h_transfer")
 
         compute_mean = (
             sums[compute_key] / counts[compute_key] if counts[compute_key] else ""

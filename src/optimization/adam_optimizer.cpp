@@ -37,20 +37,23 @@ void AdamOptimizer::step(BenchmarkData *benchmarkData, const std::vector<HostPar
 	auto ms_int = duration_cast<milliseconds>(t2 - t1);
 
 	// store measurement
-	benchmarkData->workload_type = "compute";
-	benchmarkData->time_ms = static_cast<float>(ms_int.count());
-	
-	auto now = std::chrono::system_clock::now();
-	std::time_t tt = std::chrono::system_clock::to_time_t(now);
-	std::tm tm{};
-	localtime_r(&tt, &tm);
-	std::ostringstream ts;
-	ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
-	static thread_local std::string ts_str;
-	ts_str = ts.str();
-	
-	benchmarkData->timestamp = ts_str.c_str();
-	logger.logToCsv(*benchmarkData, "benchmarks-logs.csv");	
+	if (benchmarkData != nullptr)
+	{
+		benchmarkData->workload_type = "compute";
+		benchmarkData->time_ms = static_cast<float>(ms_int.count());
+
+		auto now = std::chrono::system_clock::now();
+		std::time_t tt = std::chrono::system_clock::to_time_t(now);
+		std::tm tm{};
+		localtime_r(&tt, &tm);
+		std::ostringstream ts;
+		ts << std::put_time(&tm, "%Y-%m-%d-%H-%M-%S");
+		static thread_local std::string ts_str;
+		ts_str = ts.str();
+
+		benchmarkData->timestamp = ts_str.c_str();
+		logger.logToCsv(*benchmarkData, benchmarkData->log_filename.c_str());
+	}
 }
 
 AdamOptimizer::State& AdamOptimizer::state_for_(const HostParamView& p)

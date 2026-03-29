@@ -1,7 +1,7 @@
 runtime:
   workload: "GEMM"
   optimizer: "Adam"
-  framework: "CUDA"
+  framework: "OpenCL"
 
 optimizer:
   learning_rate: 0.001
@@ -11,4 +11,9 @@ optimizer:
   dim_m: 3024
   dim_k: 3024
   dim_n: 256
-  batch_size: 10
+  batch_size: 256
+
+workload:
+  dataset_dir: "data/mnist"
+  max_samples: 1024
+  num_epochs: 5
