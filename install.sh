@@ -29,6 +29,57 @@ if (( is_hpc )); then
 	check module load gcc/13.2.0
 	check module load cuda/12.6.2
 
+		# load lib
+		check mkdir -p lib
+		if [[ ! -d "lib/yaml-cpp/.git" ]]; then
+			check git clone https://github.com/jbeder/yaml-cpp.git lib/yaml-cpp
+		else
+			echo "yaml-cpp repository already exists at lib/yaml-cpp; skipping clone." >&2
+		fi
+		check mkdir -p lib/yaml-cpp/build
+		if ! cmake -S lib/yaml-cpp -B lib/yaml-cpp/build \
+			-DCMAKE_BUILD_TYPE=Release \
+			-DYAML_BUILD_SHARED_LIBS=OFF \
+			-DYAML_CPP_BUILD_TESTS=OFF \
+			-DYAML_CPP_BUILD_TOOLS=OFF \
+			-DCMAKE_INSTALL_PREFIX="$PWD/lib/yaml-cpp/install"; then
+			echo "Failed to configure yaml-cpp in lib/yaml-cpp/build." >&2
+			exit 1
+		fi
+		if ! cmake --build lib/yaml-cpp/build -j 2; then
+			echo "Failed to build yaml-cpp from lib/yaml-cpp/build." >&2
+			exit 1
+		fi
+		if ! cmake --install lib/yaml-cpp/build; then
+			echo "Failed to install yaml-cpp into $PWD/lib/yaml-cpp/install." >&2
+			exit 1
+		fi
+		if [[ ! -d "lib/benchmark/.git" ]]; then
+			check git clone https://github.com/google/benchmark.git lib/benchmark
+		else
+			echo "google-benchmark repository already exists at lib/benchmark; skipping clone." >&2
+		fi
+		check mkdir -p lib/benchmark/build
+		if ! cmake -S lib/benchmark -B lib/benchmark/build \
+			-DBENCHMARK_DOWNLOAD_DEPENDENCIES=ON \
+			-DCMAKE_BUILD_TYPE=Release \
+			-DBENCHMARK_ENABLE_TESTING=OFF \
+			-DBENCHMARK_ENABLE_GTEST_TESTS=OFF \
+			-DBENCHMARK_ENABLE_INSTALL=ON \
+			-DCMAKE_INSTALL_PREFIX="$PWD/lib/benchmark/install"; then
+			echo "Failed to configure google-benchmark in lib/benchmark/build." >&2
+			exit 1
+		fi
+		if ! cmake --build lib/benchmark/build --config Release -j 2; then
+			echo "Failed to build google-benchmark from lib/benchmark/build." >&2
+			exit 1
+		fi
+		if ! cmake --install lib/benchmark/build; then
+			echo "Failed to install google-benchmark into $PWD/lib/benchmark/install." >&2
+			exit 1
+		fi
+
+
 	CUDA_ROOT="$(dirname "$(dirname "$(readlink -f "$(which nvcc)")")")"
 	CUDA_ARCH="${CUDA_ARCH:-75}"
 	if [[ -n "${HOST_GCC:-}" && -n "${HOST_GXX:-}" ]]; then
