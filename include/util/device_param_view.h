@@ -3,6 +3,9 @@
 
 #include <CL/opencl.h>
 
+/**
+ * @brief Holds OpenCL device buffers for a single optimizer parameter tensor.
+ */
 class DeviceParamView {
 	public:
 		cl_mem param;     

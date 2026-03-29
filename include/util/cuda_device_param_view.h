@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * @brief Holds CUDA device pointers for a single optimizer parameter tensor.
+ */
 class CudaDeviceParamView 
 {
     public:

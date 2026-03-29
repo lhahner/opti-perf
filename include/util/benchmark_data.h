@@ -2,6 +2,9 @@
 #include <sstream>
 #include <string>
 
+/**
+ * @brief Stores a single benchmark result row and provides CSV serialization helpers.
+ */
 class BenchmarkData
 {
 public:
@@ -21,10 +24,32 @@ public:
     float time_ms = 0.0f;
     int batch_index = 0;
     float loss = 0.0f;
-
+    /**
+     * @brief Constructs an empty benchmark data object.
+     */
     BenchmarkData()
     {
     }
+
+    /**
+     * @brief Constructs a populated benchmark data object.
+     * @param ts Timestamp associated with the measurement.
+     * @param device_name Human-readable device name.
+     * @param fw Execution framework name.
+     * @param w_name Workload name.
+     * @param w_type Workload category or phase.
+     * @param dev Device category.
+     * @param b_size Batch size.
+     * @param in_size Input size.
+     * @param opt Optimizer name.
+     * @param lr Learning rate.
+     * @param b1 Beta1 coefficient.
+     * @param b2 Beta2 coefficient.
+     * @param eps Numerical stability epsilon.
+     * @param t_ms Execution time in milliseconds.
+     * @param b_index Batch index.
+     * @param l Loss value.
+     */
     BenchmarkData(const char *ts, const char *device_name, const char *fw, const char *w_name, const char *w_type, const char *dev,
                   int b_size, long in_size,
                   const char *opt, float lr, float b1, float b2,
@@ -47,15 +72,27 @@ public:
         this->batch_index = b_index;
         this->loss = l;
     }
+
+    /**
+     * @brief Destroys the benchmark data object.
+     */
     ~BenchmarkData()
     {
     }
 
+    /**
+     * @brief Returns the CSV header matching the serialized field order.
+     * @return CSV header string.
+     */
     static constexpr const char *csv_header()
     {
         return "timestamp,device_name,framework,workload_name,workload_type,device,batch_size,input_size,optimizer,learning_rate,beta1,beta2,epsilon,time_ms,batch_index,loss";
     }
 
+    /**
+     * @brief Serializes the benchmark data into a CSV row.
+     * @return CSV-formatted data row.
+     */
     std::string to_csv_string() const
     {
         std::stringstream ss;

@@ -9,7 +9,7 @@
 #define LOG_TO_FILE_FAILURE -1
 
 /**
- * @brief Basic Logger wrapper class to log messages with different marker levels.
+ * @brief Logs diagnostic messages and benchmark rows.
  */
 class Logger
 {
@@ -23,12 +23,10 @@ public:
     void log(Marker marker, const char *message);
 
     /**
-     * @brief Logger function to log data into a CSV file
-     *
-     * @param headers vector of column headers
-     * @param values vector of values corresponding to the headers
-     * @param filename name of the CSV file to log data into
-     * 
+     * @brief Appends benchmark data to a CSV log file.
+     * @param benchmarkData Benchmark data row to serialize.
+     * @param filename Output CSV file name or path.
+     * @return `LOG_TO_FILE_SUCESS` on success, otherwise `LOG_TO_FILE_FAILURE`.
      */
     int logToCsv(BenchmarkData benchmarkData, const char *filename);
 

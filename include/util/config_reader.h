@@ -6,8 +6,7 @@
 #include <exception>
 
 /**
- * @brief A class for reading configuration files.
- * Handling hyperparemeter loading and parsing for the runtime, optimizer, and workload components.
+ * @brief Reads and exposes structured configuration sections from a YAML file.
  */
 class ConfigReader {
     private:
@@ -15,6 +14,10 @@ class ConfigReader {
         YAML::Node config;
 
     public:
+        /**
+         * @brief Loads the YAML configuration file from disk.
+         * @param path Path to the configuration file.
+         */
         ConfigReader(const std::string& path) : config_file_path(path) {
             try {
                 config = YAML::LoadFile(config_file_path);
@@ -25,22 +28,20 @@ class ConfigReader {
         }
            
         /**
-         * @brief Get the runtime config object,
-         * which contains optimizer type, workload and frameworkd 
-         * to use.
+         * @brief Returns the runtime configuration section.
+         * @return YAML node containing runtime settings.
          */
         YAML::Node get_runtime_config(); 
         
         /**
-         * @brief Get the optimizer config object,
-         * which contains the hyperparameters for the optimizer, 
-         * such as learning rate, batch size, etc.
+         * @brief Returns the optimizer configuration section.
+         * @return YAML node containing optimizer settings.
          */
         YAML::Node get_optimizer_config();
         
         /**
-         * @brief Get the workload config object, describing
-         * the workload size and others.
+         * @brief Returns the workload configuration section.
+         * @return YAML node containing workload settings.
          */
         YAML::Node get_workload_config();
     };

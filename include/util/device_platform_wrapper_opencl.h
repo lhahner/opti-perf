@@ -11,61 +11,75 @@
 #include "util/setup_wrapper.h"
 
 /**
- * @brief Wrapper to create, set and get OpenCL context, command queue, and program objects.
- * This class abstracts away the details of OpenCL setup and provides a simple interface for 
- * the rest of the codebase to interact with OpenCL resources.
+ * @brief Wraps OpenCL platform and device resource initialization.
+ *
+ * This class abstracts OpenCL context, queue, program, and device access for
+ * the rest of the codebase.
  */
 class DevicePlatformWrapperOpenCL {
 	public:
 		/**
-		 * @brief Initialize the OpenCL context, command queue, and program objects. 
-		 * This should be called before any OpenCL operations are performed. 
-		 * 
-		 * @return int is 0 if setup is successful, non-zero otherwise.
-		 * The specific error codes can be defined as needed (e.g., SETUP_SUCCESS, SETUP_ERROR, etc.).
+		 * @brief Initializes the OpenCL context and command queue.
+		 * @return `SETUP_SUCCESS` on success, otherwise `SETUP_FAILURE`.
 		 */
 		int setup();
 
 		/**
-		 * @brief Get the singleton instance of the DevicePlatformWrapperOpenCL class.
-		 * This ensures that there is only one instance managing the OpenCL resources throughout the application.
-		 * 
-		 * @return DevicePlatformWrapperOpenCL* pointer to the singleton instance.
+		 * @brief Returns the singleton wrapper instance.
+		 * @return Pointer to the shared wrapper instance.
 		 */
 		static DevicePlatformWrapperOpenCL* get_instance();
 		
 		/**
-		 * Getter and setter for the context, use create
-		 * to allocate the context, get to retrieve the context, 
-		 * and set to update the context. 
+		 * @brief Creates an OpenCL context for the selected platform.
+		 * @return Created OpenCL context or `NULL` on failure.
 		 */
 		cl_context create_context();
+
+		/**
+		 * @brief Returns the stored OpenCL context.
+		 * @return Current OpenCL context.
+		 */
 		cl_context get_context();
+
+		/**
+		 * @brief Stores the OpenCL context managed by the wrapper.
+		 * @param context OpenCL context to store.
+		 */
 		void set_context(cl_context);
 
 		/**
-		 * Getter and setter for the command queue, use create
-		 * to allocate the command queue, get to retrieve the command queue, 
-		 * and set to update the command queue. 
+		 * @brief Creates a command queue for the first device in the context.
+		 * @param context OpenCL context containing the target device.
+		 * @param device Output parameter receiving the selected device id.
+		 * @return Created command queue or `NULL` on failure.
 		 */
 		cl_command_queue create_command_queue(cl_context context, cl_device_id *device);
+
+		/**
+		 * @brief Returns the stored OpenCL command queue.
+		 * @return Current command queue.
+		 */
 		cl_command_queue get_command_queue();
+
+		/**
+		 * @brief Returns the selected device name.
+		 * @return Null-terminated device name string.
+		 */
 		const char *get_device_name() const;
 
 		/**
-		 * @brief Create a program object
-		 * 
-		 * @param context 
-		 * @param device 
-		 * @param kernel 
-		 * @return cl_program 
+		 * @brief Creates and builds an OpenCL program from a kernel source file.
+		 * @param context OpenCL context used to create the program.
+		 * @param device OpenCL device used to build the program.
+		 * @param kernel Path to the kernel source file.
+		 * @return Built OpenCL program or `NULL` on failure.
 		 */
 		cl_program create_program(cl_context context, cl_device_id device, const char* kernel);
 		
 		/**
-		 * @brief Get the device id object
-		 * 
-		 * @return cl_device_id 
+		 * @brief Returns the stored OpenCL device id.
+		 * @return Current device id.
 		 */
 		cl_device_id get_device_id();
 	
