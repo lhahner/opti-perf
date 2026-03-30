@@ -32,27 +32,27 @@ rm -f "${VALIDATION_LOG}"
 
 for framework in "${FRAMEWORKS[@]}"; do
   for batch_size in "${BATCH_SIZES[@]}"; do
-    cat > "${CONFIG_FILE}" <<EOF
-runtime:
-  workload: "Training"
-  optimizer: "Adam"
-  framework: "${framework}"
-
-optimizer:
-  learning_rate: ${LEARNING_RATE}
-  beta_1: ${BETA1}
-  beta_2: ${BETA2}
-  epsilon: ${EPSILON}
-  dim_m: 10024
-  dim_k: 10024
-  dim_n: 256
-  batch_size: ${batch_size}
-
-workload:
-  dataset_dir: "${DATASET_DIR}"
-  max_samples: ${MAX_SAMPLES}
-  num_epochs: ${NUM_EPOCHS}
-EOF
+    {
+      printf 'runtime:\n'
+      printf '  workload: "Training"\n'
+      printf '  optimizer: "Adam"\n'
+      printf '  framework: "%s"\n' "${framework}"
+      printf '\n'
+      printf 'optimizer:\n'
+      printf '  learning_rate: %s\n' "${LEARNING_RATE}"
+      printf '  beta_1: %s\n' "${BETA1}"
+      printf '  beta_2: %s\n' "${BETA2}"
+      printf '  epsilon: %s\n' "${EPSILON}"
+      printf '  dim_m: 10024\n'
+      printf '  dim_k: 10024\n'
+      printf '  dim_n: 256\n'
+      printf '  batch_size: %s\n' "${batch_size}"
+      printf '\n'
+      printf 'workload:\n'
+      printf '  dataset_dir: "%s"\n' "${DATASET_DIR}"
+      printf '  max_samples: %s\n' "${MAX_SAMPLES}"
+      printf '  num_epochs: %s\n' "${NUM_EPOCHS}"
+    } > "${CONFIG_FILE}"
 
     echo "Running framework=${framework} batch_size=${batch_size} max_samples=${MAX_SAMPLES} num_epochs=${NUM_EPOCHS}"
     (cd "${ROOT_DIR}" && ./build/app)
